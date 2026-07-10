@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { CldUploadWidget, type CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { Upload, X } from "lucide-react";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
@@ -25,7 +24,7 @@ export function PhotoUploader({ publicIds, onChange }: { publicIds: string[]; on
         <div className="grid grid-cols-4 gap-2">
           {publicIds.map((id) => (
             <div key={id} className="group relative aspect-square overflow-hidden rounded-md border border-steel/20">
-              <Image src={cloudinaryUrl(id, "f_auto,q_auto,w_200")} alt="Uploaded equipment photo" fill className="object-cover" />
+              <Image src={id} alt="Uploaded equipment photo" fill className="object-cover" />
               <button
                 type="button"
                 onClick={() => onChange(publicIds.filter((p) => p !== id))}

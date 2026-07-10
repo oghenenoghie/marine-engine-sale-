@@ -4,7 +4,6 @@ import Image from "next/image";
 import { CldUploadWidget, type CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { Star, Trash2, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import type { StockImage } from "@/types";
 
@@ -69,7 +68,7 @@ export function ImageUploader({
                 img.isPrimary ? "border-signal" : "border-steel/20",
               )}
             >
-              <Image src={cloudinaryUrl(img.publicId, "f_auto,q_auto,w_200")} alt={img.alt} fill className="object-cover" />
+              <Image src={img.publicId} alt={img.alt} fill className="object-cover" />
               <div className="absolute inset-0 flex items-start justify-between bg-hull/0 p-1 opacity-0 transition-opacity group-hover:bg-hull/40 group-hover:opacity-100">
                 <button
                   type="button"

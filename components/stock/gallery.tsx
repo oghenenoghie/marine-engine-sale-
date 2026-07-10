@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import type { StockImage } from "@/types";
 
 export function Gallery({ images, title }: { images: StockImage[]; title: string }) {
@@ -25,7 +24,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
     <div>
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md border border-steel/15 bg-white">
         <Image
-          src={cloudinaryUrl(current.publicId, "f_auto,q_auto,w_1200")}
+          src={current.publicId}
           alt={current.alt}
           fill
           priority
@@ -45,7 +44,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
                 i === active ? "border-blueprint" : "border-steel/20",
               )}
             >
-              <Image src={cloudinaryUrl(img.publicId, "f_auto,q_auto,w_120")} alt={img.alt} fill className="object-cover" />
+              <Image src={img.publicId} alt={img.alt} fill className="object-cover" />
             </button>
           ))}
         </div>

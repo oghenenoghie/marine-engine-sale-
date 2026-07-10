@@ -1,7 +1,10 @@
 /**
- * Hand-authored placeholder matching supabase/migrations/0001_init.sql.
- * Regenerate against a live project with:
- *   supabase gen types typescript --local > types/supabase.ts
+ * Hand-authored to match supabase/migrations/0001_init.sql, verified
+ * against `supabase gen types` output from the live project (columns,
+ * nullability and FKs match exactly; enum-like text columns are narrowed
+ * to literal unions here since Postgres CHECK constraints don't surface
+ * as TS types in the generator's output). Regenerate with:
+ *   supabase gen types typescript --project-id <id> > types/supabase.ts
  */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 

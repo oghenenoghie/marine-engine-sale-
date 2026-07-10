@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Hotspot, StockItemView } from "@/types";
 
@@ -23,7 +22,7 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
   return (
     <figure className="relative w-full overflow-hidden rounded-md border border-steel/25 bg-hull">
       <div className="relative aspect-[4/3] w-full">
-        <Image src={cloudinaryUrl(assetKey, "f_auto,q_auto,w_1600")} alt={title} fill className="object-contain" priority />
+        <Image src={assetKey} alt={title} fill className="object-contain" priority />
 
         {hotspots.map((h) => (
           <button

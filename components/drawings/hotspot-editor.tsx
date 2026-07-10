@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Plus, Trash2, X } from "lucide-react";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
 import type { Hotspot, StockItemView } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -54,7 +53,7 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
             addHotspotAt((e.clientX - rect.left) / rect.width, (e.clientY - rect.top) / rect.height);
           }}
         >
-          <Image src={cloudinaryUrl(assetKey, "f_auto,q_auto,w_1600")} alt={title} fill className="pointer-events-none object-contain" />
+          <Image src={assetKey} alt={title} fill className="pointer-events-none object-contain" />
           {hotspots.map((h) => (
             <button
               key={h.id}

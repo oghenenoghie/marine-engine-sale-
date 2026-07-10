@@ -2,6 +2,14 @@
 create extension if not exists pg_trgm;
 create extension if not exists pgcrypto;
 
+-- array_to_string is only STABLE in core Postgres (its output can depend on
+-- locale-sensitive typoutput functions for arbitrary types); text[] elements
+-- have no such dependency, so this wrapper is safe to mark IMMUTABLE and use
+-- in the oem_numbers trigram index below.
+create or replace function immutable_array_to_string(text[]) returns text as $$
+  select array_to_string($1, ' ');
+$$ language sql immutable strict;
+
 create table brands (
   id uuid primary key default gen_random_uuid(),
   slug text unique not null,
@@ -66,7 +74,7 @@ create index stock_items_model_id_idx on stock_items (model_id);
 create index stock_items_category_id_idx on stock_items (category_id);
 create index stock_items_status_idx on stock_items (status);
 create index stock_items_condition_idx on stock_items (condition);
-create index stock_items_oem_numbers_trgm_idx on stock_items using gin (oem_numbers gin_trgm_ops);
+create index stock_items_oem_numbers_trgm_idx on stock_items using gin (immutable_array_to_string(oem_numbers) gin_trgm_ops);
 create index stock_items_title_trgm_idx on stock_items using gin (title gin_trgm_ops);
 create index stock_items_sku_trgm_idx on stock_items using gin (sku gin_trgm_ops);
 
