@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ImageIcon } from "lucide-react";
+import { Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { PhotoUploader } from "@/components/forms/photo-uploader";
 import { brands } from "@/lib/data/taxonomy";
 import { cn } from "@/lib/utils";
 
 export function SellForm({ className }: { className?: string }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +33,7 @@ export function SellForm({ className }: { className?: string }) {
           email: form.get("email"),
           phone: form.get("phone"),
           message: `Brand: ${brand}\nModel: ${model}\nCondition: ${condition}\n\n${form.get("message") ?? ""}`,
+          attachments: photos,
         }),
       });
       if (!res.ok) throw new Error("Request failed");
@@ -122,11 +125,9 @@ export function SellForm({ className }: { className?: string }) {
         <Textarea id="message" name="message" rows={4} placeholder="Hours run, location, reason for sale…" />
       </div>
 
-      <div className="flex items-start gap-2 rounded-md border border-dashed border-steel/25 px-3 py-3 text-steel">
-        <ImageIcon size={16} className="mt-0.5 shrink-0" />
-        <span className="text-[12px]">
-          Photo upload goes live once the Cloudinary widget is wired in — for now, reply-all any photos to the confirmation email.
-        </span>
+      <div>
+        <Label>Photos</Label>
+        <PhotoUploader publicIds={photos} onChange={setPhotos} />
       </div>
 
       <Button type="submit" disabled={status === "submitting"} className="w-full">

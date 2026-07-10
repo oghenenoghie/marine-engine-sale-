@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getResend } from "@/lib/resend";
 import { createAdminClient } from "@/lib/supabase/server";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 
 const enquirySchema = z.object({
   type: z.enum(["rfq", "sell"]),
@@ -11,6 +12,7 @@ const enquirySchema = z.object({
   email: z.string().email(),
   phone: z.string().optional(),
   message: z.string().min(1),
+  attachments: z.array(z.string()).optional(),
 });
 
 export async function POST(request: Request) {
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
       email: data.email,
       phone: data.phone ?? null,
       message: data.message,
-      attachments: [],
+      attachments: data.attachments ?? [],
     });
     if (error) {
       return NextResponse.json({ error: "Could not save enquiry" }, { status: 500 });
@@ -48,7 +50,11 @@ export async function POST(request: Request) {
       to: notifyTo,
       replyTo: data.email,
       subject: `${data.type === "rfq" ? "New RFQ" : "New sell enquiry"} — ${data.name}`,
-      text: `${data.message}\n\n— ${data.name}${data.company ? ` (${data.company})` : ""}\n${data.email}${data.phone ? ` · ${data.phone}` : ""}`,
+      text: [
+        data.message,
+        data.attachments?.length ? `\nPhotos:\n${data.attachments.map((id) => cloudinaryUrl(id)).join("\n")}` : "",
+        `\n— ${data.name}${data.company ? ` (${data.company})` : ""}\n${data.email}${data.phone ? ` · ${data.phone}` : ""}`,
+      ].join(""),
     });
   }
 

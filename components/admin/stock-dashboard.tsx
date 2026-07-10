@@ -7,6 +7,7 @@ import {
 import { cn, formatPrice, slugify } from "@/lib/utils";
 import { StatusBadge, STATUS_STYLE } from "@/components/stock/status-badge";
 import { Button } from "@/components/ui/button";
+import { ImageUploader } from "@/components/admin/image-uploader";
 import type { Brand, Condition, EngineModel, PartCategory, StockItem, StockStatus } from "@/types";
 
 /**
@@ -504,12 +505,9 @@ function StockForm({
             </div>
           </Field>
 
-          <div className="flex items-start gap-2 rounded-md border border-dashed border-steel/25 px-3 py-3 text-steel">
-            <ImageIcon size={16} className="mt-0.5 shrink-0" />
-            <span className="text-[12px]">
-              In production, images upload here via the Cloudinary widget and attach by <code className="font-mono">public_id</code>.
-            </span>
-          </div>
+          <Field label="Photos">
+            <ImageUploader images={f.images} onChange={(images) => set("images", images)} />
+          </Field>
         </div>
 
         <div className="flex items-center justify-end gap-2 border-t border-steel/15 px-5 py-4">
