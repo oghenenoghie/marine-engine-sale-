@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-hull font-body antialiased;
+  }
+
+  ::selection {
+    @apply bg-blueprint/30 text-hull;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-blueprint ring-offset-2 ring-offset-paper;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .font-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .blueprint-grid {
+    background-image: linear-gradient(rgba(46, 110, 158, 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46, 110, 158, 0.14) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .label {
+    @apply text-[0.8125rem] font-medium uppercase tracking-wider;
+  }
+
+  .data {
+    @apply font-mono text-[0.875rem] font-tabular;
+  }
+}
