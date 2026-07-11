@@ -39,7 +39,14 @@ export function PhotoUploader({ publicIds, onChange }: { publicIds: string[]; on
 
       <CldUploadWidget
         uploadPreset={UPLOAD_PRESET}
-        options={{ multiple: true, maxFiles: 12, folder: "drydock/sell-enquiries", sources: ["local", "camera"] }}
+        options={{
+          multiple: true,
+          maxFiles: 12,
+          folder: "drydock/sell-enquiries",
+          sources: ["local", "camera"],
+          clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "heic"],
+          maxFileSize: 10_000_000,
+        }}
         onSuccess={(result) => {
           const info = result.info;
           if (info && typeof info !== "string") onChange([...publicIds, info.public_id]);

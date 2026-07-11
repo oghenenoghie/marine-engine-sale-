@@ -102,7 +102,14 @@ export function ImageUploader({
 
       <CldUploadWidget
         uploadPreset={UPLOAD_PRESET}
-        options={{ multiple: true, maxFiles: 12, folder, sources: ["local", "camera", "url"] }}
+        options={{
+          multiple: true,
+          maxFiles: 12,
+          folder,
+          sources: ["local", "camera", "url"],
+          clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "heic"],
+          maxFileSize: 10_000_000,
+        }}
         onSuccess={(result) => {
           const info = result.info;
           if (info && typeof info !== "string") addImage(info);
