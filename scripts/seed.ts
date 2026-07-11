@@ -5,7 +5,7 @@
  * for pushing the same fixtures into a hosted preview/staging project.
  */
 import { createClient } from "@supabase/supabase-js";
-import { brands, engineModels, partCategories } from "../lib/data/taxonomy";
+import { brandsSeed as brands, engineModelsSeed as engineModels, partCategoriesSeed as partCategories } from "../lib/data/taxonomy.seed";
 import { stockSeed } from "../lib/data/stock.seed";
 import { drawingsSeed } from "../lib/data/drawings.seed";
 
@@ -68,6 +68,7 @@ async function main() {
       condition: s.condition,
       poa: s.poa,
       price: s.price,
+      currency: s.currency,
       qty: s.qty,
       status: s.status,
       oem_numbers: s.oemNumbers,

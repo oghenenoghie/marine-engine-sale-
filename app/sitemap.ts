@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllStock, getAllDrawings } from "@/lib/data/stock";
-import { brands, engineModels } from "@/lib/data/taxonomy";
+import { getAllBrands, getAllModels } from "@/lib/data/taxonomy";
 
 export const dynamic = "force-dynamic";
 
@@ -12,12 +12,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
+  const [allStock, allDrawings, brands, engineModels] = await Promise.all([
+    getAllStock(),
+    getAllDrawings(),
+    getAllBrands(),
+    getAllModels(),
+  ]);
   const brandRoutes = brands.map((b) => ({ url: `${base}/brands/${b.slug}`, lastModified: new Date() }));
   const modelRoutes = engineModels.map((m) => {
     const brand = brands.find((b) => b.id === m.brandId)!;
     return { url: `${base}/brands/${brand.slug}/${m.slug}`, lastModified: new Date() };
   });
-  const [allStock, allDrawings] = await Promise.all([getAllStock(), getAllDrawings()]);
   const stockRoutes = allStock.map((item) => ({
     url: `${base}/${item.type === "engine" ? "engines" : "parts"}/${item.slug}`,
     lastModified: new Date(item.createdAt),

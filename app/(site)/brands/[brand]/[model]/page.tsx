@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StockCard } from "@/components/stock/stock-card";
-import { brandBySlug, engineModels, modelBySlug } from "@/lib/data/taxonomy";
+import { brandBySlug, getAllBrands, getAllModels, modelBySlug } from "@/lib/data/taxonomy";
 import { getDrawingsForModel, getStock } from "@/lib/data/stock";
+
+// Brands/models are admin-editable — never bake this into a static build.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -11,15 +14,17 @@ export async function generateMetadata({
   params: Promise<{ brand: string; model: string }>;
 }): Promise<Metadata> {
   const { brand: brandSlug, model: modelSlug } = await params;
-  const brand = brandBySlug(brandSlug);
-  const model = modelBySlug(modelSlug);
+  const [brands, models] = await Promise.all([getAllBrands(), getAllModels()]);
+  const brand = brandBySlug(brands, brandSlug);
+  const model = modelBySlug(models, modelSlug);
   if (!brand || !model) return {};
   return { title: `${brand.name} ${model.name}`, description: `${brand.name} ${model.name} — drawings, specs and parts in stock.` };
 }
 
 export default async function ModelPage({ params }: { params: Promise<{ brand: string; model: string }> }) {
   const { brand: brandSlug, model: modelSlug } = await params;
-  const brand = brandBySlug(brandSlug);
+  const [brands, engineModels] = await Promise.all([getAllBrands(), getAllModels()]);
+  const brand = brandBySlug(brands, brandSlug);
   const model = engineModels.find((m) => m.slug === modelSlug && m.brandId === brand?.id);
   if (!brand || !model) notFound();
 

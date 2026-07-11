@@ -3,22 +3,21 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
-import { brands } from "@/lib/data/taxonomy";
-import type { Condition, StockStatus } from "@/types";
+import type { Brand, Condition, StockStatus } from "@/types";
 
 const CONDITIONS: Condition[] = ["New", "Used", "Reconditioned"];
 const STATUSES: StockStatus[] = ["available", "reserved", "expected", "sold"];
 
-const FACETS = [
-  { key: "brand", label: "Brand", values: brands.map((b) => ({ value: b.slug, label: b.name })) },
-  { key: "condition", label: "Condition", values: CONDITIONS.map((c) => ({ value: c, label: c })) },
-  { key: "status", label: "Status", values: STATUSES.map((s) => ({ value: s, label: s[0]!.toUpperCase() + s.slice(1) })) },
-];
-
-export function FacetRail() {
+export function FacetRail({ brands }: { brands: Brand[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const FACETS = [
+    { key: "brand", label: "Brand", values: brands.map((b) => ({ value: b.slug, label: b.name })) },
+    { key: "condition", label: "Condition", values: CONDITIONS.map((c) => ({ value: c, label: c })) },
+    { key: "status", label: "Status", values: STATUSES.map((s) => ({ value: s, label: s[0]!.toUpperCase() + s.slice(1) })) },
+  ];
 
   const toggle = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());

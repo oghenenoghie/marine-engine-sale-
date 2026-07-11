@@ -60,6 +60,7 @@ export interface Database {
           condition: "New" | "Used" | "Reconditioned";
           poa: boolean;
           price: number | null;
+          currency: "EUR" | "USD" | "GBP" | "NOK" | "SEK" | "DKK" | "JPY" | "SGD" | "CNY";
           qty: number;
           status: "available" | "reserved" | "sold" | "expected";
           oem_numbers: string[];

@@ -1,6 +1,7 @@
 import { FacetRail } from "@/components/stock/facet-rail";
 import { StockCard } from "@/components/stock/stock-card";
 import { getStock, type StockFilters } from "@/lib/data/stock";
+import { getAllBrands } from "@/lib/data/taxonomy";
 import type { Condition, StockStatus } from "@/types";
 
 export interface StockListingSearchParams {
@@ -31,11 +32,11 @@ export async function StockListing({
     status: searchParams.status as StockStatus | undefined,
   };
 
-  const items = await getStock(filters);
+  const [items, brands] = await Promise.all([getStock(filters), getAllBrands()]);
 
   return (
     <div className="flex flex-col gap-6 md:flex-row">
-      <FacetRail />
+      <FacetRail brands={brands} />
       <div className="flex-1">
         <div className="mb-4 flex items-center justify-between">
           <span className="data text-steel">

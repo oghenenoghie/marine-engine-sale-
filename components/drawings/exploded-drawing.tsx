@@ -58,7 +58,7 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
               <div className="label text-signal">Callout {active.id}</div>
               <div className="font-display text-base font-bold">{active.label}</div>
             </div>
-            {activeStock && <span className="data shrink-0 text-paper/80">{formatPrice(activeStock.price, activeStock.poa)}</span>}
+            {activeStock && <span className="data shrink-0 text-paper/80">{formatPrice(activeStock.price, activeStock.poa, activeStock.currency)}</span>}
           </div>
 
           <div className="mt-2 text-[13px] text-paper/70">

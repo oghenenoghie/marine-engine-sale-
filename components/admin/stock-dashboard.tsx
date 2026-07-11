@@ -9,7 +9,8 @@ import { StatusBadge, STATUS_STYLE } from "@/components/stock/status-badge";
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { saveStockItemAction, deleteStockItemAction } from "@/lib/actions/stock";
-import type { Brand, Condition, EngineModel, PartCategory, StockItem, StockStatus } from "@/types";
+import type { Brand, Condition, Currency, EngineModel, PartCategory, StockItem, StockStatus } from "@/types";
+import { CURRENCIES } from "@/types";
 
 /**
  * Admin Stock Dashboard (CRUD). Ported from the Drydock design prototype
@@ -183,7 +184,7 @@ export function StockDashboard({ initialItems, brands, models, categories }: Sto
                     <span className="text-[13px] text-steel">{it.condition}</span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <span className="font-mono text-[13px] font-medium">{formatPrice(it.price, it.poa)}</span>
+                    <span className="font-mono text-[13px] font-medium">{formatPrice(it.price, it.poa, it.currency)}</span>
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={it.status} />
@@ -339,6 +340,7 @@ function StockForm({
     condition: initial.condition ?? "Used",
     poa: initial.poa ?? false,
     price: initial.price ?? 0,
+    currency: initial.currency ?? "EUR",
     qty: initial.qty ?? 1,
     status: initial.status ?? "available",
     oemNumbers: initial.oemNumbers ?? [],
@@ -449,19 +451,25 @@ function StockForm({
           </div>
 
           <Field label="Price">
-            <div className="flex items-center gap-3">
+            <div className="space-y-2">
               <label className="flex items-center gap-2 text-[13px] text-steel">
                 <input type="checkbox" checked={f.poa} onChange={(e) => set("poa", e.target.checked)} />
                 POA (price on application)
               </label>
               {!f.poa && (
-                <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-steel">€</span>
+                <div className="flex gap-2">
+                  <div className="w-24">
+                    <SelectField
+                      value={f.currency}
+                      onChange={(v) => set("currency", v as Currency)}
+                      options={CURRENCIES.map((c): [string, string] => [c, c])}
+                    />
+                  </div>
                   <input
                     type="number"
                     value={f.price ?? 0}
                     onChange={(e) => set("price", Number(e.target.value))}
-                    className="w-full rounded-md border border-steel/25 bg-white py-2 pl-7 pr-3 font-mono text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+                    className="w-full flex-1 rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
                   />
                 </div>
               )}

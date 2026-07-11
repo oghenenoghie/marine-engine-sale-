@@ -1,11 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient, createAdminClient, createPublicClient } from "@/lib/supabase/server";
+import { createAdminClient, createPublicClient } from "@/lib/supabase/server";
+import { requireAdmin, type ActionResult } from "@/lib/actions/auth";
 import type { StockItem, Hotspot } from "@/types";
 import type { Json } from "@/types/supabase";
 
-export type ActionResult = { ok: true } | { ok: false; error: string };
+export type { ActionResult };
 
 /**
  * Server actions redact thrown errors into a generic digest message in
@@ -13,15 +14,6 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
  * plain result object instead of throwing, to keep real error text visible
  * to the admin UI.
  */
-async function requireAdmin(): Promise<{ ok: true } | { ok: false; error: string }> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "Not signed in." };
-  if (user.app_metadata?.role !== "admin") return { ok: false, error: "Signed in, but this account is not an admin." };
-  return { ok: true };
-}
 
 function revalidateStockPaths() {
   revalidatePath("/");
@@ -53,6 +45,7 @@ export async function saveStockItemAction(item: StockItem): Promise<ActionResult
       condition: item.condition,
       poa: item.poa,
       price: item.poa ? null : item.price,
+      currency: item.currency,
       qty: item.qty,
       status: item.status,
       oem_numbers: item.oemNumbers,
@@ -183,6 +176,7 @@ export async function testDbConnectionAction(): Promise<DbTestReport> {
       condition: "Used",
       poa: true,
       price: null,
+      currency: "EUR",
       qty: 1,
       status: "available",
       oem_numbers: [],

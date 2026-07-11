@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExplodedDrawing } from "@/components/drawings/exploded-drawing";
 import { getAllStock, getDrawing } from "@/lib/data/stock";
-import { engineModels } from "@/lib/data/taxonomy";
+import { getAllModels } from "@/lib/data/taxonomy";
+
+// Models/stock are admin-editable — never bake this into a static build.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -16,8 +19,8 @@ export default async function DrawingPage({ params }: { params: Promise<{ id: st
   const drawing = await getDrawing(id);
   if (!drawing) notFound();
 
+  const [engineModels, allStock] = await Promise.all([getAllModels(), getAllStock()]);
   const model = engineModels.find((m) => m.id === drawing.modelId);
-  const allStock = await getAllStock();
   const stockById = Object.fromEntries(allStock.map((s) => [s.id, s]));
 
   return (

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { getAllDrawings } from "@/lib/data/stock";
-import { engineModels } from "@/lib/data/taxonomy";
+import { getAllModels } from "@/lib/data/taxonomy";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDrawingsPage() {
-  const drawings = await getAllDrawings();
+  const [drawings, engineModels] = await Promise.all([getAllDrawings(), getAllModels()]);
 
   return (
     <div className="p-6">
