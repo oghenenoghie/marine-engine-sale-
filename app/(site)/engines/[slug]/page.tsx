@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StockDetail } from "@/components/stock/stock-detail";
-import { getAllStock, getStockBySlug } from "@/lib/data/stock";
-
-export function generateStaticParams() {
-  return getAllStock()
-    .filter((i) => i.type === "engine")
-    .map((i) => ({ slug: i.slug }));
-}
+import { getStockBySlug } from "@/lib/data/stock";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const item = getStockBySlug(slug);
+  const item = await getStockBySlug(slug);
   if (!item) return {};
   return {
     title: item.title,
@@ -21,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function EngineDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = getStockBySlug(slug);
+  const item = await getStockBySlug(slug);
   if (!item || item.type !== "engine") notFound();
   return <StockDetail item={item} />;
 }

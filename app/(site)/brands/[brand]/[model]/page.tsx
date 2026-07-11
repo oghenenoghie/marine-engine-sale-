@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StockCard } from "@/components/stock/stock-card";
-import { brandBySlug, brands, engineModels, modelBySlug, modelsForBrand } from "@/lib/data/taxonomy";
+import { brandBySlug, engineModels, modelBySlug } from "@/lib/data/taxonomy";
 import { getDrawingsForModel, getStock } from "@/lib/data/stock";
-
-export function generateStaticParams() {
-  return brands.flatMap((b) => modelsForBrand(b.id).map((m) => ({ brand: b.slug, model: m.slug })));
-}
 
 export async function generateMetadata({
   params,
@@ -27,8 +23,8 @@ export default async function ModelPage({ params }: { params: Promise<{ brand: s
   const model = engineModels.find((m) => m.slug === modelSlug && m.brandId === brand?.id);
   if (!brand || !model) notFound();
 
-  const drawings = getDrawingsForModel(model.id);
-  const items = getStock({ model: model.slug });
+  const drawings = await getDrawingsForModel(model.id);
+  const items = await getStock({ model: model.slug });
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">

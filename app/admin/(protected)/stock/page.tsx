@@ -1,7 +1,10 @@
 import { StockDashboard } from "@/components/admin/stock-dashboard";
-import { stockSeed } from "@/lib/data/stock.seed";
+import { getAllStock } from "@/lib/data/stock";
 import { brands, engineModels, partCategories } from "@/lib/data/taxonomy";
 
-export default function AdminStockPage() {
-  return <StockDashboard initialItems={stockSeed} brands={brands} models={engineModels} categories={partCategories} />;
+export const dynamic = "force-dynamic";
+
+export default async function AdminStockPage() {
+  const items = await getAllStock();
+  return <StockDashboard initialItems={items} brands={brands} models={engineModels} categories={partCategories} />;
 }

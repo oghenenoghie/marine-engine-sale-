@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StockCard } from "@/components/stock/stock-card";
-import { brandBySlug, brands, modelsForBrand } from "@/lib/data/taxonomy";
+import { brandBySlug, modelsForBrand } from "@/lib/data/taxonomy";
 import { getStock } from "@/lib/data/stock";
-
-export function generateStaticParams() {
-  return brands.map((b) => ({ brand: b.slug }));
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ brand: string }> }): Promise<Metadata> {
   const { brand: brandSlug } = await params;
@@ -22,7 +18,7 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
   if (!brand) notFound();
 
   const models = modelsForBrand(brand.id);
-  const items = getStock({ brand: brand.slug });
+  const items = await getStock({ brand: brand.slug });
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">

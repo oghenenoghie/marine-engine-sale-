@@ -37,3 +37,18 @@ export function createAdminClient() {
     { auth: { persistSession: false } },
   );
 }
+
+/**
+ * Stateless anon-key client with no cookie dependency. Safe to call from
+ * anywhere server-side — sitemap.ts, generateStaticParams, etc. — where
+ * `cookies()` isn't available (those run outside request scope). RLS
+ * already restricts these tables to public-read, so no auth context is
+ * needed for the queries lib/data/stock.ts runs through this client.
+ */
+export function createPublicClient() {
+  return createSupabaseClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { auth: { persistSession: false } },
+  );
+}

@@ -2,8 +2,10 @@ import Link from "next/link";
 import { getAllDrawings } from "@/lib/data/stock";
 import { engineModels } from "@/lib/data/taxonomy";
 
-export default function AdminDrawingsPage() {
-  const drawings = getAllDrawings();
+export const dynamic = "force-dynamic";
+
+export default async function AdminDrawingsPage() {
+  const drawings = await getAllDrawings();
 
   return (
     <div className="p-6">

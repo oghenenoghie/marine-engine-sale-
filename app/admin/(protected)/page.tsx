@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { enquiriesSeed } from "@/lib/data/enquiries.seed";
 
+export const dynamic = "force-dynamic";
+
 function Stat({ label, value, accent }: { label: string; value: number | string; accent?: string }) {
   return (
     <div className="rounded-md border border-steel/15 bg-white px-4 py-3">
@@ -13,8 +15,8 @@ function Stat({ label, value, accent }: { label: string; value: number | string;
   );
 }
 
-export default function AdminDashboardPage() {
-  const stock = getAllStock();
+export default async function AdminDashboardPage() {
+  const stock = await getAllStock();
   const stats = {
     total: stock.length,
     available: stock.filter((i) => i.status === "available").length,

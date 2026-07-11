@@ -8,14 +8,14 @@ import { cn, formatPrice, slugify } from "@/lib/utils";
 import { StatusBadge, STATUS_STYLE } from "@/components/stock/status-badge";
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { saveStockItemAction, deleteStockItemAction } from "@/lib/actions/stock";
 import type { Brand, Condition, EngineModel, PartCategory, StockItem, StockStatus } from "@/types";
 
 /**
  * Admin Stock Dashboard (CRUD). Ported from the Drydock design prototype
- * into the app's Tailwind tokens + UI primitives. State is in-memory,
- * seeded from lib/data/stock.seed.ts — swap `saveItem`/`removeItem` for
- * Supabase mutations (insert/update/delete against `stock_items`) once the
- * project is wired up.
+ * into the app's Tailwind tokens + UI primitives. Initial items come from
+ * Supabase (see app/admin/(protected)/stock/page.tsx); save/delete persist
+ * via server actions in lib/actions/stock.ts, then update local state.
  */
 
 const CONDITIONS: Condition[] = ["New", "Used", "Reconditioned"];
@@ -37,6 +37,8 @@ export function StockDashboard({ initialItems, brands, models, categories }: Sto
   const [statusF, setStatusF] = useState("All");
   const [editing, setEditing] = useState<StockItem | Partial<StockItem> | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<StockItem | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const brandById = useMemo(() => Object.fromEntries(brands.map((b) => [b.id, b])), [brands]);
   const categoryById = useMemo(() => Object.fromEntries(categories.map((c) => [c.id, c])), [categories]);
@@ -66,17 +68,38 @@ export function StockDashboard({ initialItems, brands, models, categories }: Sto
     [items],
   );
 
-  const saveItem = (data: StockItem) => {
-    setItems((prev) => (prev.some((i) => i.id === data.id) ? prev.map((i) => (i.id === data.id ? data : i)) : [data, ...prev]));
-    setEditing(null);
+  const saveItem = async (data: StockItem) => {
+    setSaving(true);
+    setError(null);
+    try {
+      await saveStockItemAction(data);
+      setItems((prev) => (prev.some((i) => i.id === data.id) ? prev.map((i) => (i.id === data.id ? data : i)) : [data, ...prev]));
+      setEditing(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save item");
+    } finally {
+      setSaving(false);
+    }
   };
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-    setDeleteTarget(null);
+  const removeItem = async (id: string) => {
+    setSaving(true);
+    setError(null);
+    try {
+      await deleteStockItemAction(id);
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      setDeleteTarget(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete item");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <div className="text-[14px] text-hull">
+      {error && (
+        <div className="border-b border-signal/30 bg-signal/10 px-6 py-2 text-[12px] text-signal">{error}</div>
+      )}
       {/* Topbar */}
       <div className="flex flex-wrap items-center gap-3 border-b border-steel/15 px-6 py-4">
         <div>
@@ -207,12 +230,18 @@ export function StockDashboard({ initialItems, brands, models, categories }: Sto
           brands={brands}
           models={models}
           categories={categories}
+          saving={saving}
           onClose={() => setEditing(null)}
           onSave={saveItem}
         />
       )}
       {deleteTarget && (
-        <ConfirmDelete item={deleteTarget} onCancel={() => setDeleteTarget(null)} onConfirm={() => removeItem(deleteTarget.id)} />
+        <ConfirmDelete
+          item={deleteTarget}
+          saving={saving}
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={() => removeItem(deleteTarget.id)}
+        />
       )}
     </div>
   );
@@ -287,6 +316,7 @@ function StockForm({
   brands,
   models,
   categories,
+  saving,
   onClose,
   onSave,
 }: {
@@ -294,6 +324,7 @@ function StockForm({
   brands: Brand[];
   models: EngineModel[];
   categories: PartCategory[];
+  saving: boolean;
   onClose: () => void;
   onSave: (item: StockItem) => void;
 }) {
@@ -514,8 +545,8 @@ function StockForm({
           <button onClick={onClose} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
             Cancel
           </button>
-          <Button onClick={handleSave} disabled={!canSave} variant="dark">
-            <Check size={15} /> {isNew ? "Create item" : "Save changes"}
+          <Button onClick={handleSave} disabled={!canSave || saving} variant="dark">
+            <Check size={15} /> {saving ? "Saving…" : isNew ? "Create item" : "Save changes"}
           </Button>
         </div>
       </div>
@@ -570,7 +601,17 @@ function Picker({ value, onChange, options }: { value: string; onChange: (v: str
   );
 }
 
-function ConfirmDelete({ item, onCancel, onConfirm }: { item: StockItem; onCancel: () => void; onConfirm: () => void }) {
+function ConfirmDelete({
+  item,
+  saving,
+  onCancel,
+  onConfirm,
+}: {
+  item: StockItem;
+  saving: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-hull/50 p-4" onClick={onCancel}>
       <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-lg bg-paper p-5 shadow-2xl">
@@ -587,8 +628,8 @@ function ConfirmDelete({ item, onCancel, onConfirm }: { item: StockItem; onCance
           <button onClick={onCancel} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
             Cancel
           </button>
-          <Button variant="primary" onClick={onConfirm}>
-            Delete
+          <Button variant="primary" onClick={onConfirm} disabled={saving}>
+            {saving ? "Deleting…" : "Delete"}
           </Button>
         </div>
       </div>
