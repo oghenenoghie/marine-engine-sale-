@@ -19,12 +19,12 @@ export function HotspotEditorPanel({ drawing, stockOptions }: { drawing: Drawing
         stockOptions={stockOptions}
         onSave={async (hotspots) => {
           setError(null);
-          try {
-            await saveDrawingHotspotsAction(drawing.id, hotspots);
+          const result = await saveDrawingHotspotsAction(drawing.id, hotspots);
+          if (result.ok) {
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);
-          } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to save hotspots");
+          } else {
+            setError(result.error);
           }
         }}
       />
