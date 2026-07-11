@@ -54,7 +54,7 @@ This turns a static parts catalog into a visual, engine-aware discovery experien
 
 **Architectural note:** the site is hosted on Vercel, so Postgres (Supabase) is the system of record; Cloudinary is the dedicated media layer. Its upload widget suits photographing stock in the warehouse, and on-the-fly transforms — including background removal to put used parts on clean white — genuinely favour an image-heavy catalog. It plugs into `next/image` through a custom loader.
 
-**Current data source:** until a Supabase project is provisioned, all public and admin pages read from the in-memory fixtures in `lib/data/*.seed.ts` via the query layer in `lib/data/stock.ts`. That file is deliberately shaped like the Postgres queries it will become (facet filters → indexed `WHERE`, part search → `pg_trgm`) — swapping it to call `lib/supabase/server.ts` is the only change needed once the schema in `supabase/migrations/0001_init.sql` is applied to a real project.
+**Data source:** `lib/data/stock.ts` queries `stock_items`/`drawings` in Supabase directly (RLS: public read, admin write). Brand/model/category reference data stays static in `lib/data/taxonomy.ts` — its ids are kept in sync with the seeded uuids in `supabase/seed.sql` by hand, since a few client components import it directly. Admin create/edit/delete goes through server actions in `lib/actions/stock.ts`, which verify `app_metadata.role === "admin"` before writing via the service-role client. Pages that read live stock/drawing data are marked `export const dynamic = "force-dynamic"` so admin edits show up immediately rather than being baked into a static build.
 
 ---
 
@@ -209,13 +209,13 @@ pnpm lint       # eslint + typecheck
 - [x] Data model & taxonomy
 - [x] Supabase schema, RLS, migration (`supabase/migrations/0001_init.sql`)
 - [x] Cloudinary media pipeline (upload widget signing + `next/image` loader)
-- [x] Stock list, detail & faceted part-number search (fixture-backed, Postgres-shaped)
-- [x] Interactive exploded-drawing viewer + hotspot editor
-- [x] Enquiry (RFQ) & sell-to-us flows
-- [x] Admin stock CRUD
+- [x] Stock list, detail & faceted part-number search (Supabase-backed)
+- [x] Interactive exploded-drawing viewer + hotspot editor (Supabase-backed)
+- [x] Admin stock CRUD (persists to `stock_items` via server actions)
 - [x] SEO, sitemap, robots
-- [ ] Wire `lib/data/stock.ts` to live Supabase queries
-- [ ] Cloudinary upload widget in the admin stock form
+- [x] Wire `lib/data/stock.ts` to live Supabase queries
+- [x] Cloudinary upload widget in the admin stock form
+- [ ] Enquiry (RFQ) & sell-to-us flows — submissions still logged via Resend only, not persisted to `enquiries`; `/admin/enquiries` still reads `lib/data/enquiries.seed.ts`
 - [ ] Meilisearch/Typesense migration (scale)
 
 ---

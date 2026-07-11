@@ -8,9 +8,9 @@ import { formatPrice } from "@/lib/utils";
 import { getAllStock, getDrawing } from "@/lib/data/stock";
 import type { StockItemView } from "@/types";
 
-export function StockDetail({ item }: { item: StockItemView }) {
-  const drawing = item.drawingId ? getDrawing(item.drawingId) : undefined;
-  const stockById = drawing ? Object.fromEntries(getAllStock().map((s) => [s.id, s])) : {};
+export async function StockDetail({ item }: { item: StockItemView }) {
+  const drawing = item.drawingId ? await getDrawing(item.drawingId) : undefined;
+  const stockById = drawing ? Object.fromEntries((await getAllStock()).map((s) => [s.id, s])) : {};
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">

@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { getAllDrawings, getAllStock, getFeaturedStock } from "@/lib/data/stock";
 import { brands } from "@/lib/data/taxonomy";
 
-export default function HomePage() {
-  const featured = getFeaturedStock(8);
-  const heroDrawing = getAllDrawings()[0];
-  const stockById = Object.fromEntries(getAllStock().map((s) => [s.id, s]));
+// Stock/drawings are admin-editable — never bake this into a static build.
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const [featured, drawings, allStock] = await Promise.all([getFeaturedStock(8), getAllDrawings(), getAllStock()]);
+  const heroDrawing = drawings[0];
+  const stockById = Object.fromEntries(allStock.map((s) => [s.id, s]));
 
   return (
     <>

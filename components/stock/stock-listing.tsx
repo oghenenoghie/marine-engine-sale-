@@ -12,7 +12,7 @@ export interface StockListingSearchParams {
   status?: string;
 }
 
-export function StockListing({
+export async function StockListing({
   type,
   searchParams,
   emptyLabel = "item",
@@ -31,7 +31,7 @@ export function StockListing({
     status: searchParams.status as StockStatus | undefined,
   };
 
-  const items = getStock(filters);
+  const items = await getStock(filters);
 
   return (
     <div className="flex flex-col gap-6 md:flex-row">

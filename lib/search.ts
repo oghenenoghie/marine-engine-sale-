@@ -6,11 +6,12 @@ import type { StockItemView } from "@/types";
  * numbers and title. At scale, replace the body with a `pg_trgm`
  * similarity query (`ORDER BY similarity(...) DESC`) or a Meilisearch call.
  */
-export function searchStock(query: string, limit = 8): StockItemView[] {
+export async function searchStock(query: string, limit = 8): Promise<StockItemView[]> {
   const q = query.trim().toLowerCase();
   if (!q) return [];
 
-  const scored = getAllStock().map((item) => {
+  const all = await getAllStock();
+  const scored = all.map((item) => {
     const oemHit = item.oemNumbers.some((n) => n.toLowerCase().includes(q));
     const skuHit = item.sku.toLowerCase().includes(q);
     const titleHit = item.title.toLowerCase().includes(q);
