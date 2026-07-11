@@ -171,6 +171,7 @@ SUPABASE_SERVICE_ROLE_KEY=          # server-only
 # Cloudinary
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET= # unsigned preset for the upload widget
+NEXT_PUBLIC_CLOUDINARY_API_KEY=       # public copy of the key below; CldUploadWidget requires it even for unsigned uploads
 CLOUDINARY_API_KEY=                   # server-only (signed uploads / admin)
 CLOUDINARY_API_SECRET=                # server-only
 
