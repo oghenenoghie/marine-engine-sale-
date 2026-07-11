@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { ImageIcon, Plus, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Hotspot, StockItemView } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
   const [hotspots, setHotspots] = useState<Hotspot[]>(initialHotspots);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [placing, setPlacing] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const selected = hotspots.find((h) => h.id === selectedId);
 
@@ -53,7 +54,19 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
             addHotspotAt((e.clientX - rect.left) / rect.width, (e.clientY - rect.top) / rect.height);
           }}
         >
-          <Image src={assetKey} alt={title} fill className="pointer-events-none object-contain" />
+          {imgError ? (
+            <div className="grid h-full w-full place-items-center text-paper/40">
+              <ImageIcon size={40} />
+            </div>
+          ) : (
+            <Image
+              src={assetKey}
+              alt={title}
+              fill
+              className="pointer-events-none object-contain"
+              onError={() => setImgError(true)}
+            />
+          )}
           {hotspots.map((h) => (
             <button
               key={h.id}
