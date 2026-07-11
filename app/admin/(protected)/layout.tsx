@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Anchor, ClipboardList, LayoutDashboard, Layers, Package, Ship } from "lucide-react";
+import { Anchor, ClipboardList, Database, LayoutDashboard, Layers, Package, Ship } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 const NAV_ITEMS = [
@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/admin/drawings", icon: Layers, label: "Drawings" },
   { href: "/admin/enquiries", icon: ClipboardList, label: "Enquiries" },
   { href: "/admin/brands", icon: Ship, label: "Brands" },
+  { href: "/admin/db-test", icon: Database, label: "DB diagnostic" },
 ];
 
 const authConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);

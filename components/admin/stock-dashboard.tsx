@@ -71,28 +71,26 @@ export function StockDashboard({ initialItems, brands, models, categories }: Sto
   const saveItem = async (data: StockItem) => {
     setSaving(true);
     setError(null);
-    try {
-      await saveStockItemAction(data);
+    const result = await saveStockItemAction(data);
+    if (result.ok) {
       setItems((prev) => (prev.some((i) => i.id === data.id) ? prev.map((i) => (i.id === data.id ? data : i)) : [data, ...prev]));
       setEditing(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save item");
-    } finally {
-      setSaving(false);
+    } else {
+      setError(result.error);
     }
+    setSaving(false);
   };
   const removeItem = async (id: string) => {
     setSaving(true);
     setError(null);
-    try {
-      await deleteStockItemAction(id);
+    const result = await deleteStockItemAction(id);
+    if (result.ok) {
       setItems((prev) => prev.filter((i) => i.id !== id));
       setDeleteTarget(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete item");
-    } finally {
-      setSaving(false);
+    } else {
+      setError(result.error);
     }
+    setSaving(false);
   };
 
   return (
