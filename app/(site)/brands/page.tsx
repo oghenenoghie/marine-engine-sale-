@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { brands } from "@/lib/data/taxonomy";
+import { getAllBrands } from "@/lib/data/taxonomy";
 
 export const metadata: Metadata = {
   title: "Brands",
   description: "Browse marine diesel engine brands: Wärtsilä, MAN, MaK, Deutz, Caterpillar.",
 };
 
-export default function BrandsPage() {
+// Brands are admin-editable — never bake this into a static build.
+export const dynamic = "force-dynamic";
+
+export default async function BrandsPage() {
+  const brands = await getAllBrands();
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <h1 className="text-display-lg font-display font-bold tracking-tight text-hull">Brands</h1>

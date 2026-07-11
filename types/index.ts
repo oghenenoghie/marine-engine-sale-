@@ -2,6 +2,9 @@ export type StockType = "engine" | "part";
 export type StockStatus = "available" | "reserved" | "sold" | "expected";
 export type Condition = "New" | "Used" | "Reconditioned";
 export type ImageType = "photo" | "drawing";
+export type Currency = "EUR" | "USD" | "GBP" | "NOK" | "SEK" | "DKK" | "JPY" | "SGD" | "CNY";
+
+export const CURRENCIES: Currency[] = ["EUR", "USD", "GBP", "NOK", "SEK", "DKK", "JPY", "SGD", "CNY"];
 
 export interface StockImage {
   publicId: string;
@@ -48,6 +51,7 @@ export interface StockItem {
   condition: Condition;
   poa: boolean;
   price: number | null;
+  currency: Currency;
   qty: number;
   status: StockStatus;
   oemNumbers: string[];

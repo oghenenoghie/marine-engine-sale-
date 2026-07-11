@@ -1,13 +1,12 @@
 import { cache } from "react";
 import type { StockItem, StockItemView, StockStatus, Condition, StockImage, Drawing, Hotspot } from "@/types";
 import { createPublicClient } from "@/lib/supabase/server";
-import { brands, engineModels, partCategories } from "@/lib/data/taxonomy";
+import { getAllBrands, getAllCategories, getAllModels } from "@/lib/data/taxonomy";
 import type { Database } from "@/types/supabase";
 
 /**
  * Supabase-backed data-access layer (RLS: public read, admin write via
- * lib/actions/stock.ts). Brand/model/category are still resolved from the
- * static taxonomy in lib/data/taxonomy.ts — see that file for why.
+ * lib/actions/stock.ts).
  */
 
 export interface StockFilters {
@@ -38,6 +37,7 @@ function rowToStockItem(row: StockRow): StockItem {
     condition: row.condition,
     poa: row.poa,
     price: row.price,
+    currency: row.currency,
     qty: row.qty,
     status: row.status,
     oemNumbers: row.oem_numbers ?? [],
@@ -60,21 +60,31 @@ function rowToDrawing(row: DrawingRow): Drawing {
   };
 }
 
-function denormalize(item: StockItem): StockItemView | null {
+function denormalize(
+  item: StockItem,
+  brands: Awaited<ReturnType<typeof getAllBrands>>,
+  models: Awaited<ReturnType<typeof getAllModels>>,
+  categories: Awaited<ReturnType<typeof getAllCategories>>,
+): StockItemView | null {
   const brand = brands.find((b) => b.id === item.brandId);
-  const category = partCategories.find((c) => c.id === item.categoryId);
+  const category = categories.find((c) => c.id === item.categoryId);
   if (!brand || !category) return null; // orphaned FK — skip rather than crash the page
-  const model = item.modelId ? engineModels.find((m) => m.id === item.modelId) : undefined;
+  const model = item.modelId ? models.find((m) => m.id === item.modelId) : undefined;
   return { ...item, brand, model, category };
 }
 
 export const getAllStock = cache(async (): Promise<StockItemView[]> => {
   const supabase = createPublicClient();
-  const { data, error } = await supabase.from("stock_items").select("*").order("created_at", { ascending: false });
+  const [{ data, error }, brands, models, categories] = await Promise.all([
+    supabase.from("stock_items").select("*").order("created_at", { ascending: false }),
+    getAllBrands(),
+    getAllModels(),
+    getAllCategories(),
+  ]);
   if (error) throw new Error(`getAllStock: ${error.message}`);
   return (data ?? [])
     .map(rowToStockItem)
-    .map(denormalize)
+    .map((item) => denormalize(item, brands, models, categories))
     .filter((item): item is StockItemView => item !== null);
 });
 
@@ -99,10 +109,15 @@ export async function getStock(filters: StockFilters = {}): Promise<StockItemVie
 
 export const getStockBySlug = cache(async (slug: string): Promise<StockItemView | undefined> => {
   const supabase = createPublicClient();
-  const { data, error } = await supabase.from("stock_items").select("*").eq("slug", slug).maybeSingle();
+  const [{ data, error }, brands, models, categories] = await Promise.all([
+    supabase.from("stock_items").select("*").eq("slug", slug).maybeSingle(),
+    getAllBrands(),
+    getAllModels(),
+    getAllCategories(),
+  ]);
   if (error) throw new Error(`getStockBySlug: ${error.message}`);
   if (!data) return undefined;
-  return denormalize(rowToStockItem(data)) ?? undefined;
+  return denormalize(rowToStockItem(data), brands, models, categories) ?? undefined;
 });
 
 export async function getFeaturedStock(limit = 6): Promise<StockItemView[]> {

@@ -41,7 +41,7 @@ export function StockCard({ item }: { item: StockItemView }) {
         <h3 className="line-clamp-2 text-[14px] font-semibold leading-snug text-hull">{item.title}</h3>
         <div className="flex items-center justify-between pt-1">
           <span className="data text-steel">{item.sku}</span>
-          <span className="data font-semibold text-hull">{formatPrice(item.price, item.poa)}</span>
+          <span className="data font-semibold text-hull">{formatPrice(item.price, item.poa, item.currency)}</span>
         </div>
       </div>
     </Link>

@@ -7,10 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PhotoUploader } from "@/components/forms/photo-uploader";
-import { brands } from "@/lib/data/taxonomy";
 import { cn } from "@/lib/utils";
+import type { Brand } from "@/types";
 
-export function SellForm({ className }: { className?: string }) {
+export function SellForm({ brands, className }: { brands: Brand[]; className?: string }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");
   const [photos, setPhotos] = useState<string[]>([]);
 

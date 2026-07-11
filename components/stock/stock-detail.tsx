@@ -39,7 +39,7 @@ export async function StockDetail({ item }: { item: StockItemView }) {
             <span className="text-[13px] text-steel">{item.condition}</span>
           </div>
 
-          <div className="mt-5 font-display text-2xl font-extrabold text-hull">{formatPrice(item.price, item.poa)}</div>
+          <div className="mt-5 font-display text-2xl font-extrabold text-hull">{formatPrice(item.price, item.poa, item.currency)}</div>
 
           {item.description && <p className="mt-4 text-[14px] leading-relaxed text-steel">{item.description}</p>}
 

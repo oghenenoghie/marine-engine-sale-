@@ -2,22 +2,27 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StockCard } from "@/components/stock/stock-card";
-import { brandBySlug, modelsForBrand } from "@/lib/data/taxonomy";
+import { brandBySlug, getAllBrands, getAllModels, modelsForBrand } from "@/lib/data/taxonomy";
 import { getStock } from "@/lib/data/stock";
+
+// Brands/models are admin-editable — never bake this into a static build.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ brand: string }> }): Promise<Metadata> {
   const { brand: brandSlug } = await params;
-  const brand = brandBySlug(brandSlug);
+  const brands = await getAllBrands();
+  const brand = brandBySlug(brands, brandSlug);
   if (!brand) return {};
   return { title: brand.name, description: brand.blurb };
 }
 
 export default async function BrandPage({ params }: { params: Promise<{ brand: string }> }) {
   const { brand: brandSlug } = await params;
-  const brand = brandBySlug(brandSlug);
+  const [brands, allModels] = await Promise.all([getAllBrands(), getAllModels()]);
+  const brand = brandBySlug(brands, brandSlug);
   if (!brand) notFound();
 
-  const models = modelsForBrand(brand.id);
+  const models = modelsForBrand(allModels, brand.id);
   const items = await getStock({ brand: brand.slug });
 
   return (
