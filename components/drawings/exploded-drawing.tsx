@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { ImageIcon } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Hotspot, StockItemView } from "@/types";
 
@@ -16,13 +17,20 @@ interface ExplodedDrawingProps {
 
 export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: ExplodedDrawingProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
   const active = hotspots.find((h) => h.id === activeId);
   const activeStock = active?.stockItemId ? stockById[active.stockItemId] : undefined;
 
   return (
     <figure className="relative w-full overflow-hidden rounded-md border border-steel/25 bg-hull">
       <div className="relative aspect-[4/3] w-full">
-        <Image src={assetKey} alt={title} fill className="object-contain" priority />
+        {imgError ? (
+          <div className="grid h-full w-full place-items-center text-paper/40">
+            <ImageIcon size={40} />
+          </div>
+        ) : (
+          <Image src={assetKey} alt={title} fill className="object-contain" priority onError={() => setImgError(true)} />
+        )}
 
         {hotspots.map((h) => (
           <button
