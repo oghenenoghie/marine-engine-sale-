@@ -1,5 +1,7 @@
-import { enquiriesSeed } from "@/lib/data/enquiries.seed";
-import { stockSeed } from "@/lib/data/stock.seed";
+import { getAllEnquiries } from "@/lib/data/enquiries";
+import { getAllStock } from "@/lib/data/stock";
+
+export const dynamic = "force-dynamic";
 
 function formatWhen(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -9,15 +11,18 @@ function formatWhen(iso: string) {
   return `${Math.round(hours / 24)}d ago`;
 }
 
-export default function AdminEnquiriesPage() {
+export default async function AdminEnquiriesPage() {
+  const [enquiries, stock] = await Promise.all([getAllEnquiries(), getAllStock()]);
+
   return (
     <div className="p-6">
       <h1 className="font-display text-xl font-extrabold tracking-tight text-hull">Enquiries</h1>
       <p className="text-[12px] text-steel">RFQ and sell-to-us submissions.</p>
 
       <div className="mt-6 space-y-3">
-        {enquiriesSeed.map((e) => {
-          const stock = stockSeed.find((s) => s.id === e.stockItemId);
+        {enquiries.length === 0 && <p className="text-[13px] text-steel">No enquiries yet.</p>}
+        {enquiries.map((e) => {
+          const item = stock.find((s) => s.id === e.stockItemId);
           return (
             <div key={e.id} className="rounded-md border border-steel/15 bg-white p-4">
               <div className="flex items-start justify-between gap-4">
@@ -32,7 +37,7 @@ export default function AdminEnquiriesPage() {
                 </div>
                 <span className="shrink-0 font-mono text-[11px] text-steel">{formatWhen(e.createdAt)}</span>
               </div>
-              {stock && <div className="mt-2 text-[12px] text-blueprint">Re: {stock.title}</div>}
+              {item && <div className="mt-2 text-[12px] text-blueprint">Re: {item.title}</div>}
               <p className="mt-2 whitespace-pre-line text-[13px] text-steel">{e.message}</p>
             </div>
           );

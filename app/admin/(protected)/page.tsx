@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
-import { enquiriesSeed } from "@/lib/data/enquiries.seed";
+import { getAllEnquiries } from "@/lib/data/enquiries";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ function Stat({ label, value, accent }: { label: string; value: number | string;
 }
 
 export default async function AdminDashboardPage() {
-  const stock = await getAllStock();
+  const [stock, enquiries] = await Promise.all([getAllStock(), getAllEnquiries()]);
   const stats = {
     total: stock.length,
     available: stock.filter((i) => i.status === "available").length,
@@ -46,7 +46,8 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
         <ul className="mt-3 divide-y divide-steel/10">
-          {enquiriesSeed.slice(0, 3).map((e) => (
+          {enquiries.length === 0 && <li className="py-2.5 text-[13px] text-steel">No enquiries yet.</li>}
+          {enquiries.slice(0, 3).map((e) => (
             <li key={e.id} className="py-2.5 text-[13px]">
               <span className="font-medium text-hull">{e.name}</span>{" "}
               <span className="text-steel">— {e.type === "rfq" ? "quote request" : "sell enquiry"}</span>
