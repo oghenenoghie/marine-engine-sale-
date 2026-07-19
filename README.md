@@ -48,13 +48,13 @@ This turns a static parts catalog into a visual, engine-aware discovery experien
 | Styling | **Tailwind CSS v3** + **shadcn/ui** (Radix) | Design tokens + accessible primitives |
 | Motion | **Framer Motion** | Restrained scroll reveals + the hero drawing animation |
 | Data & Auth | **Supabase (Postgres)** | System of record, Auth, Row-Level Security, full-text + `pg_trgm` search |
-| Media | **Cloudinary** | Upload widget, on-the-fly transforms (`f_auto,q_auto`), background removal, CDN delivery |
+| Media | **Cloudinary** + **Supabase Storage** | Cloudinary for stock/drawing photos (upload widget, `f_auto,q_auto`, background removal, CDN); Supabase Storage (`sell-photos` bucket) for sell-to-us equipment photos, uploaded directly from the browser |
 | Email | **Resend** | Transactional RFQ and sell-to-us notifications |
 | Hosting & CI | **Vercel** + **GitHub Actions** | Preview deploys + lint/typecheck/build gates |
 
 **Architectural note:** the site is hosted on Vercel, so Postgres (Supabase) is the system of record; Cloudinary is the dedicated media layer. Its upload widget suits photographing stock in the warehouse, and on-the-fly transforms — including background removal to put used parts on clean white — genuinely favour an image-heavy catalog. It plugs into `next/image` through a custom loader.
 
-**Data source:** `lib/data/stock.ts` queries `stock_items`/`drawings` in Supabase directly (RLS: public read, admin write). Brand/model/category reference data stays static in `lib/data/taxonomy.ts` — its ids are kept in sync with the seeded uuids in `supabase/seed.sql` by hand, since a few client components import it directly. Admin create/edit/delete goes through server actions in `lib/actions/stock.ts`, which verify `app_metadata.role === "admin"` before writing via the service-role client. Pages that read live stock/drawing data are marked `export const dynamic = "force-dynamic"` so admin edits show up immediately rather than being baked into a static build.
+**Data source:** `lib/data/stock.ts` and `lib/data/taxonomy.ts` both query Supabase directly (RLS: public read, admin write) — there is currently no seed-fixture fallback when Supabase isn't configured, so a reachable Supabase project is required to run the app. Admin create/edit/delete goes through server actions in `lib/actions/stock.ts`, which verify `app_metadata.role === "admin"` before writing via the service-role client. Pages that read live stock/drawing data are marked `export const dynamic = "force-dynamic"` so admin edits show up immediately rather than being baked into a static build.
 
 ---
 
@@ -147,8 +147,8 @@ supabase/                    # migrations/0001_init.sql, seed.sql
 ### Prerequisites
 
 - Node.js 18.17+ and pnpm (or npm)
-- A Supabase project (optional for local dev — the site runs on fixture data without one)
-- A Cloudinary account (cloud name + API key/secret, and an unsigned upload preset for the widget)
+- A Supabase project — currently **required**, not optional: `lib/data/stock.ts`/`taxonomy.ts` have no fixture fallback yet, so pages 500 without a reachable project. Run the migrations in `supabase/migrations/` (including `0003_sell_photos_bucket.sql`, which creates the `sell-photos` Storage bucket used by the sell-to-us form).
+- A Cloudinary account (cloud name + API key/secret, and an unsigned upload preset for the widget) — used for stock/drawing photos only
 - A Resend API key (optional — enquiries are logged if unset)
 
 ### Installation
@@ -186,12 +186,12 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ### Database
 
 ```bash
-supabase db push                     # apply migrations/0001_init.sql
+supabase db push                     # apply supabase/migrations/*.sql (incl. the sell-photos Storage bucket)
 supabase gen types typescript --local > types/supabase.ts
 pnpm seed                            # push lib/data/*.seed.ts fixtures into Supabase
 ```
 
-Without a Supabase project configured, `/admin` runs unauthenticated for local development and every page reads from `lib/data/*.seed.ts` directly — no database required to explore the app.
+Without a Supabase project configured, `/admin` runs unauthenticated for local development — but data-fetching pages (public and admin) currently 500 rather than falling back to `lib/data/*.seed.ts`, so a reachable Supabase project is required to explore the app.
 
 ### Run
 
@@ -215,7 +215,9 @@ pnpm lint       # eslint + typecheck
 - [x] SEO, sitemap, robots
 - [x] Wire `lib/data/stock.ts` to live Supabase queries
 - [x] Cloudinary upload widget in the admin stock form
-- [ ] Enquiry (RFQ) & sell-to-us flows — submissions still logged via Resend only, not persisted to `enquiries`; `/admin/enquiries` still reads `lib/data/enquiries.seed.ts`
+- [x] Enquiry (RFQ) & sell-to-us flows persisted to `enquiries` via `app/api/enquiry/route.ts`; `/admin/enquiries` reads live from Supabase
+- [x] Sell-to-us photo upload moved to Supabase Storage (`sell-photos` bucket), direct from the browser
+- [ ] Seed-fixture fallback for running without Supabase configured (`lib/data/stock.ts`/`taxonomy.ts` currently have none — see Data source note above)
 - [ ] Meilisearch/Typesense migration (scale)
 
 ---

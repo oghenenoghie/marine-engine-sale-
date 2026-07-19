@@ -127,7 +127,7 @@ export function SellForm({ brands, className }: { brands: Brand[]; className?: s
 
       <div>
         <Label>Photos</Label>
-        <PhotoUploader publicIds={photos} onChange={setPhotos} />
+        <PhotoUploader photoUrls={photos} onChange={setPhotos} />
       </div>
 
       <Button type="submit" disabled={status === "submitting"} className="w-full">

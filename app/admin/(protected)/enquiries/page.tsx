@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getAllEnquiries } from "@/lib/data/enquiries";
 import { getAllStock } from "@/lib/data/stock";
 
@@ -39,6 +40,21 @@ export default async function AdminEnquiriesPage() {
               </div>
               {item && <div className="mt-2 text-[12px] text-blueprint">Re: {item.title}</div>}
               <p className="mt-2 whitespace-pre-line text-[13px] text-steel">{e.message}</p>
+              {e.attachments && e.attachments.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {e.attachments.map((url) => (
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="relative block h-16 w-16 overflow-hidden rounded border border-steel/20"
+                    >
+                      <Image src={url} alt="Attached photo" fill unoptimized className="object-cover" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}

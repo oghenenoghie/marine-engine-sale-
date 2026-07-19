@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getResend } from "@/lib/resend";
 import { createAdminClient } from "@/lib/supabase/server";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 
 const enquirySchema = z.object({
   type: z.enum(["rfq", "sell"]),
@@ -52,7 +51,7 @@ export async function POST(request: Request) {
       subject: `${data.type === "rfq" ? "New RFQ" : "New sell enquiry"} — ${data.name}`,
       text: [
         data.message,
-        data.attachments?.length ? `\nPhotos:\n${data.attachments.map((id) => cloudinaryUrl(id)).join("\n")}` : "",
+        data.attachments?.length ? `\nPhotos:\n${data.attachments.join("\n")}` : "",
         `\n— ${data.name}${data.company ? ` (${data.company})` : ""}\n${data.email}${data.phone ? ` · ${data.phone}` : ""}`,
       ].join(""),
     });
