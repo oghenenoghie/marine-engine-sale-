@@ -1,12 +1,19 @@
 import { cache } from "react";
 import type { Brand, EngineModel, PartCategory } from "@/types";
 import { createPublicClient } from "@/lib/supabase/server";
+import { brandsSeed, engineModelsSeed, partCategoriesSeed } from "@/lib/data/taxonomy.seed";
 import type { Database } from "@/types/supabase";
 
 /**
  * Supabase-backed taxonomy (brands, engine models, part categories).
- * RLS: public read, admin write via lib/actions/taxonomy.ts.
+ * RLS: public read, admin write via lib/actions/taxonomy.ts. Falls back to
+ * lib/data/taxonomy.seed.ts when Supabase is unreachable or unconfigured,
+ * so pages don't 500 in local/demo environments without a live project.
  */
+
+function warnFallback(name: string, err: unknown) {
+  console.warn(`[lib/data/taxonomy] ${name} falling back to seed fixtures:`, err);
+}
 
 type BrandRow = Database["public"]["Tables"]["brands"]["Row"];
 type ModelRow = Database["public"]["Tables"]["engine_models"]["Row"];
@@ -34,24 +41,39 @@ function rowToCategory(row: CategoryRow): PartCategory {
 }
 
 export const getAllBrands = cache(async (): Promise<Brand[]> => {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase.from("brands").select("*").order("name");
-  if (error) throw new Error(`getAllBrands: ${error.message}`);
-  return (data ?? []).map(rowToBrand);
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("brands").select("*").order("name");
+    if (error) throw new Error(`getAllBrands: ${error.message}`);
+    return (data ?? []).map(rowToBrand);
+  } catch (err) {
+    warnFallback("getAllBrands", err);
+    return brandsSeed;
+  }
 });
 
 export const getAllModels = cache(async (): Promise<EngineModel[]> => {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase.from("engine_models").select("*").order("name");
-  if (error) throw new Error(`getAllModels: ${error.message}`);
-  return (data ?? []).map(rowToModel);
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("engine_models").select("*").order("name");
+    if (error) throw new Error(`getAllModels: ${error.message}`);
+    return (data ?? []).map(rowToModel);
+  } catch (err) {
+    warnFallback("getAllModels", err);
+    return engineModelsSeed;
+  }
 });
 
 export const getAllCategories = cache(async (): Promise<PartCategory[]> => {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase.from("part_categories").select("*").order("name");
-  if (error) throw new Error(`getAllCategories: ${error.message}`);
-  return (data ?? []).map(rowToCategory);
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("part_categories").select("*").order("name");
+    if (error) throw new Error(`getAllCategories: ${error.message}`);
+    return (data ?? []).map(rowToCategory);
+  } catch (err) {
+    warnFallback("getAllCategories", err);
+    return partCategoriesSeed;
+  }
 });
 
 export function brandBySlug(brands: Brand[], slug: string) {

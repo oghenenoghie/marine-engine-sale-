@@ -1,8 +1,10 @@
 import type { Brand, EngineModel, PartCategory } from "@/types";
 
-// Fixture data pushed into Supabase by scripts/seed.ts and
-// supabase/seed.sql. lib/data/taxonomy.ts reads the live rows these
-// produce — this file is not imported at runtime.
+// Fixture data pushed into Supabase by scripts/seed.ts and supabase/seed.sql
+// — ids match what that seed produces. Also imported directly by
+// lib/data/taxonomy.ts as a runtime fallback when Supabase is unreachable
+// or unconfigured, and by lib/data/stock.ts/stock.seed.ts/drawings.seed.ts,
+// whose fixtures reference these same UUIDs.
 export const brandsSeed: Brand[] = [
   { id: "11111111-1111-1111-1111-111111111101", slug: "wartsila", name: "Wärtsilä", blurb: "Finnish four-stroke medium-speed diesel and dual-fuel engines." },
   { id: "11111111-1111-1111-1111-111111111102", slug: "man", name: "MAN", blurb: "Two- and four-stroke marine propulsion from MAN Energy Solutions." },

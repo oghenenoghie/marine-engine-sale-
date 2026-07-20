@@ -3,6 +3,34 @@ import { slugify } from "@/lib/utils";
 
 const now = new Date().toISOString();
 
+// brandId/modelId/categoryId below reuse the UUIDs from taxonomy.seed.ts (and
+// drawingId reuses drawings.seed.ts's id) so this fixture set denormalizes
+// correctly when lib/data/stock.ts falls back to it — see BRAND_ID etc. in
+// taxonomy.seed.ts for what each UUID maps to.
+const WARTSILA = "11111111-1111-1111-1111-111111111101";
+const MAN = "11111111-1111-1111-1111-111111111102";
+const MAK = "11111111-1111-1111-1111-111111111103";
+const DEUTZ = "11111111-1111-1111-1111-111111111104";
+const CATERPILLAR = "11111111-1111-1111-1111-111111111105";
+
+const VASA_32 = "22222222-2222-2222-2222-222222222201";
+const W46 = "22222222-2222-2222-2222-222222222202";
+const L20 = "22222222-2222-2222-2222-222222222203";
+const L27_38 = "22222222-2222-2222-2222-222222222204";
+const M8M32 = "22222222-2222-2222-2222-222222222205";
+const BF6M1015 = "22222222-2222-2222-2222-222222222206";
+const M3516 = "22222222-2222-2222-2222-222222222207";
+
+const CYLINDER_HEAD = "33333333-3333-3333-3333-333333333301";
+const CRANKSHAFT = "33333333-3333-3333-3333-333333333302";
+const TURBOCHARGER = "33333333-3333-3333-3333-333333333303";
+const CYLINDER_LINER = "33333333-3333-3333-3333-333333333304";
+const COMPLETE_ENGINE = "33333333-3333-3333-3333-333333333305";
+const FUEL_PUMP = "33333333-3333-3333-3333-333333333306";
+const PISTON = "33333333-3333-3333-3333-333333333307";
+
+const VASA_32_EXPLODED = "d-vasa32-exploded";
+
 export const stockSeed: StockItem[] = [
   {
     id: "1",
@@ -10,9 +38,9 @@ export const stockSeed: StockItem[] = [
     title: "Cylinder head — Wärtsilä VASA 32 / 32LN",
     slug: slugify("WRT-32-CH-014 Cylinder head Wärtsilä VASA 32"),
     type: "part",
-    brandId: "b-wartsila",
-    modelId: "m-vasa32",
-    categoryId: "c-cylinder-head",
+    brandId: WARTSILA,
+    modelId: VASA_32,
+    categoryId: CYLINDER_HEAD,
     condition: "Reconditioned",
     poa: false,
     price: 8450,
@@ -22,7 +50,7 @@ export const stockSeed: StockItem[] = [
     oemNumbers: ["131 011", "PAAE201050"],
     specs: { Bore: "320 mm", Material: "Cast iron" },
     images: [],
-    drawingId: "d-vasa32-exploded",
+    drawingId: VASA_32_EXPLODED,
     description: "Fully reconditioned to OEM tolerances, pressure-tested, valve seats renewed.",
     createdAt: now,
   },
@@ -32,9 +60,9 @@ export const stockSeed: StockItem[] = [
     title: "Crankshaft — Wärtsilä 46",
     slug: slugify("WRT-46-CRK-002 Crankshaft Wärtsilä 46"),
     type: "part",
-    brandId: "b-wartsila",
-    modelId: "m-w46",
-    categoryId: "c-crankshaft",
+    brandId: WARTSILA,
+    modelId: W46,
+    categoryId: CRANKSHAFT,
     condition: "Used",
     poa: true,
     price: null,
@@ -53,9 +81,9 @@ export const stockSeed: StockItem[] = [
     title: "Turbocharger — MAN L27/38",
     slug: slugify("MAN-L2732-TC Turbocharger MAN L27/38"),
     type: "part",
-    brandId: "b-man",
-    modelId: "m-l2732",
-    categoryId: "c-turbocharger",
+    brandId: MAN,
+    modelId: L27_38,
+    categoryId: TURBOCHARGER,
     condition: "Reconditioned",
     poa: false,
     price: 12900,
@@ -74,9 +102,9 @@ export const stockSeed: StockItem[] = [
     title: "Complete engine — Deutz BF6M1015",
     slug: slugify("DEU-BF6M-ENG Complete engine Deutz BF6M1015"),
     type: "engine",
-    brandId: "b-deutz",
-    modelId: "m-bf6m1015",
-    categoryId: "c-complete-engine",
+    brandId: DEUTZ,
+    modelId: BF6M1015,
+    categoryId: COMPLETE_ENGINE,
     condition: "Used",
     poa: false,
     price: 18500,
@@ -95,9 +123,9 @@ export const stockSeed: StockItem[] = [
     title: "Cylinder liner — MaK 8M32",
     slug: slugify("MAK-8M32-LNR Cylinder liner MaK 8M32"),
     type: "part",
-    brandId: "b-mak",
-    modelId: "m-8m32",
-    categoryId: "c-cylinder-liner",
+    brandId: MAK,
+    modelId: M8M32,
+    categoryId: CYLINDER_LINER,
     condition: "New",
     poa: false,
     price: 2150,
@@ -116,9 +144,9 @@ export const stockSeed: StockItem[] = [
     title: "Piston assembly — Caterpillar 3516",
     slug: slugify("CAT-3516-PST Piston assembly Caterpillar 3516"),
     type: "part",
-    brandId: "b-caterpillar",
-    modelId: "m-3516",
-    categoryId: "c-piston",
+    brandId: CATERPILLAR,
+    modelId: M3516,
+    categoryId: PISTON,
     condition: "Reconditioned",
     poa: false,
     price: 1680,
@@ -137,9 +165,9 @@ export const stockSeed: StockItem[] = [
     title: "Fuel injection pump — Wärtsilä 20",
     slug: slugify("WRT-20-FP-007 Fuel injection pump Wärtsilä 20"),
     type: "part",
-    brandId: "b-wartsila",
-    modelId: "m-l20",
-    categoryId: "c-fuel-pump",
+    brandId: WARTSILA,
+    modelId: L20,
+    categoryId: FUEL_PUMP,
     condition: "Used",
     poa: true,
     price: null,
@@ -158,9 +186,9 @@ export const stockSeed: StockItem[] = [
     title: "Turbocharger — Wärtsilä VASA 32",
     slug: slugify("WRT-32-TC-021 Turbocharger VASA 32"),
     type: "part",
-    brandId: "b-wartsila",
-    modelId: "m-vasa32",
-    categoryId: "c-turbocharger",
+    brandId: WARTSILA,
+    modelId: VASA_32,
+    categoryId: TURBOCHARGER,
     condition: "Reconditioned",
     poa: false,
     price: 15200,
@@ -170,7 +198,7 @@ export const stockSeed: StockItem[] = [
     oemNumbers: ["824 011"],
     specs: { Type: "Radial" },
     images: [],
-    drawingId: "d-vasa32-exploded",
+    drawingId: VASA_32_EXPLODED,
     createdAt: now,
   },
   {
@@ -179,9 +207,9 @@ export const stockSeed: StockItem[] = [
     title: "Cylinder liner — Wärtsilä VASA 32",
     slug: slugify("WRT-32-LNR-033 Cylinder liner VASA 32"),
     type: "part",
-    brandId: "b-wartsila",
-    modelId: "m-vasa32",
-    categoryId: "c-cylinder-liner",
+    brandId: WARTSILA,
+    modelId: VASA_32,
+    categoryId: CYLINDER_LINER,
     condition: "New",
     poa: false,
     price: 3100,
@@ -191,7 +219,7 @@ export const stockSeed: StockItem[] = [
     oemNumbers: ["131 090"],
     specs: { Bore: "320 mm" },
     images: [],
-    drawingId: "d-vasa32-exploded",
+    drawingId: VASA_32_EXPLODED,
     createdAt: now,
   },
 ];

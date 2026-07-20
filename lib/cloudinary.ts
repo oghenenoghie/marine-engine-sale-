@@ -23,12 +23,6 @@ export function signCloudinaryUpload(paramsToSign: Record<string, string | numbe
 
 type CloudinaryImage = { publicId: string; alt: string; isPrimary?: boolean; type?: "photo" | "drawing" };
 
-export function cloudinaryUrl(publicId: string, transform = "f_auto,q_auto,w_1200") {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  if (!cloudName) return "";
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${transform}/${publicId}`;
-}
-
 export function primaryImage(images: CloudinaryImage[]): CloudinaryImage | undefined {
   return images.find((img) => img.isPrimary) ?? images[0];
 }
