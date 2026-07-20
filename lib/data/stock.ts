@@ -2,12 +2,21 @@ import { cache } from "react";
 import type { StockItem, StockItemView, StockStatus, Condition, StockImage, Drawing, Hotspot } from "@/types";
 import { createPublicClient } from "@/lib/supabase/server";
 import { getAllBrands, getAllCategories, getAllModels } from "@/lib/data/taxonomy";
+import { brandsSeed, engineModelsSeed, partCategoriesSeed } from "@/lib/data/taxonomy.seed";
+import { stockSeed } from "@/lib/data/stock.seed";
+import { drawingsSeed } from "@/lib/data/drawings.seed";
 import type { Database } from "@/types/supabase";
 
 /**
  * Supabase-backed data-access layer (RLS: public read, admin write via
- * lib/actions/stock.ts).
+ * lib/actions/stock.ts). Falls back to lib/data/*.seed.ts when Supabase is
+ * unreachable or unconfigured, so pages don't 500 in local/demo
+ * environments without a live project.
  */
+
+function warnFallback(name: string, err: unknown) {
+  console.warn(`[lib/data/stock] ${name} falling back to seed fixtures:`, err);
+}
 
 export interface StockFilters {
   q?: string;
@@ -74,18 +83,25 @@ function denormalize(
 }
 
 export const getAllStock = cache(async (): Promise<StockItemView[]> => {
-  const supabase = createPublicClient();
-  const [{ data, error }, brands, models, categories] = await Promise.all([
-    supabase.from("stock_items").select("*").order("created_at", { ascending: false }),
-    getAllBrands(),
-    getAllModels(),
-    getAllCategories(),
-  ]);
-  if (error) throw new Error(`getAllStock: ${error.message}`);
-  return (data ?? [])
-    .map(rowToStockItem)
-    .map((item) => denormalize(item, brands, models, categories))
-    .filter((item): item is StockItemView => item !== null);
+  try {
+    const supabase = createPublicClient();
+    const [{ data, error }, brands, models, categories] = await Promise.all([
+      supabase.from("stock_items").select("*").order("created_at", { ascending: false }),
+      getAllBrands(),
+      getAllModels(),
+      getAllCategories(),
+    ]);
+    if (error) throw new Error(`getAllStock: ${error.message}`);
+    return (data ?? [])
+      .map(rowToStockItem)
+      .map((item) => denormalize(item, brands, models, categories))
+      .filter((item): item is StockItemView => item !== null);
+  } catch (err) {
+    warnFallback("getAllStock", err);
+    return stockSeed
+      .map((item) => denormalize(item, brandsSeed, engineModelsSeed, partCategoriesSeed))
+      .filter((item): item is StockItemView => item !== null);
+  }
 });
 
 export async function getStock(filters: StockFilters = {}): Promise<StockItemView[]> {
@@ -108,16 +124,22 @@ export async function getStock(filters: StockFilters = {}): Promise<StockItemVie
 }
 
 export const getStockBySlug = cache(async (slug: string): Promise<StockItemView | undefined> => {
-  const supabase = createPublicClient();
-  const [{ data, error }, brands, models, categories] = await Promise.all([
-    supabase.from("stock_items").select("*").eq("slug", slug).maybeSingle(),
-    getAllBrands(),
-    getAllModels(),
-    getAllCategories(),
-  ]);
-  if (error) throw new Error(`getStockBySlug: ${error.message}`);
-  if (!data) return undefined;
-  return denormalize(rowToStockItem(data), brands, models, categories) ?? undefined;
+  try {
+    const supabase = createPublicClient();
+    const [{ data, error }, brands, models, categories] = await Promise.all([
+      supabase.from("stock_items").select("*").eq("slug", slug).maybeSingle(),
+      getAllBrands(),
+      getAllModels(),
+      getAllCategories(),
+    ]);
+    if (error) throw new Error(`getStockBySlug: ${error.message}`);
+    if (!data) return undefined;
+    return denormalize(rowToStockItem(data), brands, models, categories) ?? undefined;
+  } catch (err) {
+    warnFallback("getStockBySlug", err);
+    const item = stockSeed.find((s) => s.slug === slug);
+    return item ? denormalize(item, brandsSeed, engineModelsSeed, partCategoriesSeed) ?? undefined : undefined;
+  }
 });
 
 export async function getFeaturedStock(limit = 6): Promise<StockItemView[]> {
@@ -131,13 +153,18 @@ export async function getRecentlySold(limit = 4): Promise<StockItemView[]> {
 }
 
 export const getDrawing = cache(async (id: string): Promise<Drawing | undefined> => {
-  const supabase = createPublicClient();
-  const query = supabase.from("drawings").select("*");
-  const { data, error } = UUID_RE.test(id)
-    ? await query.or(`id.eq.${id},slug.eq.${id}`).maybeSingle()
-    : await query.eq("slug", id).maybeSingle();
-  if (error) throw new Error(`getDrawing: ${error.message}`);
-  return data ? rowToDrawing(data) : undefined;
+  try {
+    const supabase = createPublicClient();
+    const query = supabase.from("drawings").select("*");
+    const { data, error } = UUID_RE.test(id)
+      ? await query.or(`id.eq.${id},slug.eq.${id}`).maybeSingle()
+      : await query.eq("slug", id).maybeSingle();
+    if (error) throw new Error(`getDrawing: ${error.message}`);
+    return data ? rowToDrawing(data) : undefined;
+  } catch (err) {
+    warnFallback("getDrawing", err);
+    return drawingsSeed.find((d) => d.id === id || d.slug === id);
+  }
 });
 
 export async function getDrawingsForModel(modelId: string): Promise<Drawing[]> {
@@ -146,8 +173,13 @@ export async function getDrawingsForModel(modelId: string): Promise<Drawing[]> {
 }
 
 export const getAllDrawings = cache(async (): Promise<Drawing[]> => {
-  const supabase = createPublicClient();
-  const { data, error } = await supabase.from("drawings").select("*");
-  if (error) throw new Error(`getAllDrawings: ${error.message}`);
-  return (data ?? []).map(rowToDrawing);
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("drawings").select("*");
+    if (error) throw new Error(`getAllDrawings: ${error.message}`);
+    return (data ?? []).map(rowToDrawing);
+  } catch (err) {
+    warnFallback("getAllDrawings", err);
+    return drawingsSeed;
+  }
 });

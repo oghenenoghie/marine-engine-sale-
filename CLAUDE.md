@@ -121,16 +121,21 @@ referencing an optional `StockItem`.
   - `lib/data/stock.ts` and `lib/data/taxonomy.ts` both query Supabase live
     (`createPublicClient()` — stateless anon-key client, safe outside request
     scope for `sitemap.ts`/`generateStaticParams`), and `lib/data/enquiries.ts`
-    reads via `createAdminClient()` (admin-only RLS).
-  - `lib/data/*.seed.ts` fixtures (`stock.seed.ts`, `taxonomy.seed.ts`,
-    `drawings.seed.ts`) are **not** a runtime fallback despite what older docs
-    in this repo claimed — verified by running the app with no Supabase env
-    vars set: every page that calls `getAllBrands`/`getAllStock`/etc. 500s
-    (`supabaseUrl is required.`) instead of degrading to fixtures. The seed
-    files are only consumed by `scripts/seed.ts` to push data *into* Supabase.
-    A live Supabase project (or at least reachable placeholder credentials)
-    is required to run this app at all right now — don't tell a user "no DB
-    needed" without re-checking this.
+    reads via `createAdminClient()` (admin-only RLS, no seed fallback — there's
+    nothing meaningful to fall back to for admin-only data).
+  - `lib/data/stock.ts`/`taxonomy.ts` **do** fall back to `lib/data/*.seed.ts`
+    fixtures (`stock.seed.ts`, `taxonomy.seed.ts`, `drawings.seed.ts`) when a
+    live Supabase call throws — missing env vars, unreachable project, etc.
+    Every exported `getAll*`/`get*BySlug` function wraps its query in
+    try/catch and logs `console.warn("[lib/data/…] <fn> falling back to seed
+    fixtures", err)` before returning fixture data, so pages degrade instead
+    of 500ing. The fixtures' `brandId`/`modelId`/`categoryId`/`drawingId`
+    fields intentionally reuse the same UUIDs as `taxonomy.seed.ts` (and
+    `drawings.seed.ts`'s `id`) so cross-referencing/denormalization still
+    resolves correctly in fallback mode — keep them in sync if you add stock
+    or taxonomy fixtures. `scripts/seed.ts` separately pushes these same
+    fixtures *into* a real Supabase project; that's a different use of the
+    same files, not related to the runtime fallback.
 - **Admin writes go through server actions** (`lib/actions/stock.ts`,
   `lib/actions/taxonomy.ts`), which call `requireAdmin()` (`lib/actions/auth.ts`)
   to check `user.app_metadata.role === "admin"` before writing via the
@@ -181,9 +186,12 @@ NEXT_PUBLIC_SITE_URL
 ```
 
 Without Supabase configured, `/admin` runs unauthenticated locally (see
-`app/admin/(protected)/layout.tsx`) — but data-fetching pages will still 500,
-see the data-access note above. `NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY` also
-back the sell-to-us photo upload (Supabase Storage), not just the DB.
+`app/admin/(protected)/layout.tsx`), and public stock/taxonomy/drawing pages
+degrade to `lib/data/*.seed.ts` fixtures (see the data-access note above)
+instead of 500ing. `/admin/enquiries` still needs a real project — enquiries
+have no seed fixture. `NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY` also back the
+sell-to-us photo upload (Supabase Storage), which shows its own "not
+configured" fallback message rather than crashing.
 
 ## Testing
 
@@ -203,9 +211,9 @@ uploads to Supabase Storage directly instead.
   `enquiries` table (`app/api/enquiry/route.ts` via `createAdminClient()`)
   and `/admin/enquiries` reads them live (`lib/data/enquiries.ts`) — the
   README Roadmap still lists this as unwired; that line is stale.
-- `lib/data/stock.ts` and `lib/data/taxonomy.ts` have no seed-fixture
-  fallback (see the data-access note above) — the app cannot run without a
-  reachable Supabase project, contrary to what the README/skill describe.
+- `lib/data/enquiries.ts` has no seed-fixture fallback (admin-only data,
+  nothing meaningful to fall back to) — `/admin/enquiries` still needs a
+  real Supabase project even though public pages now degrade gracefully.
 - Search is Postgres FTS/`pg_trgm` only; a Meilisearch/Typesense migration is
   planned for catalog scale, not yet started.
 

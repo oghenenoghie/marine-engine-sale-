@@ -1,11 +1,13 @@
 import type { Drawing } from "@/types";
 
+// modelId reuses the VASA 32 UUID from taxonomy.seed.ts so this fixture
+// resolves correctly when lib/data/stock.ts falls back to it.
 export const drawingsSeed: Drawing[] = [
   {
     id: "d-vasa32-exploded",
     slug: "wartsila-vasa-32-exploded",
     title: "Wärtsilä VASA 32 — cylinder unit exploded view",
-    modelId: "m-vasa32",
+    modelId: "22222222-2222-2222-2222-222222222201",
     assetKey: "drydock/drawings/vasa32-exploded",
     hotspots: [
       { id: "01", x: 0.5, y: 0.16, label: "Cylinder head", stockItemId: "1", inStock: true },

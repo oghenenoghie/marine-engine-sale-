@@ -54,7 +54,7 @@ This turns a static parts catalog into a visual, engine-aware discovery experien
 
 **Architectural note:** the site is hosted on Vercel, so Postgres (Supabase) is the system of record; Cloudinary is the dedicated media layer. Its upload widget suits photographing stock in the warehouse, and on-the-fly transforms — including background removal to put used parts on clean white — genuinely favour an image-heavy catalog. It plugs into `next/image` through a custom loader.
 
-**Data source:** `lib/data/stock.ts` and `lib/data/taxonomy.ts` both query Supabase directly (RLS: public read, admin write) — there is currently no seed-fixture fallback when Supabase isn't configured, so a reachable Supabase project is required to run the app. Admin create/edit/delete goes through server actions in `lib/actions/stock.ts`, which verify `app_metadata.role === "admin"` before writing via the service-role client. Pages that read live stock/drawing data are marked `export const dynamic = "force-dynamic"` so admin edits show up immediately rather than being baked into a static build.
+**Data source:** `lib/data/stock.ts` and `lib/data/taxonomy.ts` both query Supabase directly (RLS: public read, admin write), falling back to `lib/data/*.seed.ts` fixtures when Supabase is unreachable or unconfigured — so the public site still runs without a live project, just on fixture data (a console warning notes each fallback). `/admin/enquiries` has no such fallback and still needs a real project. Admin create/edit/delete goes through server actions in `lib/actions/stock.ts`, which verify `app_metadata.role === "admin"` before writing via the service-role client. Pages that read live stock/drawing data are marked `export const dynamic = "force-dynamic"` so admin edits show up immediately rather than being baked into a static build.
 
 ---
 
@@ -147,7 +147,7 @@ supabase/                    # migrations/0001_init.sql, seed.sql
 ### Prerequisites
 
 - Node.js 18.17+ and pnpm (or npm)
-- A Supabase project — currently **required**, not optional: `lib/data/stock.ts`/`taxonomy.ts` have no fixture fallback yet, so pages 500 without a reachable project. Run the migrations in `supabase/migrations/` (including `0003_sell_photos_bucket.sql`, which creates the `sell-photos` Storage bucket used by the sell-to-us form).
+- A Supabase project (optional for exploring the public site — it degrades to fixture data in `lib/data/*.seed.ts` when unreachable — but required for admin, enquiries, and the sell-to-us photo upload). Run the migrations in `supabase/migrations/` (including `0003_sell_photos_bucket.sql`, which creates the `sell-photos` Storage bucket used by the sell-to-us form).
 - A Cloudinary account (cloud name + API key/secret, and an unsigned upload preset for the widget) — used for stock/drawing photos only
 - A Resend API key (optional — enquiries are logged if unset)
 
@@ -191,7 +191,7 @@ supabase gen types typescript --local > types/supabase.ts
 pnpm seed                            # push lib/data/*.seed.ts fixtures into Supabase
 ```
 
-Without a Supabase project configured, `/admin` runs unauthenticated for local development — but data-fetching pages (public and admin) currently 500 rather than falling back to `lib/data/*.seed.ts`, so a reachable Supabase project is required to explore the app.
+Without a Supabase project configured, `/admin` runs unauthenticated for local development, and public pages read from `lib/data/*.seed.ts` fixtures instead of live data (each fallback logs a console warning). `/admin/enquiries` has no fixture fallback and needs a real project to show anything.
 
 ### Run
 
@@ -217,7 +217,7 @@ pnpm lint       # eslint + typecheck
 - [x] Cloudinary upload widget in the admin stock form
 - [x] Enquiry (RFQ) & sell-to-us flows persisted to `enquiries` via `app/api/enquiry/route.ts`; `/admin/enquiries` reads live from Supabase
 - [x] Sell-to-us photo upload moved to Supabase Storage (`sell-photos` bucket), direct from the browser
-- [ ] Seed-fixture fallback for running without Supabase configured (`lib/data/stock.ts`/`taxonomy.ts` currently have none — see Data source note above)
+- [x] Seed-fixture fallback for running without Supabase configured (`lib/data/stock.ts`/`taxonomy.ts`)
 - [ ] Meilisearch/Typesense migration (scale)
 
 ---
