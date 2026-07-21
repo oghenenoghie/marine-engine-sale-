@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Anchor } from "lucide-react";
 import { PartNumberSearch } from "@/components/common/part-number-search";
+import { MobileNav } from "@/components/common/mobile-nav";
 
 const NAV = [
   { href: "/engines", label: "Engines" },
@@ -13,8 +14,8 @@ const NAV = [
 export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-steel/15 bg-hull text-paper">
-      <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-3.5">
-        <Link href="/" className="flex items-center gap-2">
+      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3.5 sm:gap-6 sm:px-6">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <Anchor size={20} className="text-signal" />
           <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK</span>
         </Link>
@@ -31,7 +32,9 @@ export function Header() {
           ))}
         </nav>
 
-        <PartNumberSearch className="ml-auto w-full max-w-[280px]" />
+        <PartNumberSearch className="ml-auto min-w-0 max-w-[160px] flex-1 sm:max-w-[280px]" />
+
+        <MobileNav items={NAV} />
       </div>
     </header>
   );

@@ -23,6 +23,25 @@ export default function AboutPage() {
         </p>
         <p>Based in Dordrecht, at the heart of the Rotterdam maritime cluster.</p>
       </div>
+
+      <div className="mt-10 space-y-8 border-t border-steel/15 pt-10">
+        <div>
+          <h2 className="font-display text-lg font-bold tracking-tight text-hull">Save time, at the right price</h2>
+          <p className="mt-2 text-[14px] leading-relaxed text-steel">
+            If it&apos;s not already in stock, we know where to find it fast. Our team&apos;s experience buying and
+            selling used marine diesel engines, generator sets, gearboxes and their parts means we can help you get
+            the right unit, at the right time, at the right price.
+          </p>
+        </div>
+        <div>
+          <h2 className="font-display text-lg font-bold tracking-tight text-hull">Customer satisfaction, priority number one</h2>
+          <p className="mt-2 text-[14px] leading-relaxed text-steel">
+            Customers keep coming back because we listen and act on what they need. Our sales team gives technical
+            and practical advice, not just a spec sheet — and that includes handling the formalities. Exporting
+            outside your home market, customs clearance included, shouldn&apos;t be your problem to solve alone.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
