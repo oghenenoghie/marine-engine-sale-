@@ -10,13 +10,18 @@ import type { StockImage } from "@/types";
 vi.mock("next/image", () => ({
   default: (props: { src: string; alt: string }) => <img src={props.src} alt={props.alt} />,
 }));
+let widgetShouldError = false;
 vi.mock("next-cloudinary", () => ({
   CldUploadWidget: (props: {
     children: (args: { open: () => void }) => React.ReactNode;
     onSuccess?: (result: { info: { public_id: string; original_filename?: string } }) => void;
+    onError?: (error: unknown) => void;
   }) =>
     props.children({
-      open: () => props.onSuccess?.({ info: { public_id: "drydock/stock/new1", original_filename: "engine.jpg" } }),
+      open: () =>
+        widgetShouldError
+          ? props.onError?.("Upload preset not found")
+          : props.onSuccess?.({ info: { public_id: "drydock/stock/new1", original_filename: "engine.jpg" } }),
     }),
 }));
 
@@ -25,12 +30,14 @@ const sampleImages: StockImage[] = [{ publicId: "drydock/stock/abc123", alt: "Ph
 describe("ImageUploader", () => {
   beforeEach(() => {
     vi.resetModules();
+    widgetShouldError = false;
   });
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
   it("does not render an upload control when NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET is missing", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "");
     const { ImageUploader } = await import("./image-uploader");
 
@@ -40,7 +47,31 @@ describe("ImageUploader", () => {
     expect(screen.queryByRole("button", { name: /upload photos/i })).not.toBeInTheDocument();
   });
 
+  it("does not render an upload control when NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is missing", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "");
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
+    const { ImageUploader } = await import("./image-uploader");
+
+    render(<ImageUploader images={[]} onChange={() => {}} />);
+
+    expect(screen.getByText(/Set/)).toHaveTextContent("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME");
+    expect(screen.queryByRole("button", { name: /upload photos/i })).not.toBeInTheDocument();
+  });
+
+  it("surfaces the widget's error instead of failing silently", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
+    widgetShouldError = true;
+    const { ImageUploader } = await import("./image-uploader");
+
+    render(<ImageUploader images={[]} onChange={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: /upload photos/i }));
+
+    expect(await screen.findByText(/Upload preset not found/)).toBeInTheDocument();
+  });
+
   it("renders the upload button once the preset is configured", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
     const { ImageUploader } = await import("./image-uploader");
 
@@ -50,6 +81,7 @@ describe("ImageUploader", () => {
   });
 
   it("still renders existing images with their bare publicId as the img src", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
     const { ImageUploader } = await import("./image-uploader");
 
@@ -63,6 +95,7 @@ describe("ImageUploader", () => {
   });
 
   it("adds the uploaded image and marks it primary when the list was empty", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
     const { ImageUploader } = await import("./image-uploader");
     const onChange = vi.fn();
@@ -76,6 +109,7 @@ describe("ImageUploader", () => {
   });
 
   it("appends a non-primary image when photos already exist", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
     const { ImageUploader } = await import("./image-uploader");
     const onChange = vi.fn();
@@ -90,6 +124,7 @@ describe("ImageUploader", () => {
   });
 
   it("promotes the next image to primary when the primary photo is removed", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
     const { ImageUploader } = await import("./image-uploader");
     const onChange = vi.fn();
@@ -105,6 +140,7 @@ describe("ImageUploader", () => {
   });
 
   it("marks the clicked image as primary and clears the previous flag", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME", "drydock-cloud");
     vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
     const { ImageUploader } = await import("./image-uploader");
     const onChange = vi.fn();

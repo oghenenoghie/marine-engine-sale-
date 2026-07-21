@@ -1,13 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { CldUploadWidget, type CloudinaryUploadWidgetInfo } from "next-cloudinary";
-import { Star, Trash2, Upload } from "lucide-react";
+import { AlertTriangle, Star, Trash2, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { StockImage } from "@/types";
 
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
 /**
  * Drag-drop / click-to-upload widget for stock photography, wired directly
@@ -23,6 +25,8 @@ export function ImageUploader({
   onChange: (images: StockImage[]) => void;
   folder?: string;
 }) {
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   const addImage = (info: CloudinaryUploadWidgetInfo) => {
     const next: StockImage = {
       publicId: info.public_id,
@@ -45,12 +49,22 @@ export function ImageUploader({
     onChange(images.map((img) => ({ ...img, isPrimary: img.publicId === publicId })));
   };
 
-  if (!UPLOAD_PRESET) {
+  if (!UPLOAD_PRESET || !CLOUD_NAME) {
+    const missing = [
+      !CLOUD_NAME && "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
+      !UPLOAD_PRESET && "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET",
+    ].filter((v): v is string => Boolean(v));
     return (
       <div className="flex items-start gap-2 rounded-md border border-dashed border-steel/25 px-3 py-3 text-steel">
         <Upload size={16} className="mt-0.5 shrink-0" />
         <span className="text-[12px]">
-          Set <code className="font-mono">NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> to enable image uploads.
+          Set {missing.map((v, i) => (
+            <span key={v}>
+              <code className="font-mono">{v}</code>
+              {i < missing.length - 1 ? " and " : ""}
+            </span>
+          ))}{" "}
+          to enable image uploads.
         </span>
       </div>
     );
@@ -100,6 +114,13 @@ export function ImageUploader({
         </div>
       )}
 
+      {uploadError && (
+        <div className="flex items-start gap-2 rounded-md border border-signal/30 bg-signal/10 px-3 py-2 text-signal">
+          <AlertTriangle size={14} className="mt-0.5 shrink-0" />
+          <span className="text-[12px]">{uploadError}</span>
+        </div>
+      )}
+
       <CldUploadWidget
         uploadPreset={UPLOAD_PRESET}
         options={{
@@ -110,9 +131,14 @@ export function ImageUploader({
           clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "heic"],
           maxFileSize: 10_000_000,
         }}
+        onOpen={() => setUploadError(null)}
         onSuccess={(result) => {
           const info = result.info;
           if (info && typeof info !== "string") addImage(info);
+        }}
+        onError={(error) => {
+          setUploadError(typeof error === "string" ? error : "Upload failed — see browser console for details.");
+          console.error("[ImageUploader] Cloudinary upload error", error);
         }}
       >
         {({ open }) => (
