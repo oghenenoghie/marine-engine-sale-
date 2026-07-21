@@ -81,8 +81,9 @@ export function ImageUploader({
         });
       }
       onChange([...images, ...uploaded]);
-    } catch {
-      setError("Upload failed — please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed — please try again.");
+      console.error("[ImageUploader] Supabase upload error", err);
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
