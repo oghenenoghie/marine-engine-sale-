@@ -24,9 +24,10 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
     <div>
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md border border-steel/15 bg-white">
         <Image
-          src={current.publicId}
+          src={current.url}
           alt={current.alt}
           fill
+          unoptimized
           priority
           sizes="(min-width: 1024px) 50vw, 100vw"
           className="object-contain"
@@ -36,7 +37,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
         <div className="mt-3 flex gap-2 overflow-x-auto">
           {photos.map((img, i) => (
             <button
-              key={img.publicId + i}
+              key={img.url + i}
               onClick={() => setActive(i)}
               aria-label={`Show photo ${i + 1}`}
               className={cn(
@@ -44,7 +45,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
                 i === active ? "border-blueprint" : "border-steel/20",
               )}
             >
-              <Image src={img.publicId} alt={img.alt} fill className="object-cover" />
+              <Image src={img.url} alt={img.alt} fill unoptimized className="object-cover" />
             </button>
           ))}
         </div>

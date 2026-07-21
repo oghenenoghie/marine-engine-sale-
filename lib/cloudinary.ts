@@ -20,9 +20,3 @@ export function signCloudinaryUpload(paramsToSign: Record<string, string | numbe
 
   return signature;
 }
-
-type CloudinaryImage = { publicId: string; alt: string; isPrimary?: boolean; type?: "photo" | "drawing" };
-
-export function primaryImage(images: CloudinaryImage[]): CloudinaryImage | undefined {
-  return images.find((img) => img.isPrimary) ?? images[0];
-}
