@@ -7,7 +7,7 @@ export type Currency = "EUR" | "USD" | "GBP" | "NOK" | "SEK" | "DKK" | "JPY" | "
 export const CURRENCIES: Currency[] = ["EUR", "USD", "GBP", "NOK", "SEK", "DKK", "JPY", "SGD", "CNY"];
 
 export interface StockImage {
-  publicId: string;
+  url: string;
   alt: string;
   isPrimary?: boolean;
   type: ImageType;

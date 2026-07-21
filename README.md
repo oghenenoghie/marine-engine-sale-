@@ -48,11 +48,11 @@ This turns a static parts catalog into a visual, engine-aware discovery experien
 | Styling | **Tailwind CSS v3** + **shadcn/ui** (Radix) | Design tokens + accessible primitives |
 | Motion | **Framer Motion** | Restrained scroll reveals + the hero drawing animation |
 | Data & Auth | **Supabase (Postgres)** | System of record, Auth, Row-Level Security, full-text + `pg_trgm` search |
-| Media | **Cloudinary** + **Supabase Storage** | Cloudinary for stock/drawing photos (upload widget, `f_auto,q_auto`, background removal, CDN); Supabase Storage (`sell-photos` bucket) for sell-to-us equipment photos, uploaded directly from the browser |
+| Media | **Cloudinary** + **Supabase Storage** | Cloudinary for drawing (exploded-diagram) photos only (`f_auto,q_auto`, CDN); Supabase Storage for stock item photos (`stock-photos` bucket, admin-authenticated uploads) and sell-to-us equipment photos (`sell-photos` bucket, public uploads), both uploaded directly from the browser |
 | Email | **Resend** | Transactional RFQ and sell-to-us notifications |
 | Hosting & CI | **Vercel** + **GitHub Actions** | Preview deploys + lint/typecheck/build gates |
 
-**Architectural note:** the site is hosted on Vercel, so Postgres (Supabase) is the system of record; Cloudinary is the dedicated media layer. Its upload widget suits photographing stock in the warehouse, and on-the-fly transforms — including background removal to put used parts on clean white — genuinely favour an image-heavy catalog. It plugs into `next/image` through a custom loader.
+**Architectural note:** the site is hosted on Vercel, so Postgres (Supabase) is the system of record for both data and, via Storage, product/sell-to-us media. Cloudinary remains the dedicated pipeline for drawing (exploded-diagram) photos only, plugging into `next/image` through a custom loader.
 
 **Data source:** `lib/data/stock.ts` and `lib/data/taxonomy.ts` both query Supabase directly (RLS: public read, admin write), falling back to `lib/data/*.seed.ts` fixtures when Supabase is unreachable or unconfigured — so the public site still runs without a live project, just on fixture data (a console warning notes each fallback). `/admin/enquiries` has no such fallback and still needs a real project. Admin create/edit/delete goes through server actions in `lib/actions/stock.ts`, which verify `app_metadata.role === "admin"` before writing via the service-role client. Pages that read live stock/drawing data are marked `export const dynamic = "force-dynamic"` so admin edits show up immediately rather than being baked into a static build.
 
@@ -147,8 +147,8 @@ supabase/                    # migrations/0001_init.sql, seed.sql
 ### Prerequisites
 
 - Node.js 18.17+ and pnpm (or npm)
-- A Supabase project (optional for exploring the public site — it degrades to fixture data in `lib/data/*.seed.ts` when unreachable — but required for admin, enquiries, and the sell-to-us photo upload). Run the migrations in `supabase/migrations/` (including `0003_sell_photos_bucket.sql`, which creates the `sell-photos` Storage bucket used by the sell-to-us form).
-- A Cloudinary account (cloud name + API key/secret, and an unsigned upload preset for the widget) — used for stock/drawing photos only
+- A Supabase project (optional for exploring the public site — it degrades to fixture data in `lib/data/*.seed.ts` when unreachable — but required for admin, enquiries, and photo uploads). Run the migrations in `supabase/migrations/` (including `0003_sell_photos_bucket.sql` and `0004_stock_photos_bucket.sql`, which create the `sell-photos` and `stock-photos` Storage buckets).
+- A Cloudinary account (cloud name + API key/secret, and an unsigned upload preset for the widget) — used for drawing (exploded-diagram) photos only
 - A Resend API key (optional — enquiries are logged if unset)
 
 ### Installation
@@ -186,7 +186,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ### Database
 
 ```bash
-supabase db push                     # apply supabase/migrations/*.sql (incl. the sell-photos Storage bucket)
+supabase db push                     # apply supabase/migrations/*.sql (incl. the sell-photos and stock-photos Storage buckets)
 supabase gen types typescript --local > types/supabase.ts
 pnpm seed                            # push lib/data/*.seed.ts fixtures into Supabase
 ```
@@ -208,15 +208,15 @@ pnpm lint       # eslint + typecheck
 - [x] Design system, tokens, typography
 - [x] Data model & taxonomy
 - [x] Supabase schema, RLS, migration (`supabase/migrations/0001_init.sql`)
-- [x] Cloudinary media pipeline (upload widget signing + `next/image` loader)
+- [x] Cloudinary media pipeline (drawing photos: upload widget signing + `next/image` loader)
 - [x] Stock list, detail & faceted part-number search (Supabase-backed)
 - [x] Interactive exploded-drawing viewer + hotspot editor (Supabase-backed)
 - [x] Admin stock CRUD (persists to `stock_items` via server actions)
 - [x] SEO, sitemap, robots
 - [x] Wire `lib/data/stock.ts` to live Supabase queries
-- [x] Cloudinary upload widget in the admin stock form
 - [x] Enquiry (RFQ) & sell-to-us flows persisted to `enquiries` via `app/api/enquiry/route.ts`; `/admin/enquiries` reads live from Supabase
 - [x] Sell-to-us photo upload moved to Supabase Storage (`sell-photos` bucket), direct from the browser
+- [x] Admin stock item photo upload moved to Supabase Storage (`stock-photos` bucket), direct from the admin-authenticated browser session
 - [x] Seed-fixture fallback for running without Supabase configured (`lib/data/stock.ts`/`taxonomy.ts`)
 - [ ] Meilisearch/Typesense migration (scale)
 
