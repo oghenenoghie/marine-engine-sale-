@@ -1,8 +1,13 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { StockImage } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function primaryImage(images: StockImage[]): StockImage | undefined {
+  return images.find((img) => img.isPrimary) ?? images[0];
 }
 
 export function formatPrice(price: number | null, poa: boolean, currency = "EUR") {

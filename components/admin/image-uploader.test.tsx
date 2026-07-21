@@ -1,124 +1,153 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StockImage } from "@/types";
+import { ImageUploader } from "./image-uploader";
 
-// next/image and next-cloudinary both do real network/DOM work that isn't
-// relevant here; stub them so the test isolates our component's own logic.
-// The widget mock's `open()` simulates a completed upload by invoking
-// onSuccess immediately, so clicking "Upload photos" drives the same
-// add-image path a real Cloudinary success callback would.
 vi.mock("next/image", () => ({
   default: (props: { src: string; alt: string }) => <img src={props.src} alt={props.alt} />,
 }));
-vi.mock("next-cloudinary", () => ({
-  CldUploadWidget: (props: {
-    children: (args: { open: () => void }) => React.ReactNode;
-    onSuccess?: (result: { info: { public_id: string; original_filename?: string } }) => void;
-  }) =>
-    props.children({
-      open: () => props.onSuccess?.({ info: { public_id: "drydock/stock/new1", original_filename: "engine.jpg" } }),
-    }),
+
+const uploadMock = vi.fn();
+const getPublicUrlMock = vi.fn();
+vi.mock("@/lib/supabase/client", () => ({
+  createClient: () => ({
+    storage: {
+      from: () => ({ upload: uploadMock, getPublicUrl: getPublicUrlMock }),
+    },
+  }),
 }));
 
-const sampleImages: StockImage[] = [{ publicId: "drydock/stock/abc123", alt: "Photo", isPrimary: true, type: "photo" }];
+function makeFile(name = "engine.jpg", type = "image/jpeg") {
+  return new File(["fake-bytes"], name, { type });
+}
+
+const sampleImages: StockImage[] = [{ url: "https://proj.supabase.co/storage/v1/object/public/stock-photos/abc123.jpg", alt: "Photo", isPrimary: true, type: "photo" }];
 
 describe("ImageUploader", () => {
   beforeEach(() => {
-    vi.resetModules();
+    uploadMock.mockReset().mockResolvedValue({ error: null });
+    getPublicUrlMock
+      .mockReset()
+      .mockReturnValue({ data: { publicUrl: "https://proj.supabase.co/storage/v1/object/public/stock-photos/new1.jpg" } });
   });
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it("does not render an upload control when NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET is missing", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "");
-    const { ImageUploader } = await import("./image-uploader");
+  it("does not render an upload control when NEXT_PUBLIC_SUPABASE_URL is missing", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
 
     render(<ImageUploader images={[]} onChange={() => {}} />);
 
-    expect(screen.getByText(/Set/)).toHaveTextContent("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET");
+    expect(screen.getByText(/NEXT_PUBLIC_SUPABASE_URL/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /upload photos/i })).not.toBeInTheDocument();
   });
 
-  it("renders the upload button once the preset is configured", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
-    const { ImageUploader } = await import("./image-uploader");
+  it("renders the upload button once Supabase is configured", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
 
     render(<ImageUploader images={[]} onChange={() => {}} />);
 
     expect(screen.getByRole("button", { name: /upload photos/i })).toBeInTheDocument();
   });
 
-  it("still renders existing images with their bare publicId as the img src", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
-    const { ImageUploader } = await import("./image-uploader");
+  it("still renders existing images with their public URL as the img src", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
 
     render(<ImageUploader images={sampleImages} onChange={() => {}} />);
 
-    // Confirms the preview <img> is fed the raw Cloudinary publicId, which
-    // only resolves to a real picture once the custom loader (see
-    // lib/cloudinary-loader.test.ts) has NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME to
-    // work with.
-    expect(screen.getByAltText("Photo")).toHaveAttribute("src", "drydock/stock/abc123");
+    expect(screen.getByAltText("Photo")).toHaveAttribute(
+      "src",
+      "https://proj.supabase.co/storage/v1/object/public/stock-photos/abc123.jpg",
+    );
   });
 
-  it("adds the uploaded image and marks it primary when the list was empty", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
-    const { ImageUploader } = await import("./image-uploader");
+  it("uploads a selected file to Supabase Storage, adding it and marking it primary when the list was empty", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
     const onChange = vi.fn();
 
-    render(<ImageUploader images={[]} onChange={onChange} />);
-    fireEvent.click(screen.getByRole("button", { name: /upload photos/i }));
+    const { container } = render(<ImageUploader images={[]} onChange={onChange} />);
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [makeFile()] } });
 
-    expect(onChange).toHaveBeenCalledWith([
-      { publicId: "drydock/stock/new1", alt: "engine.jpg", isPrimary: true, type: "photo" },
-    ]);
+    await waitFor(() =>
+      expect(onChange).toHaveBeenCalledWith([
+        { url: "https://proj.supabase.co/storage/v1/object/public/stock-photos/new1.jpg", alt: "engine.jpg", isPrimary: true, type: "photo" },
+      ]),
+    );
+    expect(uploadMock).toHaveBeenCalledTimes(1);
   });
 
   it("appends a non-primary image when photos already exist", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
-    const { ImageUploader } = await import("./image-uploader");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
     const onChange = vi.fn();
 
-    render(<ImageUploader images={sampleImages} onChange={onChange} />);
-    fireEvent.click(screen.getByRole("button", { name: /upload photos/i }));
+    const { container } = render(<ImageUploader images={sampleImages} onChange={onChange} />);
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [makeFile()] } });
 
-    expect(onChange).toHaveBeenCalledWith([
-      ...sampleImages,
-      { publicId: "drydock/stock/new1", alt: "engine.jpg", isPrimary: false, type: "photo" },
-    ]);
+    await waitFor(() =>
+      expect(onChange).toHaveBeenCalledWith([
+        ...sampleImages,
+        { url: "https://proj.supabase.co/storage/v1/object/public/stock-photos/new1.jpg", alt: "engine.jpg", isPrimary: false, type: "photo" },
+      ]),
+    );
   });
 
-  it("promotes the next image to primary when the primary photo is removed", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
-    const { ImageUploader } = await import("./image-uploader");
+  it("shows an error and does not call onChange when the upload fails", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
+    uploadMock.mockResolvedValue({ error: { message: "network down" } });
+    const onChange = vi.fn();
+
+    const { container } = render(<ImageUploader images={[]} onChange={onChange} />);
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [makeFile()] } });
+
+    await waitFor(() => expect(screen.getByText(/upload failed/i)).toBeInTheDocument());
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("rejects a disallowed file type before uploading", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
+    const onChange = vi.fn();
+
+    const { container } = render(<ImageUploader images={[]} onChange={onChange} />);
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [makeFile("doc.pdf", "application/pdf")] } });
+
+    expect(await screen.findByText(/must be JPG, PNG, WEBP or HEIC/i)).toBeInTheDocument();
+    expect(uploadMock).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("promotes the next image to primary when the primary photo is removed", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
     const onChange = vi.fn();
     const twoImages: StockImage[] = [
-      { publicId: "a", alt: "A", isPrimary: true, type: "photo" },
-      { publicId: "b", alt: "B", isPrimary: false, type: "photo" },
+      { url: "a", alt: "A", isPrimary: true, type: "photo" },
+      { url: "b", alt: "B", isPrimary: false, type: "photo" },
     ];
 
     render(<ImageUploader images={twoImages} onChange={onChange} />);
     fireEvent.click(screen.getAllByTitle("Remove photo")[0]!);
 
-    expect(onChange).toHaveBeenCalledWith([{ publicId: "b", alt: "B", isPrimary: true, type: "photo" }]);
+    expect(onChange).toHaveBeenCalledWith([{ url: "b", alt: "B", isPrimary: true, type: "photo" }]);
   });
 
-  it("marks the clicked image as primary and clears the previous flag", async () => {
-    vi.stubEnv("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET", "drydock-unsigned");
-    const { ImageUploader } = await import("./image-uploader");
+  it("marks the clicked image as primary and clears the previous flag", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://proj.supabase.co");
     const onChange = vi.fn();
     const twoImages: StockImage[] = [
-      { publicId: "a", alt: "A", isPrimary: true, type: "photo" },
-      { publicId: "b", alt: "B", isPrimary: false, type: "photo" },
+      { url: "a", alt: "A", isPrimary: true, type: "photo" },
+      { url: "b", alt: "B", isPrimary: false, type: "photo" },
     ];
 
     render(<ImageUploader images={twoImages} onChange={onChange} />);
     fireEvent.click(screen.getAllByTitle("Set as primary photo")[1]!);
 
     expect(onChange).toHaveBeenCalledWith([
-      { publicId: "a", alt: "A", isPrimary: false, type: "photo" },
-      { publicId: "b", alt: "B", isPrimary: true, type: "photo" },
+      { url: "a", alt: "A", isPrimary: false, type: "photo" },
+      { url: "b", alt: "B", isPrimary: true, type: "photo" },
     ]);
   });
 });
