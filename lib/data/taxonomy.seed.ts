@@ -11,6 +11,17 @@ export const brandsSeed: Brand[] = [
   { id: "11111111-1111-1111-1111-111111111103", slug: "mak", name: "MaK", blurb: "German medium-speed diesel engines, part of the Caterpillar Marine family." },
   { id: "11111111-1111-1111-1111-111111111104", slug: "deutz", name: "Deutz", blurb: "Compact high-speed diesels for auxiliary and propulsion duty." },
   { id: "11111111-1111-1111-1111-111111111105", slug: "caterpillar", name: "Caterpillar", blurb: "Heavy-duty diesel engines and genuine reman parts." },
+  { id: "11111111-1111-1111-1111-111111111106", slug: "abb", name: "ABB" },
+  { id: "11111111-1111-1111-1111-111111111107", slug: "bergen", name: "Bergen" },
+  { id: "11111111-1111-1111-1111-111111111108", slug: "man-bw", name: "MAN B&W" },
+  { id: "11111111-1111-1111-1111-111111111109", slug: "mtu", name: "MTU" },
+  { id: "11111111-1111-1111-1111-111111111110", slug: "mwm", name: "MWM" },
+  { id: "11111111-1111-1111-1111-111111111111", slug: "rolls-royce-bergen", name: "Rolls-Royce Bergen" },
+  { id: "11111111-1111-1111-1111-111111111112", slug: "sang-yong-man", name: "Sang Yong MAN" },
+  { id: "11111111-1111-1111-1111-111111111113", slug: "stork-werkspoor", name: "Stork Werkspoor" },
+  { id: "11111111-1111-1111-1111-111111111114", slug: "sulzer", name: "Sulzer" },
+  { id: "11111111-1111-1111-1111-111111111115", slug: "wartsila-sulzer", name: "Wartsila Sulzer" },
+  { id: "11111111-1111-1111-1111-111111111116", slug: "wichmann", name: "Wichmann" },
 ];
 
 export const engineModelsSeed: EngineModel[] = [
@@ -31,4 +42,12 @@ export const partCategoriesSeed: PartCategory[] = [
   { id: "33333333-3333-3333-3333-333333333305", slug: "complete-engine", name: "Complete engine", parentId: null },
   { id: "33333333-3333-3333-3333-333333333306", slug: "fuel-pump", name: "Fuel pump", parentId: null },
   { id: "33333333-3333-3333-3333-333333333307", slug: "piston", name: "Piston", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333308", slug: "alternator", name: "Alternator", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333309", slug: "connecting-rod", name: "Connecting rod", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333310", slug: "cylinder-block", name: "Cylinder block", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333311", slug: "engine-block", name: "Engine block", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333312", slug: "liner", name: "Liner", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333313", slug: "oil-pump", name: "Oil pump", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333314", slug: "water-jacket", name: "Water jacket", parentId: null },
+  { id: "33333333-3333-3333-3333-333333333315", slug: "water-pump", name: "Water pump", parentId: null },
 ];
