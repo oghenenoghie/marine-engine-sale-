@@ -4,7 +4,18 @@ insert into brands (id, slug, name, blurb) values
   ('11111111-1111-1111-1111-111111111102', 'man', 'MAN', 'Two- and four-stroke marine propulsion from MAN Energy Solutions.'),
   ('11111111-1111-1111-1111-111111111103', 'mak', 'MaK', 'German medium-speed diesel engines, part of the Caterpillar Marine family.'),
   ('11111111-1111-1111-1111-111111111104', 'deutz', 'Deutz', 'Compact high-speed diesels for auxiliary and propulsion duty.'),
-  ('11111111-1111-1111-1111-111111111105', 'caterpillar', 'Caterpillar', 'Heavy-duty diesel engines and genuine reman parts.');
+  ('11111111-1111-1111-1111-111111111105', 'caterpillar', 'Caterpillar', 'Heavy-duty diesel engines and genuine reman parts.'),
+  ('11111111-1111-1111-1111-111111111106', 'abb', 'ABB', null),
+  ('11111111-1111-1111-1111-111111111107', 'bergen', 'Bergen', null),
+  ('11111111-1111-1111-1111-111111111108', 'man-bw', 'MAN B&W', null),
+  ('11111111-1111-1111-1111-111111111109', 'mtu', 'MTU', null),
+  ('11111111-1111-1111-1111-111111111110', 'mwm', 'MWM', null),
+  ('11111111-1111-1111-1111-111111111111', 'rolls-royce-bergen', 'Rolls-Royce Bergen', null),
+  ('11111111-1111-1111-1111-111111111112', 'sang-yong-man', 'Sang Yong MAN', null),
+  ('11111111-1111-1111-1111-111111111113', 'stork-werkspoor', 'Stork Werkspoor', null),
+  ('11111111-1111-1111-1111-111111111114', 'sulzer', 'Sulzer', null),
+  ('11111111-1111-1111-1111-111111111115', 'wartsila-sulzer', 'Wartsila Sulzer', null),
+  ('11111111-1111-1111-1111-111111111116', 'wichmann', 'Wichmann', null);
 
 insert into engine_models (id, slug, brand_id, name, bore, stroke, config, power_range) values
   ('22222222-2222-2222-2222-222222222201', 'vasa-32', '11111111-1111-1111-1111-111111111101', 'VASA 32', '320 mm', '350 mm', 'In-line 6-9', '2280–4830 kW'),
@@ -22,7 +33,15 @@ insert into part_categories (id, slug, name) values
   ('33333333-3333-3333-3333-333333333304', 'cylinder-liner', 'Cylinder liner'),
   ('33333333-3333-3333-3333-333333333305', 'complete-engine', 'Complete engine'),
   ('33333333-3333-3333-3333-333333333306', 'fuel-pump', 'Fuel pump'),
-  ('33333333-3333-3333-3333-333333333307', 'piston', 'Piston');
+  ('33333333-3333-3333-3333-333333333307', 'piston', 'Piston'),
+  ('33333333-3333-3333-3333-333333333308', 'alternator', 'Alternator'),
+  ('33333333-3333-3333-3333-333333333309', 'connecting-rod', 'Connecting rod'),
+  ('33333333-3333-3333-3333-333333333310', 'cylinder-block', 'Cylinder block'),
+  ('33333333-3333-3333-3333-333333333311', 'engine-block', 'Engine block'),
+  ('33333333-3333-3333-3333-333333333312', 'liner', 'Liner'),
+  ('33333333-3333-3333-3333-333333333313', 'oil-pump', 'Oil pump'),
+  ('33333333-3333-3333-3333-333333333314', 'water-jacket', 'Water jacket'),
+  ('33333333-3333-3333-3333-333333333315', 'water-pump', 'Water pump');
 
 insert into drawings (id, slug, title, model_id, asset_key, hotspots) values
   (
