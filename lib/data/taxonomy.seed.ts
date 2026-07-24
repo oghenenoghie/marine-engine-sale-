@@ -1,4 +1,4 @@
-import type { Brand, EngineModel, PartCategory } from "@/types";
+import type { Brand, EngineModel, PartCategory, ProductCategory } from "@/types";
 
 // Fixture data pushed into Supabase by scripts/seed.ts and supabase/seed.sql
 // — ids match what that seed produces. Also imported directly by
@@ -50,4 +50,12 @@ export const partCategoriesSeed: PartCategory[] = [
   { id: "33333333-3333-3333-3333-333333333313", slug: "oil-pump", name: "Oil pump", parentId: null },
   { id: "33333333-3333-3333-3333-333333333314", slug: "water-jacket", name: "Water jacket", parentId: null },
   { id: "33333333-3333-3333-3333-333333333315", slug: "water-pump", name: "Water pump", parentId: null },
+];
+
+export const productCategoriesSeed: ProductCategory[] = [
+  { id: "55555555-5555-5555-5555-555555555501", slug: "engines", name: "Engines" },
+  { id: "55555555-5555-5555-5555-555555555502", slug: "spare-parts", name: "Spare Parts" },
+  { id: "55555555-5555-5555-5555-555555555503", slug: "gensets", name: "Gensets" },
+  { id: "55555555-5555-5555-5555-555555555504", slug: "power-plants", name: "Power Plants" },
+  { id: "55555555-5555-5555-5555-555555555505", slug: "gas-turbines", name: "Gas Turbines" },
 ];

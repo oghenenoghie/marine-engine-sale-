@@ -9,7 +9,7 @@ import { StatusBadge, STATUS_STYLE } from "@/components/stock/status-badge";
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { saveStockItemAction, deleteStockItemAction } from "@/lib/actions/stock";
-import type { Brand, Condition, Currency, EngineModel, PartCategory, StockItem, StockStatus } from "@/types";
+import type { Brand, Condition, Currency, EngineModel, PartCategory, ProductCategory, StockItem, StockStatus } from "@/types";
 import { CURRENCIES } from "@/types";
 
 /**
@@ -29,9 +29,10 @@ interface StockDashboardProps {
   brands: Brand[];
   models: EngineModel[];
   categories: PartCategory[];
+  productCategories: ProductCategory[];
 }
 
-export function StockDashboard({ initialItems, brands, models, categories }: StockDashboardProps) {
+export function StockDashboard({ initialItems, brands, models, categories, productCategories }: StockDashboardProps) {
   const [items, setItems] = useState(initialItems);
   const [query, setQuery] = useState("");
   const [brandF, setBrandF] = useState("All");
@@ -229,6 +230,7 @@ export function StockDashboard({ initialItems, brands, models, categories }: Sto
           brands={brands}
           models={models}
           categories={categories}
+          productCategories={productCategories}
           saving={saving}
           onClose={() => setEditing(null)}
           onSave={saveItem}
@@ -315,6 +317,7 @@ function StockForm({
   brands,
   models,
   categories,
+  productCategories,
   saving,
   onClose,
   onSave,
@@ -323,6 +326,7 @@ function StockForm({
   brands: Brand[];
   models: EngineModel[];
   categories: PartCategory[];
+  productCategories: ProductCategory[];
   saving: boolean;
   onClose: () => void;
   onSave: (item: StockItem) => void;
@@ -337,6 +341,7 @@ function StockForm({
     brandId: initial.brandId ?? brands[0]?.id ?? "",
     modelId: initial.modelId ?? null,
     categoryId: initial.categoryId ?? categories[0]?.id ?? "",
+    productCategoryId: initial.productCategoryId ?? null,
     condition: initial.condition ?? "Used",
     poa: initial.poa ?? false,
     price: initial.price ?? 0,
@@ -449,6 +454,13 @@ function StockForm({
               <SelectField value={f.condition} onChange={(v) => set("condition", v as Condition)} options={CONDITIONS.map((c): [string, string] => [c, c])} />
             </Field>
           </div>
+          <Field label="Product category">
+            <SelectField
+              value={f.productCategoryId ?? ""}
+              onChange={(v) => set("productCategoryId", v || null)}
+              options={[["", "—"], ...productCategories.map((c): [string, string] => [c.id, c.name])]}
+            />
+          </Field>
 
           <Field label="Price">
             <div className="space-y-2">

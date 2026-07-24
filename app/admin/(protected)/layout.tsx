@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Anchor, ClipboardList, Database, LayoutDashboard, Layers, Package, Ship, Tag } from "lucide-react";
+import { Anchor, ClipboardList, Database, LayoutDashboard, Layers, LayoutGrid, Package, Ship, Tag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 const NAV_ITEMS = [
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/admin/enquiries", icon: ClipboardList, label: "Enquiries" },
   { href: "/admin/brands", icon: Ship, label: "Brands" },
   { href: "/admin/categories", icon: Tag, label: "Categories" },
+  { href: "/admin/product-categories", icon: LayoutGrid, label: "Product categories" },
   { href: "/admin/db-test", icon: Database, label: "DB diagnostic" },
 ];
 
