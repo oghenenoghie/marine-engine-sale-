@@ -14,7 +14,7 @@ export function MobileNav({ items }: { items: { href: string; label: string }[] 
         <button
           type="button"
           aria-label="Open menu"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-md text-paper transition-colors hover:bg-paper/10 md:hidden"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-md text-paper transition-colors hover:bg-paper/10 lg:hidden"
         >
           <Menu size={20} />
         </button>

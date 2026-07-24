@@ -6,6 +6,9 @@ import { MobileNav } from "@/components/common/mobile-nav";
 const NAV = [
   { href: "/engines", label: "Engines" },
   { href: "/parts", label: "Parts" },
+  { href: "/gensets", label: "Gensets" },
+  { href: "/power-plants", label: "Power plants" },
+  { href: "/gas-turbines", label: "Gas turbines" },
   { href: "/brands", label: "Brands" },
   { href: "/stock", label: "Stock" },
   { href: "/sell", label: "Sell to us" },
@@ -20,7 +23,7 @@ export function Header() {
           <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK</span>
         </Link>
 
-        <nav className="hidden items-center gap-5 md:flex">
+        <nav className="hidden items-center gap-4 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.href}

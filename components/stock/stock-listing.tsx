@@ -15,15 +15,18 @@ export interface StockListingSearchParams {
 
 export async function StockListing({
   type,
+  productCategory,
   searchParams,
   emptyLabel = "item",
 }: {
   type?: "engine" | "part";
+  productCategory?: string;
   searchParams: StockListingSearchParams;
   emptyLabel?: string;
 }) {
   const filters: StockFilters = {
     type,
+    productCategory,
     q: searchParams.q,
     brand: searchParams.brand,
     model: searchParams.model,

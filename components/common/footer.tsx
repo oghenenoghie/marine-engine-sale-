@@ -7,6 +7,9 @@ const COLUMNS = [
     links: [
       { href: "/engines", label: "Engines" },
       { href: "/parts", label: "Parts" },
+      { href: "/gensets", label: "Gensets" },
+      { href: "/power-plants", label: "Power plants" },
+      { href: "/gas-turbines", label: "Gas turbines" },
       { href: "/stock", label: "New & expected stock" },
     ],
   },
