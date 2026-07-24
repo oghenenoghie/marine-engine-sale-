@@ -1,8 +1,8 @@
 import { cache } from "react";
 import type { StockItem, StockItemView, StockStatus, Condition, StockImage, Drawing, Hotspot } from "@/types";
 import { createPublicClient } from "@/lib/supabase/server";
-import { getAllBrands, getAllCategories, getAllModels } from "@/lib/data/taxonomy";
-import { brandsSeed, engineModelsSeed, partCategoriesSeed } from "@/lib/data/taxonomy.seed";
+import { getAllBrands, getAllCategories, getAllModels, getAllProductCategories } from "@/lib/data/taxonomy";
+import { brandsSeed, engineModelsSeed, partCategoriesSeed, productCategoriesSeed } from "@/lib/data/taxonomy.seed";
 import { stockSeed } from "@/lib/data/stock.seed";
 import { drawingsSeed } from "@/lib/data/drawings.seed";
 import type { Database } from "@/types/supabase";
@@ -23,6 +23,7 @@ export interface StockFilters {
   brand?: string; // slug
   model?: string; // slug
   category?: string; // slug
+  productCategory?: string; // slug
   condition?: Condition;
   status?: StockStatus;
   type?: "engine" | "part";
@@ -43,6 +44,7 @@ function rowToStockItem(row: StockRow): StockItem {
     brandId: row.brand_id,
     modelId: row.model_id,
     categoryId: row.category_id,
+    productCategoryId: row.product_category_id,
     condition: row.condition,
     poa: row.poa,
     price: row.price,
@@ -74,32 +76,35 @@ function denormalize(
   brands: Awaited<ReturnType<typeof getAllBrands>>,
   models: Awaited<ReturnType<typeof getAllModels>>,
   categories: Awaited<ReturnType<typeof getAllCategories>>,
+  productCategories: Awaited<ReturnType<typeof getAllProductCategories>>,
 ): StockItemView | null {
   const brand = brands.find((b) => b.id === item.brandId);
   const category = categories.find((c) => c.id === item.categoryId);
   if (!brand || !category) return null; // orphaned FK — skip rather than crash the page
   const model = item.modelId ? models.find((m) => m.id === item.modelId) : undefined;
-  return { ...item, brand, model, category };
+  const productCategory = item.productCategoryId ? productCategories.find((c) => c.id === item.productCategoryId) : undefined;
+  return { ...item, brand, model, category, productCategory };
 }
 
 export const getAllStock = cache(async (): Promise<StockItemView[]> => {
   try {
     const supabase = createPublicClient();
-    const [{ data, error }, brands, models, categories] = await Promise.all([
+    const [{ data, error }, brands, models, categories, productCategories] = await Promise.all([
       supabase.from("stock_items").select("*").order("created_at", { ascending: false }),
       getAllBrands(),
       getAllModels(),
       getAllCategories(),
+      getAllProductCategories(),
     ]);
     if (error) throw new Error(`getAllStock: ${error.message}`);
     return (data ?? [])
       .map(rowToStockItem)
-      .map((item) => denormalize(item, brands, models, categories))
+      .map((item) => denormalize(item, brands, models, categories, productCategories))
       .filter((item): item is StockItemView => item !== null);
   } catch (err) {
     warnFallback("getAllStock", err);
     return stockSeed
-      .map((item) => denormalize(item, brandsSeed, engineModelsSeed, partCategoriesSeed))
+      .map((item) => denormalize(item, brandsSeed, engineModelsSeed, partCategoriesSeed, productCategoriesSeed))
       .filter((item): item is StockItemView => item !== null);
   }
 });
@@ -116,29 +121,31 @@ export async function getStock(filters: StockFilters = {}): Promise<StockItemVie
     const matchBrand = !filters.brand || item.brand.slug === filters.brand;
     const matchModel = !filters.model || item.model?.slug === filters.model;
     const matchCategory = !filters.category || item.category.slug === filters.category;
+    const matchProductCategory = !filters.productCategory || item.productCategory?.slug === filters.productCategory;
     const matchCondition = !filters.condition || item.condition === filters.condition;
     const matchStatus = !filters.status || item.status === filters.status;
     const matchType = !filters.type || item.type === filters.type;
-    return matchQ && matchBrand && matchModel && matchCategory && matchCondition && matchStatus && matchType;
+    return matchQ && matchBrand && matchModel && matchCategory && matchProductCategory && matchCondition && matchStatus && matchType;
   });
 }
 
 export const getStockBySlug = cache(async (slug: string): Promise<StockItemView | undefined> => {
   try {
     const supabase = createPublicClient();
-    const [{ data, error }, brands, models, categories] = await Promise.all([
+    const [{ data, error }, brands, models, categories, productCategories] = await Promise.all([
       supabase.from("stock_items").select("*").eq("slug", slug).maybeSingle(),
       getAllBrands(),
       getAllModels(),
       getAllCategories(),
+      getAllProductCategories(),
     ]);
     if (error) throw new Error(`getStockBySlug: ${error.message}`);
     if (!data) return undefined;
-    return denormalize(rowToStockItem(data), brands, models, categories) ?? undefined;
+    return denormalize(rowToStockItem(data), brands, models, categories, productCategories) ?? undefined;
   } catch (err) {
     warnFallback("getStockBySlug", err);
     const item = stockSeed.find((s) => s.slug === slug);
-    return item ? denormalize(item, brandsSeed, engineModelsSeed, partCategoriesSeed) ?? undefined : undefined;
+    return item ? denormalize(item, brandsSeed, engineModelsSeed, partCategoriesSeed, productCategoriesSeed) ?? undefined : undefined;
   }
 });
 

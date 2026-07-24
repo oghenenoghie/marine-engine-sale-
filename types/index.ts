@@ -39,6 +39,15 @@ export interface PartCategory {
   parentId?: string | null;
 }
 
+// Top-level catalog section (Engines, Spare Parts, Gensets, Power Plants,
+// Gas Turbines) — broader than PartCategory, which is the fine-grained
+// per-part taxonomy (cylinder head, turbocharger, …).
+export interface ProductCategory {
+  id: string;
+  slug: string;
+  name: string;
+}
+
 export interface StockItem {
   id: string;
   sku: string;
@@ -48,6 +57,7 @@ export interface StockItem {
   brandId: string;
   modelId?: string | null;
   categoryId: string;
+  productCategoryId?: string | null;
   condition: Condition;
   poa: boolean;
   price: number | null;
@@ -100,4 +110,5 @@ export interface StockItemView extends StockItem {
   brand: Brand;
   model?: EngineModel;
   category: PartCategory;
+  productCategory?: ProductCategory;
 }

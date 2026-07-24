@@ -5,7 +5,12 @@
  * for pushing the same fixtures into a hosted preview/staging project.
  */
 import { createClient } from "@supabase/supabase-js";
-import { brandsSeed as brands, engineModelsSeed as engineModels, partCategoriesSeed as partCategories } from "../lib/data/taxonomy.seed";
+import {
+  brandsSeed as brands,
+  engineModelsSeed as engineModels,
+  partCategoriesSeed as partCategories,
+  productCategoriesSeed as productCategories,
+} from "../lib/data/taxonomy.seed";
 import { stockSeed } from "../lib/data/stock.seed";
 import { drawingsSeed } from "../lib/data/drawings.seed";
 
@@ -43,6 +48,11 @@ async function main() {
     partCategories.map((c) => ({ id: c.id, slug: c.slug, name: c.name, parent_id: c.parentId ?? null })),
   );
 
+  console.log("Seeding product categories…");
+  await supabase.from("categories").upsert(
+    productCategories.map((c) => ({ id: c.id, slug: c.slug, name: c.name })),
+  );
+
   console.log("Seeding drawings…");
   await supabase.from("drawings").upsert(
     drawingsSeed.map((d) => ({
@@ -65,6 +75,7 @@ async function main() {
       brand_id: s.brandId,
       model_id: s.modelId ?? null,
       category_id: s.categoryId,
+      product_category_id: s.productCategoryId ?? null,
       condition: s.condition,
       poa: s.poa,
       price: s.price,

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireAdmin, type ActionResult } from "@/lib/actions/auth";
-import type { Brand, EngineModel, PartCategory } from "@/types";
+import type { Brand, EngineModel, PartCategory, ProductCategory } from "@/types";
 
 export type { ActionResult };
 
@@ -19,6 +19,7 @@ function revalidateTaxonomyPaths() {
   revalidatePath("/brands/[brand]/[model]", "page");
   revalidatePath("/admin/brands");
   revalidatePath("/admin/categories");
+  revalidatePath("/admin/product-categories");
   revalidatePath("/admin/stock");
   revalidatePath("/sell");
 }
@@ -124,5 +125,37 @@ export async function deleteCategoryAction(id: string): Promise<ActionResult> {
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Unknown error deleting category" };
+  }
+}
+
+export async function saveProductCategoryAction(category: ProductCategory): Promise<ActionResult> {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from("categories").upsert({
+      id: category.id,
+      slug: category.slug,
+      name: category.name,
+    });
+    if (error) return { ok: false, error: error.message };
+    revalidateTaxonomyPaths();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving product category" };
+  }
+}
+
+export async function deleteProductCategoryAction(id: string): Promise<ActionResult> {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from("categories").delete().eq("id", id);
+    if (error) return { ok: false, error: error.message };
+    revalidateTaxonomyPaths();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error deleting product category" };
   }
 }

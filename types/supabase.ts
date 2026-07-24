@@ -47,6 +47,12 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["part_categories"]["Insert"]>;
         Relationships: [];
       };
+      categories: {
+        Row: { id: string; slug: string; name: string; created_at: string };
+        Insert: { id?: string; slug: string; name: string; created_at?: string };
+        Update: Partial<Database["public"]["Tables"]["categories"]["Insert"]>;
+        Relationships: [];
+      };
       stock_items: {
         Row: {
           id: string;
@@ -57,6 +63,7 @@ export interface Database {
           brand_id: string;
           model_id: string | null;
           category_id: string;
+          product_category_id: string | null;
           condition: "New" | "Used" | "Reconditioned";
           poa: boolean;
           price: number | null;

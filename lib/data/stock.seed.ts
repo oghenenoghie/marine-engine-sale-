@@ -31,6 +31,9 @@ const PISTON = "33333333-3333-3333-3333-333333333307";
 
 const VASA_32_EXPLODED = "d-vasa32-exploded";
 
+const ENGINES = "55555555-5555-5555-5555-555555555501";
+const SPARE_PARTS = "55555555-5555-5555-5555-555555555502";
+
 export const stockSeed: StockItem[] = [
   {
     id: "1",
@@ -41,6 +44,7 @@ export const stockSeed: StockItem[] = [
     brandId: WARTSILA,
     modelId: VASA_32,
     categoryId: CYLINDER_HEAD,
+    productCategoryId: SPARE_PARTS,
     condition: "Reconditioned",
     poa: false,
     price: 8450,
@@ -63,6 +67,7 @@ export const stockSeed: StockItem[] = [
     brandId: WARTSILA,
     modelId: W46,
     categoryId: CRANKSHAFT,
+    productCategoryId: SPARE_PARTS,
     condition: "Used",
     poa: true,
     price: null,
@@ -84,6 +89,7 @@ export const stockSeed: StockItem[] = [
     brandId: MAN,
     modelId: L27_38,
     categoryId: TURBOCHARGER,
+    productCategoryId: SPARE_PARTS,
     condition: "Reconditioned",
     poa: false,
     price: 12900,
@@ -105,6 +111,7 @@ export const stockSeed: StockItem[] = [
     brandId: DEUTZ,
     modelId: BF6M1015,
     categoryId: COMPLETE_ENGINE,
+    productCategoryId: ENGINES,
     condition: "Used",
     poa: false,
     price: 18500,
@@ -126,6 +133,7 @@ export const stockSeed: StockItem[] = [
     brandId: MAK,
     modelId: M8M32,
     categoryId: CYLINDER_LINER,
+    productCategoryId: SPARE_PARTS,
     condition: "New",
     poa: false,
     price: 2150,
@@ -147,6 +155,7 @@ export const stockSeed: StockItem[] = [
     brandId: CATERPILLAR,
     modelId: M3516,
     categoryId: PISTON,
+    productCategoryId: SPARE_PARTS,
     condition: "Reconditioned",
     poa: false,
     price: 1680,
@@ -168,6 +177,7 @@ export const stockSeed: StockItem[] = [
     brandId: WARTSILA,
     modelId: L20,
     categoryId: FUEL_PUMP,
+    productCategoryId: SPARE_PARTS,
     condition: "Used",
     poa: true,
     price: null,
@@ -189,6 +199,7 @@ export const stockSeed: StockItem[] = [
     brandId: WARTSILA,
     modelId: VASA_32,
     categoryId: TURBOCHARGER,
+    productCategoryId: SPARE_PARTS,
     condition: "Reconditioned",
     poa: false,
     price: 15200,
@@ -210,6 +221,7 @@ export const stockSeed: StockItem[] = [
     brandId: WARTSILA,
     modelId: VASA_32,
     categoryId: CYLINDER_LINER,
+    productCategoryId: SPARE_PARTS,
     condition: "New",
     poa: false,
     price: 3100,

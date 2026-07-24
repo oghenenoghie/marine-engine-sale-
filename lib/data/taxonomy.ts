@@ -1,7 +1,7 @@
 import { cache } from "react";
-import type { Brand, EngineModel, PartCategory } from "@/types";
+import type { Brand, EngineModel, PartCategory, ProductCategory } from "@/types";
 import { createPublicClient } from "@/lib/supabase/server";
-import { brandsSeed, engineModelsSeed, partCategoriesSeed } from "@/lib/data/taxonomy.seed";
+import { brandsSeed, engineModelsSeed, partCategoriesSeed, productCategoriesSeed } from "@/lib/data/taxonomy.seed";
 import type { Database } from "@/types/supabase";
 
 /**
@@ -18,6 +18,7 @@ function warnFallback(name: string, err: unknown) {
 type BrandRow = Database["public"]["Tables"]["brands"]["Row"];
 type ModelRow = Database["public"]["Tables"]["engine_models"]["Row"];
 type CategoryRow = Database["public"]["Tables"]["part_categories"]["Row"];
+type ProductCategoryRow = Database["public"]["Tables"]["categories"]["Row"];
 
 function rowToBrand(row: BrandRow): Brand {
   return { id: row.id, slug: row.slug, name: row.name, logo: row.logo ?? undefined, blurb: row.blurb ?? undefined };
@@ -38,6 +39,10 @@ function rowToModel(row: ModelRow): EngineModel {
 
 function rowToCategory(row: CategoryRow): PartCategory {
   return { id: row.id, slug: row.slug, name: row.name, parentId: row.parent_id };
+}
+
+function rowToProductCategory(row: ProductCategoryRow): ProductCategory {
+  return { id: row.id, slug: row.slug, name: row.name };
 }
 
 export const getAllBrands = cache(async (): Promise<Brand[]> => {
@@ -76,6 +81,18 @@ export const getAllCategories = cache(async (): Promise<PartCategory[]> => {
   }
 });
 
+export const getAllProductCategories = cache(async (): Promise<ProductCategory[]> => {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("categories").select("*").order("name");
+    if (error) throw new Error(`getAllProductCategories: ${error.message}`);
+    return (data ?? []).map(rowToProductCategory);
+  } catch (err) {
+    warnFallback("getAllProductCategories", err);
+    return productCategoriesSeed;
+  }
+});
+
 export function brandBySlug(brands: Brand[], slug: string) {
   return brands.find((b) => b.slug === slug);
 }
@@ -83,6 +100,9 @@ export function modelBySlug(models: EngineModel[], slug: string) {
   return models.find((m) => m.slug === slug);
 }
 export function categoryBySlug(categories: PartCategory[], slug: string) {
+  return categories.find((c) => c.slug === slug);
+}
+export function productCategoryBySlug(categories: ProductCategory[], slug: string) {
   return categories.find((c) => c.slug === slug);
 }
 export function modelsForBrand(models: EngineModel[], brandId: string) {
