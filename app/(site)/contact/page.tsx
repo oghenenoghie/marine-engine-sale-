@@ -3,7 +3,7 @@ import { EnquiryForm } from "@/components/forms/enquiry-form";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with the Drydock team.",
+  description: "Get in touch with the Shipcove Trading team.",
 };
 
 export default function ContactPage() {

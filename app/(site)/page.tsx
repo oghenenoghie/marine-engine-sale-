@@ -33,7 +33,7 @@ export default async function HomePage() {
               Find the part by pointing at the drawing.
             </h1>
             <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-paper/70">
-              Drydock trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and
+              Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and
               Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link
               straight to live stock.
             </p>

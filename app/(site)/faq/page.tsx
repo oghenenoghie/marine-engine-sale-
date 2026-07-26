@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 export const metadata: Metadata = {
   title: "FAQ",
-  description: "Frequently asked questions about buying and selling marine diesel engines and parts on Drydock.",
+  description: "Frequently asked questions about buying and selling marine diesel engines and parts on Shipcove Trading.",
 };
 
 const FAQS = [

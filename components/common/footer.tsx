@@ -34,7 +34,7 @@ export function Footer() {
         <div>
           <div className="flex items-center gap-2">
             <Anchor size={20} className="text-signal" />
-            <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK</span>
+            <span className="font-display text-lg font-extrabold tracking-tight">SHIPCOVE TRADING</span>
           </div>
           <p className="mt-3 max-w-[26ch] text-[13px] text-paper/60">
             Marine diesel engines and spare parts, found by drawing, part number and model.
@@ -58,7 +58,7 @@ export function Footer() {
       </div>
       <div className="border-t border-paper/10 px-6 py-4">
         <p className="mx-auto max-w-7xl font-mono text-[11px] text-paper/40">
-          © {new Date().getFullYear()} Drydock. Dordrecht.
+          © {new Date().getFullYear()} Shipcove Trading. Dordrecht.
         </p>
       </div>
     </footer>

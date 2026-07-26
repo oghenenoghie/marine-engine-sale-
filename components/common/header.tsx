@@ -20,7 +20,7 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3.5 sm:gap-6 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <Anchor size={20} className="text-signal" />
-          <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK</span>
+          <span className="font-display text-lg font-extrabold tracking-tight">SHIPCOVE TRADING</span>
         </Link>
 
         <nav className="hidden items-center gap-4 lg:flex">

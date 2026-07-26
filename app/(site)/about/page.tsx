@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Drydock is a B2B trading platform for marine diesel engines and spare parts.",
+  description: "Shipcove Trading is a B2B trading platform for marine diesel engines and spare parts.",
 };
 
 export default function AboutPage() {
@@ -12,7 +12,7 @@ export default function AboutPage() {
       <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">Findability and trust.</h1>
       <div className="mt-6 space-y-4 text-[14px] leading-relaxed text-steel">
         <p>
-          Drydock trades complete marine diesel engines and spare parts — Wärtsilä, MAN, MaK, Deutz and Caterpillar —
+          Shipcove Trading trades complete marine diesel engines and spare parts — Wärtsilä, MAN, MaK, Deutz and Caterpillar —
           for owners, operators and shipyards. The parts market is crowded with vendors selling near-identical
           inventory out of similar warehouses; what separates them online is findability and trust.
         </p>
