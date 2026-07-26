@@ -42,10 +42,10 @@ export async function POST(request: Request) {
   }
 
   const resend = getResend();
-  const notifyTo = process.env.ENQUIRY_NOTIFY_EMAIL;
+  const notifyTo = process.env.ENQUIRY_NOTIFY_EMAIL || "sales@shipcovetrading.com";
   if (resend && notifyTo) {
     await resend.emails.send({
-      from: "Drydock <enquiries@drydock.example>",
+      from: "Drydock <sales@shipcovetrading.com>",
       to: notifyTo,
       replyTo: data.email,
       subject: `${data.type === "rfq" ? "New RFQ" : "New sell enquiry"} — ${data.name}`,
