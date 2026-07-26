@@ -4,7 +4,7 @@ import { getAllBrands } from "@/lib/data/taxonomy";
 
 export const metadata: Metadata = {
   title: "Sell your equipment",
-  description: "Sell marine diesel engines and spare parts to Drydock — 24 hour response.",
+  description: "Sell marine diesel engines and spare parts to Shipcove Trading — 24 hour response.",
 };
 
 // Brands are admin-editable — never bake this into a static build.
