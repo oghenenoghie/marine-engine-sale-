@@ -37,6 +37,12 @@ const config: Config = {
           from: { strokeDashoffset: "1" },
           to: { strokeDashoffset: "0" },
         },
+        "infinite-scroll": {
+          to: { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        "infinite-scroll": "infinite-scroll var(--scroll-duration, 36s) var(--scroll-direction, forwards) linear infinite",
       },
     },
   },
