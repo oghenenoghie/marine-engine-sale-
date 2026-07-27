@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { DrawingReveal } from "@/components/motion/drawing-reveal";
+import { DitherCanvas } from "@/components/motion/dither-canvas";
+import { CategorySlider } from "@/components/motion/category-slider";
 import { ExplodedDrawing } from "@/components/drawings/exploded-drawing";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,24 @@ import { getAllBrands } from "@/lib/data/taxonomy";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
+
+const HERO_CATEGORIES = [
+  "Ship engines",
+  "Ship spare parts",
+  "Marine parts",
+  "Ship rental",
+  "Marine equipment rental",
+  "Dredger rental",
+  "Power plant",
+  "Gas turbines",
+  "Brands",
+  "Stock",
+  "Pontoon rental",
+  "Barge rental",
+  "Crane rental",
+  "Yacht rental",
+  "Sell to us",
+];
 
 export default async function HomePage() {
   const [featured, drawings, allStock, brands] = await Promise.all([
@@ -25,7 +45,8 @@ export default async function HomePage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-hull text-paper">
-        <div className="blueprint-grid absolute inset-0 opacity-40" />
+        <DitherCanvas className="absolute inset-0 h-full w-full" />
+        <div className="blueprint-grid absolute inset-0 opacity-20" />
         <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-2 lg:py-24">
           <FadeIn className="flex flex-col justify-center">
             <span className="label text-signal">Marine diesel · engines &amp; parts</span>
@@ -37,6 +58,10 @@ export default async function HomePage() {
               Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link
               straight to live stock.
             </p>
+            <div className="mt-5 flex items-center gap-2 font-mono text-[13px] uppercase tracking-wide text-paper/50">
+              <span>We deal in</span>
+              <CategorySlider items={HERO_CATEGORIES} className="min-w-[220px] font-semibold text-signal" />
+            </div>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <Link href="/parts">
