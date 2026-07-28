@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { DrawingReveal } from "@/components/motion/drawing-reveal";
 import { InfiniteScroll } from "@/components/motion/infinite-scroll";
+import { CategorySlider, type SliderCategory } from "@/components/motion/category-slider";
 import { ExplodedDrawing } from "@/components/drawings/exploded-drawing";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,26 @@ import { getAllBrands } from "@/lib/data/taxonomy";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
+
+// Rental lines (ships, dredgers, pontoons, barges, cranes, yachts) don't have
+// dedicated catalog pages yet — route those enquiries to /contact until they do.
+const HERO_CATEGORIES: SliderCategory[] = [
+  { label: "Ship engines", href: "/engines" },
+  { label: "Ship spare parts", href: "/parts" },
+  { label: "Marine parts", href: "/parts" },
+  { label: "Ship rental", href: "/contact" },
+  { label: "Marine equipment rental", href: "/contact" },
+  { label: "Dredger rental", href: "/contact" },
+  { label: "Power plant", href: "/power-plants" },
+  { label: "Gas turbines", href: "/gas-turbines" },
+  { label: "Brands", href: "/brands" },
+  { label: "Stock", href: "/stock" },
+  { label: "Pontoon rental", href: "/contact" },
+  { label: "Barge rental", href: "/contact" },
+  { label: "Crane rental", href: "/contact" },
+  { label: "Yacht rental", href: "/contact" },
+  { label: "Sell to us", href: "/sell" },
+];
 
 export default async function HomePage() {
   const [featured, drawings, allStock, brands] = await Promise.all([
@@ -58,6 +79,15 @@ export default async function HomePage() {
                 <Link href="/sell">Sell your equipment</Link>
               </Button>
             </div>
+          </FadeIn>
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-6 pb-14 sm:pb-20">
+          <FadeIn delay={0.1}>
+            <div className="flex items-center justify-between gap-4 border-t border-paper/10 pt-8">
+              <span className="label text-paper/50">Browse by category</span>
+            </div>
+            <CategorySlider categories={HERO_CATEGORIES} className="mt-5" />
           </FadeIn>
         </div>
       </section>
