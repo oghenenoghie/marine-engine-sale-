@@ -44,4 +44,13 @@
   .data {
     @apply font-mono text-[0.875rem] font-tabular;
   }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
