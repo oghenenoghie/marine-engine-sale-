@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllStock, getAllDrawings } from "@/lib/data/stock";
 import { getAllBrands, getAllModels } from "@/lib/data/taxonomy";
+import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/power-plants",
     "/gas-turbines",
     "/stock",
+    "/rentals",
+    ...RENTAL_CATEGORIES.map((c) => `/rentals/${c.slug}`),
     "/sell",
     "/about",
     "/contact",

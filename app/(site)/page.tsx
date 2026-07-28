@@ -13,23 +13,21 @@ import { getAllBrands } from "@/lib/data/taxonomy";
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
-// Rental lines (ships, dredgers, pontoons, barges, cranes, yachts) don't have
-// dedicated catalog pages yet — route those enquiries to /contact until they do.
 const HERO_CATEGORIES: SliderCategory[] = [
   { label: "Ship engines", href: "/engines" },
   { label: "Ship spare parts", href: "/parts" },
   { label: "Marine parts", href: "/parts" },
-  { label: "Ship rental", href: "/contact" },
-  { label: "Marine equipment rental", href: "/contact" },
-  { label: "Dredger rental", href: "/contact" },
+  { label: "Ship rental", href: "/rentals/ship" },
+  { label: "Marine equipment rental", href: "/rentals/marine-equipment" },
+  { label: "Dredger rental", href: "/rentals/dredger" },
   { label: "Power plant", href: "/power-plants" },
   { label: "Gas turbines", href: "/gas-turbines" },
   { label: "Brands", href: "/brands" },
   { label: "Stock", href: "/stock" },
-  { label: "Pontoon rental", href: "/contact" },
-  { label: "Barge rental", href: "/contact" },
-  { label: "Crane rental", href: "/contact" },
-  { label: "Yacht rental", href: "/contact" },
+  { label: "Pontoon rental", href: "/rentals/pontoon" },
+  { label: "Barge rental", href: "/rentals/barge" },
+  { label: "Crane rental", href: "/rentals/crane" },
+  { label: "Yacht rental", href: "/rentals/yacht" },
   { label: "Sell to us", href: "/sell" },
 ];
 

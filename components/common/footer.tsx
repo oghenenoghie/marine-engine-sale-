@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Anchor } from "lucide-react";
+import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 const COLUMNS = [
   {
@@ -12,6 +13,10 @@ const COLUMNS = [
       { href: "/gas-turbines", label: "Gas turbines" },
       { href: "/stock", label: "New & expected stock" },
     ],
+  },
+  {
+    heading: "Rental",
+    links: RENTAL_CATEGORIES.map((c) => ({ href: `/rentals/${c.slug}`, label: c.label })),
   },
   {
     heading: "Company",
@@ -30,7 +35,7 @@ const COLUMNS = [
 export function Footer() {
   return (
     <footer className="border-t border-paper/10 bg-hull text-paper">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 md:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <div>
           <div className="flex items-center gap-2">
             <Anchor size={20} className="text-paper" />
