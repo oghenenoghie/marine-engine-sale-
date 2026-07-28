@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StockCard } from "@/components/stock/stock-card";
+import { BrandLogo } from "@/components/common/brand-logo";
 import { brandBySlug, getAllBrands, getAllModels, modelsForBrand } from "@/lib/data/taxonomy";
 import { getStock } from "@/lib/data/stock";
 
@@ -28,7 +29,8 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <span className="label text-steel">Brand</span>
-      <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">{brand.name}</h1>
+      <BrandLogo brand={brand} muted={false} className="mt-2 h-12 w-48" />
+      <h1 className="mt-3 text-display-lg font-display font-bold tracking-tight text-hull">{brand.name}</h1>
       <p className="mt-2 max-w-[60ch] text-[14px] text-steel">{brand.blurb}</p>
 
       {models.length > 0 && (

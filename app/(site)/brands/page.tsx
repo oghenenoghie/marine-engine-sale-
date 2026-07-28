@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BrandLogo } from "@/components/common/brand-logo";
 import { getAllBrands } from "@/lib/data/taxonomy";
 
 export const metadata: Metadata = {
@@ -20,8 +21,9 @@ export default async function BrandsPage() {
           <Link
             key={brand.id}
             href={`/brands/${brand.slug}`}
-            className="block rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
+            className="group block rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
           >
+            <BrandLogo brand={brand} className="mb-2" />
             <div className="font-display text-lg font-bold text-hull">{brand.name}</div>
             <p className="mt-1.5 text-[13px] text-steel">{brand.blurb}</p>
           </Link>
