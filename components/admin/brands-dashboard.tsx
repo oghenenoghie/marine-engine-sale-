@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Check, PenLine, Plus, Trash2, X } from "lucide-react";
 import { cn, slugify } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { LogoUploader } from "@/components/admin/logo-uploader";
 import { saveBrandAction, deleteBrandAction, saveModelAction, deleteModelAction } from "@/lib/actions/taxonomy";
 import type { Brand, EngineModel } from "@/types";
 
@@ -89,9 +91,16 @@ export function BrandsDashboard({ initialBrands, initialModels }: { initialBrand
         {brands.map((brand) => (
           <div key={brand.id} className="rounded-sm border border-steel/15 bg-white p-4">
             <div className="flex items-start justify-between gap-2">
-              <div>
-                <div className="font-display text-base font-bold text-hull">{brand.name}</div>
-                <p className="mt-1 text-[12px] text-steel">{brand.blurb}</p>
+              <div className="flex items-center gap-3">
+                {brand.logo && (
+                  <div className="relative h-8 w-16 shrink-0">
+                    <Image src={brand.logo} alt={`${brand.name} logo`} fill unoptimized className="object-contain object-left" />
+                  </div>
+                )}
+                <div>
+                  <div className="font-display text-base font-bold text-hull">{brand.name}</div>
+                  <p className="mt-1 text-[12px] text-steel">{brand.blurb}</p>
+                </div>
               </div>
               <div className="flex shrink-0 gap-1">
                 <IconBtn onClick={() => setEditingBrand(brand)} title="Edit brand">
@@ -174,15 +183,25 @@ function BrandForm({
   const [name, setName] = useState(initial.name ?? "");
   const [slug, setSlug] = useState(initial.slug ?? "");
   const [blurb, setBlurb] = useState(initial.blurb ?? "");
+  const [logo, setLogo] = useState<string | null>(initial.logo ?? null);
   const canSave = name.trim().length > 0;
 
   const handleSave = () => {
     if (!canSave) return;
-    onSave({ id: initial.id ?? uid(), name: name.trim(), slug: slug.trim() || slugify(name), blurb: blurb.trim() || undefined });
+    onSave({
+      id: initial.id ?? uid(),
+      name: name.trim(),
+      slug: slug.trim() || slugify(name),
+      blurb: blurb.trim() || undefined,
+      logo: logo ?? undefined,
+    });
   };
 
   return (
     <SlideOver title={isNew ? "New brand" : "Edit brand"} onClose={onClose}>
+      <Field label="Logo">
+        <LogoUploader value={logo} onChange={setLogo} />
+      </Field>
       <Field label="Name">
         <TextInput value={name} onChange={setName} placeholder="Wärtsilä" />
       </Field>

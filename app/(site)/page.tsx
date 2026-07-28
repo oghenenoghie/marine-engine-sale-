@@ -4,6 +4,7 @@ import { FadeIn } from "@/components/motion/fade-in";
 import { DrawingReveal } from "@/components/motion/drawing-reveal";
 import { InfiniteScroll } from "@/components/motion/infinite-scroll";
 import { CategorySlider, type SliderCategory } from "@/components/motion/category-slider";
+import { BrandLogo } from "@/components/common/brand-logo";
 import { ExplodedDrawing } from "@/components/drawings/exploded-drawing";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
@@ -102,8 +103,9 @@ export default async function HomePage() {
                 <Link
                   key={brand.id}
                   href={`/brands/${brand.slug}`}
-                  className="flex h-full w-64 flex-col justify-center rounded-sm border border-steel/15 bg-paper px-5 py-4 transition-colors duration-200 hover:border-hull/40"
+                  className="group flex h-full w-64 flex-col justify-center rounded-sm border border-steel/15 bg-paper px-5 py-4 transition-colors duration-200 hover:border-hull/40"
                 >
+                  <BrandLogo brand={brand} className="mb-2" />
                   <div className="font-display text-base font-bold text-hull">{brand.name}</div>
                   {brand.blurb && <p className="mt-1 line-clamp-2 text-[12px] text-steel">{brand.blurb}</p>}
                 </Link>
@@ -177,8 +179,9 @@ export default async function HomePage() {
               <FadeIn key={brand.id} delay={i * 0.04}>
                 <Link
                   href={`/brands/${brand.slug}`}
-                  className="block rounded-sm border border-steel/15 bg-white p-5 transition-colors duration-200 hover:border-hull/40"
+                  className="group block rounded-sm border border-steel/15 bg-white p-5 transition-colors duration-200 hover:border-hull/40"
                 >
+                  <BrandLogo brand={brand} className="mb-2" />
                   <div className="font-display text-base font-bold text-hull">{brand.name}</div>
                   <p className="mt-1 line-clamp-2 text-[12px] text-steel">{brand.blurb}</p>
                 </Link>
