@@ -73,7 +73,7 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
           </div>
 
           <Link
-            href={activeStock ? `/parts/${activeStock.slug}` : `/sell?part=${encodeURIComponent(active.label)}`}
+            href={activeStock ? `/parts/${activeStock.slug}` : `/contact?part=${encodeURIComponent(active.label)}`}
             className="mt-3 inline-block text-[13px] font-semibold text-paper underline underline-offset-2"
           >
             {activeStock ? "View listing" : "Ask us about this part"}

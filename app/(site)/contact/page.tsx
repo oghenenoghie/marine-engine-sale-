@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   description: "Get in touch with the Shipcove Trading team.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ part?: string }> }) {
+  const { part } = await searchParams;
   return (
     <div className="mx-auto max-w-2xl px-6 py-14">
       <span className="label text-steel">Contact</span>
@@ -15,7 +16,7 @@ export default function ContactPage() {
         Sourcing a specific part, or want to talk about a bulk order? Send us a message.
       </p>
       <div className="mt-8 rounded-sm border border-steel/15 bg-white p-6">
-        <EnquiryForm type="rfq" />
+        <EnquiryForm type="rfq" stockTitle={part} />
       </div>
     </div>
   );

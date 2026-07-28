@@ -43,8 +43,8 @@ export async function POST(request: Request) {
 
   const resend = getResend();
   const notifyTo = process.env.ENQUIRY_NOTIFY_EMAIL || "sales@shipcovetrading.com";
-  if (resend && notifyTo) {
-    await resend.emails.send({
+  if (resend) {
+    const { error: emailError } = await resend.emails.send({
       from: "Shipcove Trading <sales@shipcovetrading.com>",
       to: notifyTo,
       replyTo: data.email,
@@ -55,6 +55,14 @@ export async function POST(request: Request) {
         `\n— ${data.name}${data.company ? ` (${data.company})` : ""}\n${data.email}${data.phone ? ` · ${data.phone}` : ""}`,
       ].join(""),
     });
+    // The enquiry is already saved above regardless of email outcome — this is
+    // best-effort notification, so a failure here shouldn't fail the request
+    // the visitor sees, but it must not fail silently either.
+    if (emailError) {
+      console.error("[enquiry] Resend notification failed — enquiry was still saved", emailError, { type: data.type, to: notifyTo });
+    }
+  } else {
+    console.warn("[enquiry] RESEND_API_KEY not set — recipient notification skipped for enquiry", { type: data.type, email: data.email });
   }
 
   return NextResponse.json({ ok: true });
