@@ -34,9 +34,9 @@ export default function AdminLoginPage() {
 
   return (
     <div className="grid min-h-screen place-items-center bg-hull px-6">
-      <div className="w-full max-w-sm rounded-md border border-paper/10 bg-paper/5 p-6">
+      <div className="w-full max-w-sm rounded-sm border border-paper/10 bg-paper/5 p-6">
         <div className="flex items-center gap-2 text-paper">
-          <Anchor size={20} className="text-signal" />
+          <Anchor size={20} className="text-paper" />
           <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK ADMIN</span>
         </div>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
             </Label>
             <Input id="password" name="password" type="password" required />
           </div>
-          {error && <p className="text-[12px] text-signal">{error}</p>}
+          {error && <p className="text-[12px] font-medium text-hull">{error}</p>}
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Signing in…" : "Sign in"}
           </Button>

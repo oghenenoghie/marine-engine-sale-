@@ -48,7 +48,7 @@ export async function StockListing({
           </span>
         </div>
         {items.length === 0 ? (
-          <p className="rounded-md border border-dashed border-steel/25 py-16 text-center text-[13px] text-steel">
+          <p className="rounded-sm border border-dashed border-steel/25 py-16 text-center text-[13px] text-steel">
             No {emptyLabel}s match your filters.
           </p>
         ) : (

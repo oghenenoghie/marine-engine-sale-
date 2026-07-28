@@ -50,8 +50,8 @@ export function EnquiryForm({
 
   if (status === "sent") {
     return (
-      <div className={cn("flex items-center gap-2 rounded-md bg-patina/10 px-4 py-3 text-[13px] text-patina", className)}>
-        <Check size={16} /> Thanks — we&apos;ll reply within 24 hours.
+      <div className={cn("flex items-center gap-2 rounded-sm border border-hull/20 bg-hull/[0.03] px-4 py-3 text-[13px] font-medium text-hull", className)}>
+        <Check size={16} className="shrink-0" /> Thanks — we&apos;ll reply within 24 hours.
       </div>
     );
   }
@@ -91,7 +91,7 @@ export function EnquiryForm({
       <Button type="submit" disabled={status === "submitting"} className="w-full">
         {status === "submitting" ? "Sending…" : "Send enquiry"}
       </Button>
-      {status === "error" && <p className="text-[12px] text-signal">Something went wrong — please try again.</p>}
+      {status === "error" && <p className="text-[12px] font-medium text-hull">Something went wrong — please try again.</p>}
     </form>
   );
 }

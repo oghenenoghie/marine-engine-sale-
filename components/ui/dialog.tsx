@@ -30,7 +30,7 @@ export const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-lg bg-paper p-5 shadow-2xl",
+        "fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-sm bg-paper p-5 shadow-2xl",
         className,
       )}
       {...props}
@@ -71,7 +71,7 @@ export function DialogCloseButton({ className }: { className?: string }) {
   return (
     <DialogPrimitive.Close
       className={cn(
-        "grid h-8 w-8 place-items-center rounded-md border border-steel/25 text-steel transition-colors hover:bg-hull/5",
+        "grid h-8 w-8 place-items-center rounded-sm border border-steel/25 text-steel transition-colors hover:border-hull hover:bg-hull/5 hover:text-hull",
         className,
       )}
     >

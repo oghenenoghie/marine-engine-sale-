@@ -27,7 +27,7 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
-      <span className="label text-blueprint">Brand</span>
+      <span className="label text-steel">Brand</span>
       <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">{brand.name}</h1>
       <p className="mt-2 max-w-[60ch] text-[14px] text-steel">{brand.blurb}</p>
 
@@ -39,7 +39,7 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
               <Link
                 key={model.id}
                 href={`/brands/${brand.slug}/${model.slug}`}
-                className="rounded-md border border-steel/15 bg-white p-4 transition-shadow hover:shadow-md"
+                className="rounded-sm border border-steel/15 bg-white p-4 transition-colors duration-200 hover:border-hull/40"
               >
                 <div className="font-display text-sm font-bold text-hull">{model.name}</div>
                 <div className="data mt-1 text-steel">{model.powerRange}</div>

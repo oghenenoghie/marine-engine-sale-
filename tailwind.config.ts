@@ -9,12 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        hull: "#0E1621",
-        steel: "#3B4A5A",
-        paper: "#F4F2EC",
-        blueprint: "#2E6E9E",
-        signal: "#C6602B",
-        patina: "#6E8B7B",
+        // Near-black — primary dark surface (header, footer, hero, drawing backdrops).
+        hull: "#0A0B0D",
+        // Secondary dark surface — one step up from hull, for panels/cards on a dark ground.
+        graphite: "#1D1F22",
+        // Neutral mid-grey — borders, muted text, dividers. Deliberately hue-free.
+        steel: "#4B4E54",
+        // Light neutral grey — secondary/placeholder text on both light and dark surfaces.
+        ash: "#8A8D92",
+        // Near-white page background.
+        paper: "#FAFAF9",
       },
       fontFamily: {
         display: ["var(--font-display)"],
@@ -24,13 +28,6 @@ const config: Config = {
       fontSize: {
         "display-xl": ["clamp(2.5rem, 6vw, 4.5rem)", { lineHeight: "1.05", fontWeight: "800" }],
         "display-lg": ["clamp(2rem, 4vw, 3rem)", { lineHeight: "1.1", fontWeight: "700" }],
-      },
-      backgroundImage: {
-        blueprint:
-          "linear-gradient(rgba(46,110,158,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(46,110,158,0.14) 1px, transparent 1px)",
-      },
-      backgroundSize: {
-        blueprint: "32px 32px",
       },
       keyframes: {
         "draw-line": {

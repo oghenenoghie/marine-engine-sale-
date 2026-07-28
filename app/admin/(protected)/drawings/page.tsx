@@ -12,7 +12,7 @@ export default async function AdminDrawingsPage() {
       <h1 className="font-display text-xl font-extrabold tracking-tight text-hull">Drawings</h1>
       <p className="text-[12px] text-steel">Author hotspots that link exploded diagrams to live stock.</p>
 
-      <div className="mt-6 overflow-hidden rounded-md border border-steel/15 bg-white">
+      <div className="mt-6 overflow-hidden rounded-sm border border-steel/15 bg-white">
         <table className="w-full border-collapse text-left">
           <thead>
             <tr className="bg-hull/5 text-[11px] uppercase tracking-wider text-steel">
@@ -31,7 +31,7 @@ export default async function AdminDrawingsPage() {
                   <td className="px-4 py-3 text-[13px] text-steel">{model?.name}</td>
                   <td className="px-4 py-3 font-mono text-[12px] text-steel">{d.hotspots.length}</td>
                   <td className="px-4 py-3 text-right">
-                    <Link href={`/admin/drawings/${d.id}`} className="text-[12px] font-semibold text-blueprint">
+                    <Link href={`/admin/drawings/${d.id}`} className="text-[12px] font-semibold text-hull underline underline-offset-2">
                       Edit hotspots →
                     </Link>
                   </td>

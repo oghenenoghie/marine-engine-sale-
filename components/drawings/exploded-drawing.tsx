@@ -22,7 +22,7 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
   const activeStock = active?.stockItemId ? stockById[active.stockItemId] : undefined;
 
   return (
-    <figure className="relative w-full overflow-hidden rounded-md border border-steel/25 bg-hull">
+    <figure className="relative w-full overflow-hidden rounded-sm border border-steel/25 bg-hull">
       <div className="relative aspect-[4/3] w-full">
         {imgError ? (
           <div className="grid h-full w-full place-items-center text-paper/40">
@@ -40,10 +40,11 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
             aria-label={h.label}
             aria-pressed={h.id === activeId}
             className={cn(
-              "absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border font-mono text-[11px] backdrop-blur transition-colors",
-              "border-steel/60 bg-paper/90 text-hull",
-              h.inStock && "border-signal text-signal",
-              h.id === activeId && "ring-2 ring-blueprint",
+              "absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[11px] backdrop-blur transition-all",
+              h.inStock
+                ? "border-2 border-paper bg-hull text-paper"
+                : "border border-steel/60 bg-paper/90 text-hull",
+              h.id === activeId && "ring-2 ring-paper ring-offset-2 ring-offset-hull",
             )}
           >
             {h.id}
@@ -55,7 +56,7 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
         <div className="border-t border-paper/10 bg-hull p-4 text-paper">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="label text-signal">Callout {active.id}</div>
+              <div className="label text-paper/50">Callout {active.id}</div>
               <div className="font-display text-base font-bold">{active.label}</div>
             </div>
             {activeStock && <span className="data shrink-0 text-paper/80">{formatPrice(activeStock.price, activeStock.poa, activeStock.currency)}</span>}
@@ -73,7 +74,7 @@ export function ExplodedDrawing({ assetKey, title, hotspots, stockById = {} }: E
 
           <Link
             href={activeStock ? `/parts/${activeStock.slug}` : `/sell?part=${encodeURIComponent(active.label)}`}
-            className="mt-3 inline-block text-[13px] font-semibold text-blueprint underline underline-offset-2"
+            className="mt-3 inline-block text-[13px] font-semibold text-paper underline underline-offset-2"
           >
             {activeStock ? "View listing" : "Ask us about this part"}
           </Link>

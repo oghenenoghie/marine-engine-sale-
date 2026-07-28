@@ -98,7 +98,7 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
   return (
     <div className="text-[14px] text-hull">
       {error && (
-        <div className="border-b border-signal/30 bg-signal/10 px-6 py-2 text-[12px] text-signal">{error}</div>
+        <div className="border-b border-hull/30 bg-hull/5 px-6 py-2 text-[12px] font-medium text-hull">{error}</div>
       )}
       {/* Topbar */}
       <div className="flex flex-wrap items-center gap-3 border-b border-steel/15 px-6 py-4">
@@ -112,7 +112,7 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search title, SKU or OEM number…"
-            className="w-64 rounded-md border border-steel/25 bg-white py-2 pl-9 pr-3 font-mono text-[12px] outline-none focus:ring-2 focus:ring-blueprint"
+            className="w-64 rounded-md border border-steel/25 bg-white py-2 pl-9 pr-3 font-mono text-[12px] outline-none focus:ring-2 focus:ring-hull"
           />
         </div>
         <Button onClick={() => setEditing({})}>
@@ -124,9 +124,9 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
         {/* Stats */}
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat label="Total items" value={stats.total} />
-          <Stat label="Available" value={stats.available} accent="#6E8B7B" />
-          <Stat label="Reserved" value={stats.reserved} accent="#C6602B" />
-          <Stat label="Expected" value={stats.expected} accent="#2E6E9E" />
+          <Stat label="Available" value={stats.available} />
+          <Stat label="Reserved" value={stats.reserved} />
+          <Stat label="Expected" value={stats.expected} />
         </div>
 
         {/* Filters */}
@@ -162,7 +162,7 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
                 <tr key={it.id} className="border-t border-steel/10">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="grid h-9 w-9 shrink-0 place-items-center rounded bg-blueprint/10 text-blueprint">
+                      <div className="grid h-9 w-9 shrink-0 place-items-center rounded bg-hull/5 text-hull">
                         {it.type === "engine" ? <Ship size={16} /> : <ImageIcon size={16} />}
                       </div>
                       <div className="min-w-0">
@@ -212,7 +212,7 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
                         setBrandF("All");
                         setStatusF("All");
                       }}
-                      className="font-medium text-blueprint underline"
+                      className="font-medium text-hull underline"
                     >
                       Clear
                     </button>
@@ -248,13 +248,11 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
   );
 }
 
-function Stat({ label, value, accent }: { label: string; value: number; accent?: string }) {
+function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-md border border-steel/15 bg-white/70 px-4 py-3">
       <div className="label text-steel">{label}</div>
-      <div className="mt-1 font-display text-2xl font-extrabold" style={{ color: accent }}>
-        {value}
-      </div>
+      <div className="mt-1 font-display text-2xl font-extrabold text-hull">{value}</div>
     </div>
   );
 }
@@ -276,7 +274,7 @@ function IconBtn({
       title={title}
       className={cn(
         "grid h-8 w-8 place-items-center rounded-md border border-steel/25 transition-colors hover:bg-black/5",
-        danger ? "text-signal" : "text-steel",
+        danger ? "text-hull" : "text-steel",
       )}
     >
       {children}
@@ -298,7 +296,7 @@ function NativeSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none rounded-md border border-steel/25 bg-white py-1.5 pl-3 pr-8 text-[12px] outline-none focus:ring-2 focus:ring-blueprint"
+        className="appearance-none rounded-md border border-steel/25 bg-white py-1.5 pl-3 pr-8 text-[12px] outline-none focus:ring-2 focus:ring-hull"
       >
         {options.map(([v, label]) => (
           <option key={v} value={v}>
@@ -389,7 +387,7 @@ function StockForm({
       <div onClick={(e) => e.stopPropagation()} className="flex h-full w-full max-w-md flex-col bg-paper shadow-2xl">
         <div className="flex items-center justify-between border-b border-steel/15 px-5 py-4">
           <div>
-            <div className="label text-signal">{isNew ? "New" : "Edit"} · Stock</div>
+            <div className="label text-steel">{isNew ? "New" : "Edit"} · Stock</div>
             <div className="font-display text-lg font-extrabold tracking-tight">{isNew ? "Add stock item" : f.title || "Edit item"}</div>
           </div>
           <IconBtn onClick={onClose} title="Close">
@@ -403,7 +401,7 @@ function StockForm({
               value={f.title}
               onChange={(e) => set("title", e.target.value)}
               placeholder="Cylinder head — Wärtsilä 32"
-              className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+              className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-hull"
             />
           </Field>
           <div className="grid grid-cols-2 gap-3">
@@ -412,7 +410,7 @@ function StockForm({
                 value={f.sku}
                 onChange={(e) => set("sku", e.target.value)}
                 placeholder="WRT-32-CH-000"
-                className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+                className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-hull"
               />
             </Field>
             <Field label="Type">
@@ -481,7 +479,7 @@ function StockForm({
                     type="number"
                     value={f.price ?? 0}
                     onChange={(e) => set("price", Number(e.target.value))}
-                    className="w-full flex-1 rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+                    className="w-full flex-1 rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-hull"
                   />
                 </div>
               )}
@@ -494,7 +492,7 @@ function StockForm({
                 type="number"
                 value={f.qty}
                 onChange={(e) => set("qty", Number(e.target.value))}
-                className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+                className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 font-mono text-[13px] outline-none focus:ring-2 focus:ring-hull"
               />
             </Field>
             <Field label="Status">
@@ -505,7 +503,7 @@ function StockForm({
           <Field label="OEM numbers">
             <div className="flex flex-wrap gap-1.5">
               {f.oemNumbers.map((n) => (
-                <span key={n} className="flex items-center gap-1 rounded bg-blueprint/10 px-2 py-0.5 font-mono text-[12px] text-blueprint">
+                <span key={n} className="flex items-center gap-1 rounded bg-hull/5 px-2 py-0.5 font-mono text-[12px] text-hull">
                   {n}
                   <button onClick={() => set("oemNumbers", f.oemNumbers.filter((x) => x !== n))}>
                     <X size={12} />
@@ -519,7 +517,7 @@ function StockForm({
                 onChange={(e) => setOemInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addOem())}
                 placeholder="Add number + Enter"
-                className="flex-1 rounded-md border border-steel/25 bg-white px-3 py-1.5 font-mono text-[12px] outline-none focus:ring-2 focus:ring-blueprint"
+                className="flex-1 rounded-md border border-steel/25 bg-white px-3 py-1.5 font-mono text-[12px] outline-none focus:ring-2 focus:ring-hull"
               />
               <button onClick={addOem} className="rounded-md border border-steel/25 px-3 text-[12px] text-steel">
                 Add
@@ -535,20 +533,20 @@ function StockForm({
                     value={k}
                     onChange={(e) => setSpecKey(i, e.target.value)}
                     placeholder="Bore"
-                    className="w-1/3 rounded-md border border-steel/25 bg-white px-2 py-1.5 text-[12px] outline-none focus:ring-2 focus:ring-blueprint"
+                    className="w-1/3 rounded-md border border-steel/25 bg-white px-2 py-1.5 text-[12px] outline-none focus:ring-2 focus:ring-hull"
                   />
                   <input
                     value={v}
                     onChange={(e) => setSpecVal(i, e.target.value)}
                     placeholder="320 mm"
-                    className="flex-1 rounded-md border border-steel/25 bg-white px-2 py-1.5 font-mono text-[12px] outline-none focus:ring-2 focus:ring-blueprint"
+                    className="flex-1 rounded-md border border-steel/25 bg-white px-2 py-1.5 font-mono text-[12px] outline-none focus:ring-2 focus:ring-hull"
                   />
                   <button onClick={() => removeSpec(i)} className="text-steel">
                     <X size={14} />
                   </button>
                 </div>
               ))}
-              <button onClick={addSpec} className="text-[12px] font-medium text-blueprint">
+              <button onClick={addSpec} className="text-[12px] font-medium text-hull underline underline-offset-2">
                 + Add spec
               </button>
             </div>
@@ -587,7 +585,7 @@ function SelectField({ value, onChange, options }: { value: string; onChange: (v
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none rounded-md border border-steel/25 bg-white px-3 py-2 pr-8 text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+        className="w-full appearance-none rounded-md border border-steel/25 bg-white px-3 py-2 pr-8 text-[13px] outline-none focus:ring-2 focus:ring-hull"
       >
         {options.map(([v, label]) => (
           <option key={v} value={v}>
@@ -634,7 +632,7 @@ function ConfirmDelete({
     <div className="fixed inset-0 z-50 grid place-items-center bg-hull/50 p-4" onClick={onCancel}>
       <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-lg bg-paper p-5 shadow-2xl">
         <div className="mb-1 flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-signal/15 text-signal">
+          <div className="grid h-9 w-9 place-items-center rounded-full bg-hull/10 text-hull">
             <Trash2 size={16} />
           </div>
           <div className="font-display text-base font-extrabold">Delete item?</div>

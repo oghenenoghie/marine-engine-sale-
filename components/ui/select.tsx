@@ -15,7 +15,7 @@ export const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-9 items-center justify-between gap-2 rounded-md border border-steel/25 bg-white px-3 text-[12px] text-hull outline-none focus:ring-2 focus:ring-blueprint",
+      "flex h-9 items-center justify-between gap-2 rounded-sm border border-steel/25 bg-white px-3 text-[12px] text-hull outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull",
       className,
     )}
     {...props}
@@ -37,7 +37,7 @@ export const SelectContent = React.forwardRef<
       ref={ref}
       position={position}
       className={cn(
-        "z-50 overflow-hidden rounded-md border border-steel/15 bg-white text-hull shadow-lg",
+        "z-50 overflow-hidden rounded-sm border border-steel/15 bg-white text-hull shadow-lg",
         position === "popper" && "translate-y-1",
         className,
       )}
@@ -63,7 +63,7 @@ export const SelectItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check size={13} className="text-blueprint" />
+        <Check size={13} className="text-hull" />
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

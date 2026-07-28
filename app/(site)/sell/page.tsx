@@ -22,7 +22,7 @@ export default async function SellPage() {
   const brands = await getAllBrands();
   return (
     <div className="mx-auto max-w-4xl px-6 py-14">
-      <span className="label text-signal">Sell to us</span>
+      <span className="label text-steel">Sell to us</span>
       <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">
         Tell us what you&apos;re decommissioning.
       </h1>
@@ -34,7 +34,7 @@ export default async function SellPage() {
         <ol className="space-y-5">
           {GUARANTEES.map((g, i) => (
             <li key={g.title} className="flex gap-4">
-              <span className="font-mono text-[13px] font-medium text-signal">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[13px] font-medium text-hull">{String(i + 1).padStart(2, "0")}</span>
               <div>
                 <div className="text-[13px] font-semibold text-hull">{g.title}</div>
                 <p className="mt-0.5 text-[13px] leading-relaxed text-steel">{g.detail}</p>
@@ -43,7 +43,7 @@ export default async function SellPage() {
           ))}
         </ol>
 
-        <div className="rounded-md border border-steel/15 bg-white p-6">
+        <div className="rounded-sm border border-steel/15 bg-white p-6">
           <SellForm brands={brands} />
         </div>
       </div>

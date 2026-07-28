@@ -69,7 +69,7 @@ export default async function ModelPage({ params }: { params: Promise<{ brand: s
               <Link
                 key={d.id}
                 href={`/drawings/${d.slug}`}
-                className="rounded-md border border-steel/15 bg-white p-4 transition-shadow hover:shadow-md"
+                className="rounded-sm border border-steel/15 bg-white p-4 transition-colors duration-200 hover:border-hull/40"
               >
                 <div className="font-display text-sm font-bold text-hull">{d.title}</div>
                 <div className="data mt-1 text-steel">{d.hotspots.length} callouts</div>

@@ -1,11 +1,17 @@
+import { cn } from "@/lib/utils";
 import type { StockStatus } from "@/types";
 import { Badge } from "@/components/ui/badge";
 
-const STATUS_STYLE: Record<StockStatus, { label: string; fg: string; bg: string }> = {
-  available: { label: "Available", fg: "#6E8B7B", bg: "rgba(110,139,123,0.14)" },
-  reserved: { label: "Reserved", fg: "#C6602B", bg: "rgba(198,96,43,0.14)" },
-  sold: { label: "Sold", fg: "#3B4A5A", bg: "rgba(59,74,90,0.12)" },
-  expected: { label: "Expected", fg: "#2E6E9E", bg: "rgba(46,110,158,0.14)" },
+/**
+ * Availability is a technical fact, not a brand accent — communicated by
+ * dot fill/outline and label weight (solid = live, hollow = not yet/not
+ * currently transactable), never by hue.
+ */
+const STATUS_STYLE: Record<StockStatus, { label: string; outline: boolean; dot: string; strike?: boolean }> = {
+  available: { label: "Available", outline: false, dot: "bg-paper" },
+  reserved: { label: "Reserved", outline: true, dot: "border border-steel bg-transparent" },
+  expected: { label: "Expected", outline: true, dot: "border border-dashed border-steel bg-transparent" },
+  sold: { label: "Sold", outline: true, dot: "bg-steel/50", strike: true },
 };
 
 export { STATUS_STYLE };
@@ -13,9 +19,9 @@ export { STATUS_STYLE };
 export function StatusBadge({ status }: { status: StockStatus }) {
   const s = STATUS_STYLE[status];
   return (
-    <Badge fg={s.fg} bg={s.bg}>
-      <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.fg }} />
-      {s.label}
+    <Badge outline={s.outline}>
+      <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", s.dot)} />
+      <span className={s.strike ? "line-through" : undefined}>{s.label}</span>
     </Badge>
   );
 }

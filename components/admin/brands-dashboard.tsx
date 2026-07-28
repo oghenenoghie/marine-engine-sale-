@@ -73,7 +73,7 @@ export function BrandsDashboard({ initialBrands, initialModels }: { initialBrand
 
   return (
     <div className="text-[14px] text-hull">
-      {error && <div className="mb-4 rounded-md border border-signal/30 bg-signal/10 px-4 py-2 text-[12px] text-signal">{error}</div>}
+      {error && <div className="mb-4 rounded-sm border border-hull/30 bg-hull/5 px-4 py-2 text-[12px] font-medium text-hull">{error}</div>}
 
       <div className="mb-5 flex items-center justify-between">
         <div>
@@ -87,7 +87,7 @@ export function BrandsDashboard({ initialBrands, initialModels }: { initialBrand
 
       <div className="grid gap-3 sm:grid-cols-2">
         {brands.map((brand) => (
-          <div key={brand.id} className="rounded-md border border-steel/15 bg-white p-4">
+          <div key={brand.id} className="rounded-sm border border-steel/15 bg-white p-4">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <div className="font-display text-base font-bold text-hull">{brand.name}</div>
@@ -110,14 +110,14 @@ export function BrandsDashboard({ initialBrands, initialModels }: { initialBrand
                   <button
                     key={m.id}
                     onClick={() => setEditingModel({ brandId: brand.id, model: m })}
-                    className="rounded bg-blueprint/10 px-2 py-0.5 font-mono text-[11px] text-blueprint hover:bg-blueprint/20"
+                    className="rounded-sm border border-steel/25 bg-white px-2 py-0.5 font-mono text-[11px] text-hull hover:border-hull"
                   >
                     {m.name}
                   </button>
                 ))}
               <button
                 onClick={() => setEditingModel({ brandId: brand.id, model: { brandId: brand.id } })}
-                className="rounded border border-dashed border-steel/30 px-2 py-0.5 text-[11px] text-steel hover:border-blueprint hover:text-blueprint"
+                className="rounded-sm border border-dashed border-steel/30 px-2 py-0.5 text-[11px] text-steel hover:border-hull hover:text-hull"
               >
                 + Add model
               </button>
@@ -194,7 +194,7 @@ function BrandForm({
           value={blurb}
           onChange={(e) => setBlurb(e.target.value)}
           rows={3}
-          className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+          className="w-full rounded-sm border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull"
         />
       </Field>
       <SaveBar saving={saving} disabled={!canSave} isNew={isNew} onClose={onClose} onSave={handleSave} />
@@ -300,7 +300,7 @@ function SaveBar({
 }) {
   return (
     <div className="flex items-center justify-end gap-2 border-t border-steel/15 pt-4">
-      <button onClick={onClose} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
+      <button onClick={onClose} className="rounded-sm border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel transition-colors hover:border-hull hover:text-hull">
         Cancel
       </button>
       <Button onClick={onSave} disabled={disabled || saving} variant="dark">
@@ -336,7 +336,7 @@ function TextInput({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       className={cn(
-        "w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blueprint",
+        "w-full rounded-sm border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull",
         mono && "font-mono",
       )}
     />
@@ -359,8 +359,8 @@ function IconBtn({
       onClick={onClick}
       title={title}
       className={cn(
-        "grid h-8 w-8 place-items-center rounded-md border border-steel/25 transition-colors hover:bg-black/5",
-        danger ? "text-signal" : "text-steel",
+        "grid h-8 w-8 place-items-center rounded-sm border border-steel/25 transition-colors hover:bg-black/5",
+        danger ? "text-hull" : "text-steel",
       )}
     >
       {children}
@@ -381,16 +381,16 @@ function ConfirmDelete({
 }) {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-hull/50 p-4" onClick={onCancel}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-lg bg-paper p-5 shadow-2xl">
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm rounded-sm bg-paper p-5 shadow-2xl">
         <div className="mb-1 flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-signal/15 text-signal">
+          <div className="grid h-9 w-9 place-items-center rounded-full bg-hull/10 text-hull">
             <Trash2 size={16} />
           </div>
           <div className="font-display text-base font-extrabold">Delete?</div>
         </div>
         <p className="mt-2 text-[13px] text-steel">{label}. This can&apos;t be undone.</p>
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onCancel} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
+          <button onClick={onCancel} className="rounded-sm border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel transition-colors hover:border-hull hover:text-hull">
             Cancel
           </button>
           <Button variant="primary" onClick={onConfirm} disabled={saving}>

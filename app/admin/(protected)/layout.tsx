@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="flex min-h-screen w-full bg-paper font-body text-[14px] text-hull">
       <aside className="hidden w-60 shrink-0 flex-col bg-hull md:flex">
         <div className="flex items-center gap-2 px-5 py-5 text-paper">
-          <Anchor size={22} className="text-signal" />
+          <Anchor size={22} className="text-paper" />
           <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK</span>
         </div>
         <nav className="px-3">
@@ -37,7 +37,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link
               key={item.href}
               href={item.href}
-              className="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-[13px] text-paper/60 transition-colors hover:bg-blueprint/15 hover:text-paper"
+              className="mb-1 flex items-center gap-3 rounded-sm px-3 py-2 text-[13px] text-paper/60 transition-colors hover:bg-paper/10 hover:text-paper"
             >
               <item.icon size={17} />
               {item.label}
@@ -45,7 +45,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           ))}
         </nav>
         {!authConfigured && (
-          <div className="mx-3 mt-4 rounded-md border border-signal/30 bg-signal/10 px-3 py-2 text-[11px] leading-relaxed text-signal">
+          <div className="mx-3 mt-4 rounded-sm border border-paper/25 bg-paper/5 px-3 py-2 text-[11px] leading-relaxed text-paper/80">
             Auth not configured — admin is open for local development. Set Supabase env vars to enable RLS-gated login.
           </div>
         )}

@@ -34,7 +34,7 @@ export function FacetRail({ brands }: { brands: Brand[] }) {
       <div className="mb-3 flex items-center justify-between">
         <span className="label text-steel">Filters</span>
         {hasFilters && (
-          <button onClick={clear} className="text-[12px] font-medium text-blueprint underline underline-offset-2">
+          <button onClick={clear} className="text-[12px] font-medium text-hull underline underline-offset-2">
             Clear
           </button>
         )}

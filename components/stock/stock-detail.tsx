@@ -28,7 +28,7 @@ export async function StockDetail({ item }: { item: StockItemView }) {
         </div>
 
         <div>
-          <div className="label text-blueprint">
+          <div className="label text-steel">
             {item.brand.name} {item.model ? `· ${item.model.name}` : ""}
           </div>
           <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">{item.title}</h1>
@@ -48,7 +48,7 @@ export async function StockDetail({ item }: { item: StockItemView }) {
               <div className="label text-steel">OEM numbers</div>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {item.oemNumbers.map((n) => (
-                  <span key={n} className="data rounded bg-blueprint/10 px-2 py-0.5 text-blueprint">
+                  <span key={n} className="data rounded-sm border border-steel/25 bg-white px-2 py-0.5 text-hull">
                     {n}
                   </span>
                 ))}
@@ -61,7 +61,7 @@ export async function StockDetail({ item }: { item: StockItemView }) {
             <SpecTable specs={item.specs} />
           </div>
 
-          <div className="mt-8 rounded-md border border-steel/15 bg-white p-5">
+          <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
             <h2 className="font-display text-base font-bold text-hull">Request a quote</h2>
             <p className="mt-1 text-[13px] text-steel">Most trades are POA — send an enquiry and we&apos;ll respond promptly.</p>
             <EnquiryForm type="rfq" stockItemId={item.id} stockTitle={item.title} className="mt-4" />
@@ -71,7 +71,7 @@ export async function StockDetail({ item }: { item: StockItemView }) {
 
       {drawing && (
         <div className="mt-16">
-          <div className="label text-blueprint">Where this part sits</div>
+          <div className="label text-steel">Where this part sits</div>
           <h2 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">{drawing.title}</h2>
           <div className="mt-5">
             <ExplodedDrawing assetKey={drawing.assetKey} title={drawing.title} hotspots={drawing.hotspots} stockById={stockById} />

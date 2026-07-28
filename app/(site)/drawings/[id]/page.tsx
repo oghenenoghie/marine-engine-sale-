@@ -25,7 +25,7 @@ export default async function DrawingPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
-      <span className="label text-blueprint">{model?.name}</span>
+      <span className="label text-steel">{model?.name}</span>
       <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">{drawing.title}</h1>
       <p className="mt-2 text-[13px] text-steel">Tap a numbered callout to see the part, its condition, and whether it&apos;s in stock.</p>
       <div className="mt-6">

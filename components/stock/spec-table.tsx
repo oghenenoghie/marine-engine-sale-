@@ -3,7 +3,7 @@ export function SpecTable({ specs }: { specs: Record<string, string> }) {
   if (rows.length === 0) return null;
 
   return (
-    <div className="overflow-hidden rounded-md border border-steel/15 bg-white">
+    <div className="overflow-hidden rounded-sm border border-steel/15 bg-white">
       <table className="w-full border-collapse text-left">
         <tbody>
           {rows.map(([key, value], i) => (

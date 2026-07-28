@@ -32,7 +32,7 @@ const FAQS = [
 export default function FaqPage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-14">
-      <span className="label text-blueprint">FAQ</span>
+      <span className="label text-steel">FAQ</span>
       <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">Frequently asked questions</h1>
       <div className="mt-8">
         <Accordion type="multiple">

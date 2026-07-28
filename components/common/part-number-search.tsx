@@ -24,7 +24,7 @@ export function PartNumberSearch({ className }: { className?: string }) {
         onChange={(e) => setValue(e.target.value)}
         placeholder="Search OEM part number…"
         aria-label="Search by OEM part number"
-        className="w-full rounded-md border border-steel/25 bg-white py-2 pl-9 pr-3 font-mono text-[12px] text-hull outline-none placeholder:text-steel/60 focus:ring-2 focus:ring-blueprint"
+        className="w-full rounded-sm border border-steel/25 bg-white py-2 pl-9 pr-3 font-mono text-[12px] text-hull outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull"
       />
     </form>
   );

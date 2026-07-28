@@ -25,10 +25,10 @@ export default async function AdminEnquiriesPage() {
         {enquiries.map((e) => {
           const item = stock.find((s) => s.id === e.stockItemId);
           return (
-            <div key={e.id} className="rounded-md border border-steel/15 bg-white p-4">
+            <div key={e.id} className="rounded-sm border border-steel/15 bg-white p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <span className="rounded bg-blueprint/10 px-2 py-0.5 font-mono text-[11px] uppercase text-blueprint">
+                  <span className="rounded-sm border border-steel/25 px-2 py-0.5 font-mono text-[11px] uppercase text-steel">
                     {e.type === "rfq" ? "Quote request" : "Sell enquiry"}
                   </span>
                   <div className="mt-1.5 text-[14px] font-semibold text-hull">
@@ -38,7 +38,7 @@ export default async function AdminEnquiriesPage() {
                 </div>
                 <span className="shrink-0 font-mono text-[11px] text-steel">{formatWhen(e.createdAt)}</span>
               </div>
-              {item && <div className="mt-2 text-[12px] text-blueprint">Re: {item.title}</div>}
+              {item && <div className="mt-2 text-[12px] font-medium text-hull">Re: {item.title}</div>}
               <p className="mt-2 whitespace-pre-line text-[13px] text-steel">{e.message}</p>
               {e.attachments && e.attachments.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">

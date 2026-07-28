@@ -44,25 +44,25 @@ export default function DbTestPage() {
       {report && (
         <div className="mt-6 space-y-2">
           <div
-            className={`rounded-md border px-3 py-2 text-[13px] font-semibold ${
-              report.ok ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-signal/30 bg-signal/10 text-signal"
+            className={`rounded-sm border px-3 py-2 text-[13px] font-semibold ${
+              report.ok ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-hull/30 bg-hull/5 text-hull"
             }`}
           >
             {report.ok ? "All checks passed" : "Failed"}
           </div>
           {report.steps.map((step, i) => (
-            <div key={i} className="flex items-start gap-2 rounded-md border border-steel/15 bg-white px-3 py-2">
+            <div key={i} className="flex items-start gap-2 rounded-sm border border-steel/15 bg-white px-3 py-2">
               {step.ok ? (
                 <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-600" />
               ) : (
-                <XCircle size={16} className="mt-0.5 shrink-0 text-signal" />
+                <XCircle size={16} className="mt-0.5 shrink-0 text-hull" />
               )}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[13px] font-medium text-hull">{step.label}</span>
                   <span className="shrink-0 font-mono text-[11px] text-steel">{step.ms}ms</span>
                 </div>
-                <p className={`mt-0.5 break-words text-[12px] ${step.ok ? "text-steel" : "text-signal"}`}>{step.detail}</p>
+                <p className={`mt-0.5 break-words text-[12px] ${step.ok ? "text-steel" : "font-medium text-hull"}`}>{step.detail}</p>
               </div>
             </div>
           ))}
