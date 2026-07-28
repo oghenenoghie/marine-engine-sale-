@@ -1,4 +1,5 @@
 import type { Brand, EngineModel, PartCategory, ProductCategory } from "@/types";
+import { BRAND_LOGOS } from "@/lib/data/brand-logos.seed";
 
 // Fixture data pushed into Supabase by scripts/seed.ts and supabase/seed.sql
 // — ids match what that seed produces. Also imported directly by
@@ -7,11 +8,11 @@ import type { Brand, EngineModel, PartCategory, ProductCategory } from "@/types"
 // whose fixtures reference these same UUIDs.
 export const brandsSeed: Brand[] = [
   { id: "11111111-1111-1111-1111-111111111101", slug: "wartsila", name: "Wärtsilä", blurb: "Finnish four-stroke medium-speed diesel and dual-fuel engines." },
-  { id: "11111111-1111-1111-1111-111111111102", slug: "man", name: "MAN", blurb: "Two- and four-stroke marine propulsion from MAN Energy Solutions." },
+  { id: "11111111-1111-1111-1111-111111111102", slug: "man", name: "MAN", blurb: "Two- and four-stroke marine propulsion from MAN Energy Solutions.", logo: BRAND_LOGOS.man },
   { id: "11111111-1111-1111-1111-111111111103", slug: "mak", name: "MaK", blurb: "German medium-speed diesel engines, part of the Caterpillar Marine family." },
   { id: "11111111-1111-1111-1111-111111111104", slug: "deutz", name: "Deutz", blurb: "Compact high-speed diesels for auxiliary and propulsion duty." },
-  { id: "11111111-1111-1111-1111-111111111105", slug: "caterpillar", name: "Caterpillar", blurb: "Heavy-duty diesel engines and genuine reman parts." },
-  { id: "11111111-1111-1111-1111-111111111106", slug: "abb", name: "ABB" },
+  { id: "11111111-1111-1111-1111-111111111105", slug: "caterpillar", name: "Caterpillar", blurb: "Heavy-duty diesel engines and genuine reman parts.", logo: BRAND_LOGOS.caterpillar },
+  { id: "11111111-1111-1111-1111-111111111106", slug: "abb", name: "ABB", logo: BRAND_LOGOS.abb },
   { id: "11111111-1111-1111-1111-111111111107", slug: "bergen", name: "Bergen" },
   { id: "11111111-1111-1111-1111-111111111108", slug: "man-bw", name: "MAN B&W" },
   { id: "11111111-1111-1111-1111-111111111109", slug: "mtu", name: "MTU" },
