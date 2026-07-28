@@ -54,7 +54,7 @@ there is no separate test job in CI yet, so run `pnpm test` locally.
 ```
 app/
 ├── (site)/            public site: home, engines, parts, brands/[brand]/[model],
-│                      drawings/[id], stock, sell, about, contact, faq
+│                      drawings/[id], stock, rentals/[type], sell, about, contact, faq
 │                      + layout.tsx, loading.tsx, error.tsx, not-found.tsx
 ├── admin/
 │   ├── login/         Supabase-auth login
@@ -141,6 +141,11 @@ referencing an optional `StockItem`.
     or taxonomy fixtures. `scripts/seed.ts` separately pushes these same
     fixtures *into* a real Supabase project; that's a different use of the
     same files, not related to the runtime fallback.
+  - `lib/data/rentals.ts` is plain static content, not a Supabase table —
+    the rental lines (ship/marine-equipment/dredger/pontoon/barge/crane/yacht)
+    have no inventory/availability system yet, so `/rentals/[type]` pages are
+    content + an enquiry form, not a stock listing. If real rental inventory
+    is ever added, this should move to Supabase like `stock.ts`.
 - **Admin writes go through server actions** (`lib/actions/stock.ts`,
   `lib/actions/taxonomy.ts`), which call `requireAdmin()` (`lib/actions/auth.ts`)
   to check `user.app_metadata.role === "admin"` before writing via the

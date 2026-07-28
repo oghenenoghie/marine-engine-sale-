@@ -9,6 +9,7 @@ const NAV = [
   { href: "/gensets", label: "Gensets" },
   { href: "/power-plants", label: "Power plants" },
   { href: "/gas-turbines", label: "Gas turbines" },
+  { href: "/rentals", label: "Rentals" },
   { href: "/brands", label: "Brands" },
   { href: "/stock", label: "Stock" },
   { href: "/sell", label: "Sell to us" },
