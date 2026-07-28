@@ -45,7 +45,7 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-      <div className="relative overflow-hidden rounded-md border border-steel/25 bg-hull">
+      <div className="relative overflow-hidden rounded-sm border border-steel/25 bg-hull">
         <div
           className={cn("relative aspect-[4/3] w-full", placing && "cursor-crosshair")}
           onClick={(e) => {
@@ -76,8 +76,8 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
               }}
               style={{ left: `${h.x * 100}%`, top: `${h.y * 100}%` }}
               className={cn(
-                "absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border bg-paper/90 font-mono text-[11px] text-hull",
-                h.id === selectedId ? "border-blueprint ring-2 ring-blueprint" : "border-steel/60",
+                "absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border bg-paper/90 font-mono text-[11px] text-hull transition-shadow",
+                h.id === selectedId ? "border-hull ring-2 ring-hull" : "border-steel/60",
               )}
             >
               {h.id}
@@ -85,7 +85,7 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
           ))}
         </div>
         <div className="flex items-center justify-between border-t border-paper/10 p-3">
-          <Button variant={placing ? "dark" : "outline"} size="sm" onClick={() => setPlacing((p) => !p)} className={!placing ? "bg-white" : undefined}>
+          <Button variant={placing ? "inverse" : "outline"} size="sm" onClick={() => setPlacing((p) => !p)} className={!placing ? "bg-white" : undefined}>
             <Plus size={14} /> {placing ? "Click on drawing to place" : "Add hotspot"}
           </Button>
           <span className="data text-paper/50">{hotspots.length} hotspots</span>
@@ -115,7 +115,7 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
                   const stockItemId = e.target.value || null;
                   updateSelected({ stockItemId, inStock: !!stockItemId });
                 }}
-                className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+                className="w-full rounded-sm border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull"
               >
                 <option value="">— Not listed —</option>
                 {stockOptions.map((s) => (
@@ -126,7 +126,7 @@ export function HotspotEditor({ assetKey, title, initialHotspots, stockOptions, 
               </select>
             </div>
 
-            <Button variant="outline" size="sm" onClick={removeSelected} className="w-full text-signal">
+            <Button variant="outline" size="sm" onClick={removeSelected} className="w-full font-semibold">
               <Trash2 size={14} /> Remove hotspot
             </Button>
           </div>

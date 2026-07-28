@@ -27,24 +27,21 @@ export default async function HomePage() {
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
         <div
-          className="blueprint-grid absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[900px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-blueprint/25 blur-[120px]"
+          className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
           aria-hidden
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
-          <DrawingReveal className="h-[560px] w-[560px] text-blueprint/10" />
+          <DrawingReveal className="h-[560px] w-[560px] text-paper/[0.08]" />
         </div>
 
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center lg:py-32">
           <FadeIn className="flex flex-col items-center">
-            <span className="label inline-flex items-center rounded-full border border-paper/15 bg-paper/5 px-4 py-1.5 text-signal">
+            <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
+              <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
               Marine diesel · engines &amp; parts
             </span>
             <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">
-              Find the part by <span className="text-blueprint">pointing at the drawing.</span>
+              Find the part by <span className="border-b-2 border-paper/25 pb-0.5">pointing at the drawing.</span>
             </h1>
             <p className="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-paper/70">
               Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and
@@ -52,7 +49,7 @@ export default async function HomePage() {
               straight to live stock.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg">
+              <Button asChild variant="inverse" size="lg">
                 <Link href="/parts">
                   Browse parts <ArrowRight size={16} />
                 </Link>
@@ -69,7 +66,7 @@ export default async function HomePage() {
       {brands.length > 0 && (
         <section className="border-b border-steel/10 bg-white py-10">
           <div className="mx-auto max-w-7xl px-6">
-            <span className="label text-blueprint">Brands we trade across</span>
+            <span className="label text-steel">Brands we trade across</span>
           </div>
           <div className="mt-5">
             <InfiniteScroll speed="normal">
@@ -77,7 +74,7 @@ export default async function HomePage() {
                 <Link
                   key={brand.id}
                   href={`/brands/${brand.slug}`}
-                  className="flex h-full w-64 flex-col justify-center rounded-md border border-steel/15 bg-paper px-5 py-4 transition-shadow hover:shadow-md"
+                  className="flex h-full w-64 flex-col justify-center rounded-sm border border-steel/15 bg-paper px-5 py-4 transition-colors duration-200 hover:border-hull/40"
                 >
                   <div className="font-display text-base font-bold text-hull">{brand.name}</div>
                   {brand.blurb && <p className="mt-1 line-clamp-2 text-[12px] text-steel">{brand.blurb}</p>}
@@ -94,12 +91,15 @@ export default async function HomePage() {
           <FadeIn>
             <div className="mb-6 flex items-end justify-between gap-4">
               <div>
-                <span className="label text-blueprint">Drawing-driven discovery</span>
+                <span className="label text-steel">Drawing-driven discovery</span>
                 <h2 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">
                   Tap a callout, land on the part.
                 </h2>
               </div>
-              <Link href={`/drawings/${heroDrawing.slug}`} className="hidden text-[13px] font-semibold text-blueprint sm:block">
+              <Link
+                href={`/drawings/${heroDrawing.slug}`}
+                className="hidden shrink-0 text-[13px] font-semibold text-hull underline underline-offset-4 sm:block"
+              >
                 Open full diagram →
               </Link>
             </div>
@@ -119,10 +119,10 @@ export default async function HomePage() {
           <FadeIn>
             <div className="mb-6 flex items-end justify-between gap-4">
               <div>
-                <span className="label text-blueprint">In stock</span>
+                <span className="label text-steel">In stock</span>
                 <h2 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">Featured listings</h2>
               </div>
-              <Link href="/stock" className="text-[13px] font-semibold text-blueprint">
+              <Link href="/stock" className="shrink-0 text-[13px] font-semibold text-hull underline underline-offset-4">
                 View all stock →
               </Link>
             </div>
@@ -141,7 +141,7 @@ export default async function HomePage() {
       <section className="bg-paper py-16">
         <div className="mx-auto max-w-7xl px-6">
           <FadeIn>
-            <span className="label text-blueprint">Brands</span>
+            <span className="label text-steel">Brands</span>
             <h2 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">Trading across the fleet</h2>
           </FadeIn>
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -149,7 +149,7 @@ export default async function HomePage() {
               <FadeIn key={brand.id} delay={i * 0.04}>
                 <Link
                   href={`/brands/${brand.slug}`}
-                  className="block rounded-md border border-steel/15 bg-white p-5 transition-shadow hover:shadow-md"
+                  className="block rounded-sm border border-steel/15 bg-white p-5 transition-colors duration-200 hover:border-hull/40"
                 >
                   <div className="font-display text-base font-bold text-hull">{brand.name}</div>
                   <p className="mt-1 line-clamp-2 text-[12px] text-steel">{brand.blurb}</p>
@@ -163,9 +163,9 @@ export default async function HomePage() {
       {/* Sell-to-us CTA */}
       <section className="bg-hull py-16 text-paper">
         <div className="mx-auto max-w-7xl px-6">
-          <FadeIn className="flex flex-col items-start justify-between gap-6 rounded-md border border-paper/10 bg-paper/5 p-8 md:flex-row md:items-center">
+          <FadeIn className="flex flex-col items-start justify-between gap-6 border border-paper/15 p-8 md:flex-row md:items-center">
             <div>
-              <span className="label text-signal">Sell to us</span>
+              <span className="label text-paper/60">Sell to us</span>
               <h2 className="mt-1 text-display-lg font-display font-bold tracking-tight">
                 Decommissioning or upgrading? We buy engines and parts.
               </h2>
@@ -173,7 +173,7 @@ export default async function HomePage() {
                 Tell us the brand, model and condition — we respond within 24 hours.
               </p>
             </div>
-            <Button asChild size="lg">
+            <Button asChild variant="inverse" size="lg" className="shrink-0">
               <Link href="/sell">
                 Start a sell enquiry <ArrowRight size={16} />
               </Link>

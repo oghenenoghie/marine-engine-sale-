@@ -33,7 +33,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-2">
-            <Anchor size={20} className="text-signal" />
+            <Anchor size={20} className="text-paper" />
             <span className="font-display text-lg font-extrabold tracking-tight">SHIPCOVE TRADING</span>
           </div>
           <p className="mt-3 max-w-[26ch] text-[13px] text-paper/60">

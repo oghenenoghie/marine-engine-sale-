@@ -20,7 +20,7 @@ export default async function BrandsPage() {
           <Link
             key={brand.id}
             href={`/brands/${brand.slug}`}
-            className="block rounded-md border border-steel/15 bg-white p-6 transition-shadow hover:shadow-md"
+            className="block rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
           >
             <div className="font-display text-lg font-bold text-hull">{brand.name}</div>
             <p className="mt-1.5 text-[13px] text-steel">{brand.blurb}</p>

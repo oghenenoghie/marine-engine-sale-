@@ -3,21 +3,19 @@ import { cn } from "@/lib/utils";
 
 export function Badge({
   className,
-  fg,
-  bg,
+  outline,
   children,
 }: {
   className?: string;
-  fg?: string;
-  bg?: string;
+  /** Hollow/outline treatment instead of the solid-fill default. */
+  outline?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <span
-      style={{ color: fg, background: bg }}
       className={cn(
-        "inline-flex items-center gap-1 rounded px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wide",
-        !fg && !bg && "bg-steel/10 text-steel",
+        "inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wide",
+        outline ? "border-steel/40 bg-transparent text-steel" : "border-hull bg-hull text-paper",
         className,
       )}
     >

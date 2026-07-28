@@ -45,8 +45,8 @@ export function SellForm({ brands, className }: { brands: Brand[]; className?: s
 
   if (status === "sent") {
     return (
-      <div className={cn("flex items-center gap-2 rounded-md bg-patina/10 px-4 py-3 text-[13px] text-patina", className)}>
-        <Check size={16} /> Received — we respond to every sell enquiry within 24 hours.
+      <div className={cn("flex items-center gap-2 rounded-sm border border-hull/20 bg-hull/[0.03] px-4 py-3 text-[13px] font-medium text-hull", className)}>
+        <Check size={16} className="shrink-0" /> Received — we respond to every sell enquiry within 24 hours.
       </div>
     );
   }
@@ -61,7 +61,7 @@ export function SellForm({ brands, className }: { brands: Brand[]; className?: s
             name="brand"
             required
             defaultValue=""
-            className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+            className="w-full rounded-sm border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull"
           >
             <option value="" disabled>
               Select brand
@@ -87,7 +87,7 @@ export function SellForm({ brands, className }: { brands: Brand[]; className?: s
           name="condition"
           required
           defaultValue=""
-          className="w-full rounded-md border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blueprint"
+          className="w-full rounded-sm border border-steel/25 bg-white px-3 py-2 text-[13px] outline-none transition-colors focus:border-hull focus:ring-2 focus:ring-hull"
         >
           <option value="" disabled>
             Select condition
@@ -133,7 +133,7 @@ export function SellForm({ brands, className }: { brands: Brand[]; className?: s
       <Button type="submit" disabled={status === "submitting"} className="w-full">
         {status === "submitting" ? "Sending…" : "Submit sell enquiry"}
       </Button>
-      {status === "error" && <p className="text-[12px] text-signal">Something went wrong — please try again.</p>}
+      {status === "error" && <p className="text-[12px] font-medium text-hull">Something went wrong — please try again.</p>}
     </form>
   );
 }

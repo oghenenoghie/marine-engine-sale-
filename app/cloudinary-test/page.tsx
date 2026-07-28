@@ -15,7 +15,7 @@ function EnvRow({ label, value }: { label: string; value?: string }) {
       {value ? (
         <span className="truncate font-mono text-emerald-600">{value}</span>
       ) : (
-        <span className="font-mono font-semibold text-signal">MISSING</span>
+        <span className="font-mono font-semibold text-hull">MISSING</span>
       )}
     </div>
   );
@@ -62,7 +62,7 @@ export default function CloudinaryTestPage() {
           )}
         </CldUploadWidget>
       ) : (
-        <p className="mt-6 text-[13px] text-signal">
+        <p className="mt-6 text-[13px] font-medium text-hull">
           Set the missing env var(s) above in Vercel and redeploy before testing — the widget can&apos;t initialize
           without them.
         </p>

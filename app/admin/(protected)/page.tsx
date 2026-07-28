@@ -4,13 +4,11 @@ import { getAllEnquiries } from "@/lib/data/enquiries";
 
 export const dynamic = "force-dynamic";
 
-function Stat({ label, value, accent }: { label: string; value: number | string; accent?: string }) {
+function Stat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-md border border-steel/15 bg-white px-4 py-3">
+    <div className="rounded-sm border border-steel/15 bg-white px-4 py-3">
       <div className="label text-steel">{label}</div>
-      <div className="mt-1 font-display text-2xl font-extrabold" style={{ color: accent }}>
-        {value}
-      </div>
+      <div className="mt-1 font-display text-2xl font-extrabold text-hull">{value}</div>
     </div>
   );
 }
@@ -33,15 +31,15 @@ export default async function AdminDashboardPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Total items" value={stats.total} />
-        <Stat label="Available" value={stats.available} accent="#6E8B7B" />
-        <Stat label="Reserved" value={stats.reserved} accent="#C6602B" />
-        <Stat label="Expected" value={stats.expected} accent="#2E6E9E" />
+        <Stat label="Available" value={stats.available} />
+        <Stat label="Reserved" value={stats.reserved} />
+        <Stat label="Expected" value={stats.expected} />
       </div>
 
-      <div className="mt-8 rounded-md border border-steel/15 bg-white p-5">
+      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-base font-bold text-hull">Recent enquiries</h2>
-          <Link href="/admin/enquiries" className="text-[12px] font-semibold text-blueprint">
+          <Link href="/admin/enquiries" className="text-[12px] font-semibold text-hull underline underline-offset-2">
             View all →
           </Link>
         </div>

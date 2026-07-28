@@ -46,7 +46,7 @@ export function ImageUploader({
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return (
-      <div className="flex items-start gap-2 rounded-md border border-dashed border-steel/25 px-3 py-3 text-steel">
+      <div className="flex items-start gap-2 rounded-sm border border-dashed border-steel/25 px-3 py-3 text-steel">
         <Upload size={16} className="mt-0.5 shrink-0" />
         <span className="text-[12px]">Set NEXT_PUBLIC_SUPABASE_URL to enable image uploads.</span>
       </div>
@@ -98,8 +98,8 @@ export function ImageUploader({
             <div
               key={img.url}
               className={cn(
-                "group relative aspect-square overflow-hidden rounded-md border",
-                img.isPrimary ? "border-signal" : "border-steel/20",
+                "group relative aspect-square overflow-hidden rounded-sm border",
+                img.isPrimary ? "border-hull" : "border-steel/20",
               )}
             >
               <Image src={img.url} alt={img.alt} fill unoptimized className="object-cover" />
@@ -110,7 +110,7 @@ export function ImageUploader({
                   title="Set as primary photo"
                   className={cn(
                     "grid h-6 w-6 place-items-center rounded-full bg-white/90",
-                    img.isPrimary ? "text-signal" : "text-steel",
+                    img.isPrimary ? "text-hull" : "text-steel",
                   )}
                 >
                   <Star size={12} fill={img.isPrimary ? "currentColor" : "none"} />
@@ -119,13 +119,13 @@ export function ImageUploader({
                   type="button"
                   onClick={() => removeImage(img.url)}
                   title="Remove photo"
-                  className="grid h-6 w-6 place-items-center rounded-full bg-white/90 text-signal"
+                  className="grid h-6 w-6 place-items-center rounded-full bg-white/90 text-hull"
                 >
                   <Trash2 size={12} />
                 </button>
               </div>
               {img.isPrimary && (
-                <span className="absolute bottom-1 left-1 rounded bg-signal px-1.5 py-0.5 text-[9px] font-semibold uppercase text-white">
+                <span className="absolute bottom-1 left-1 rounded-sm bg-hull px-1.5 py-0.5 text-[9px] font-semibold uppercase text-paper">
                   Primary
                 </span>
               )}
@@ -135,7 +135,7 @@ export function ImageUploader({
       )}
 
       {error && (
-        <div className="flex items-start gap-2 rounded-md border border-signal/30 bg-signal/10 px-3 py-2 text-signal">
+        <div className="flex items-start gap-2 rounded-sm border border-hull/30 bg-hull/5 px-3 py-2 text-hull">
           <AlertTriangle size={14} className="mt-0.5 shrink-0" />
           <span className="text-[12px]">{error}</span>
         </div>

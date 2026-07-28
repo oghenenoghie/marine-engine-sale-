@@ -166,19 +166,33 @@ referencing an optional `StockItem`.
 
 ## Design system — "Drydock"
 
-Blueprint-drafting-table aesthetic: precise/engineered/honest, not luxury or
-startup-slick. Full rationale in the `drydock-marine-platform` skill.
+Machined-metal/engine-room aesthetic: precise, industrial, premium — not
+luxury, not startup-slick, not colourful. Near-monochrome; hierarchy comes
+from contrast (black/white/grey values), never hue. Full rationale in the
+`drydock-marine-platform` skill (note: that skill's palette doc predates this
+monochrome pass — this file is the source of truth for current tokens).
 
-- **Colors** (`tailwind.config.ts`): `hull #0E1621` (primary dark), `steel #3B4A5A`,
-  `paper #F4F2EC` (page background), `blueprint #2E6E9E` (technical accent/links),
-  `signal #C6602B` (CTA/in-stock, used sparingly), `patina #6E8B7B` (success/secondary).
+- **Colors** (`tailwind.config.ts`): `hull #0A0B0D` (near-black — primary dark
+  surface: header, footer, hero, drawing backdrops), `graphite #1D1F22`
+  (secondary dark surface, one step up from hull), `steel #4B4E54` (neutral
+  mid-grey — borders, muted text, dividers), `ash #8A8D92` (light neutral grey
+  — secondary/placeholder text), `paper #FAFAF9` (near-white page background).
+  No hue-based accent color — CTAs and emphasis use solid black-on-white /
+  white-on-black (`Button` `primary`/`dark` = black, `inverse` = white, for
+  use on hull/graphite surfaces). Availability/status (`StatusBadge`) is
+  communicated by dot fill/outline and label weight (solid = available,
+  hollow = reserved, dashed = expected, struck-through = sold), never by hue.
 - **Type roles** (`lib/fonts.ts`, CSS vars `--font-display` / `--font-body` / `--font-mono`):
   Archivo 700/800 for display, IBM Plex Sans 400/500/600 for body/UI,
   IBM Plex Mono 400/500 for part numbers/SKUs/specs (`tabular-nums`).
+- Sharp, machined edges: `rounded-sm` (2px) on cards/inputs/buttons, not
+  `rounded-md`/`rounded-lg`. Thin hairline borders (`border-steel/15`–`/40`)
+  over shadows; hover states shift border/background tone, not drop-shadow.
 - Callout numbers (01/02…) are reserved for exploded diagrams and the sell-to-us
   process — never purely decorative.
 - Motion stays restrained: fade-up on scroll, one hero moment (drawing lines via
-  `stroke-dashoffset`). No parallax/bounce.
+  `stroke-dashoffset`), underline-reveal on nav links, subtle image scale
+  (~1.02–1.04) on product-card hover. No parallax/bounce.
 
 ## Environment variables (`.env.example`)
 

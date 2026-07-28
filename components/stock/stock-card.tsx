@@ -12,7 +12,7 @@ export function StockCard({ item }: { item: StockItemView }) {
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-md border border-steel/15 bg-white transition-shadow hover:shadow-lg"
+      className="group block overflow-hidden rounded-sm border border-steel/15 bg-white transition-colors duration-300 hover:border-hull/40"
     >
       <div className="relative aspect-[4/3] w-full bg-paper">
         {img ? (

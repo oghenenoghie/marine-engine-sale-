@@ -28,9 +28,9 @@ export function HotspotEditorPanel({ drawing, stockOptions }: { drawing: Drawing
           }
         }}
       />
-      {error && <p className="mt-3 text-[13px] text-signal">{error}</p>}
+      {error && <p className="mt-3 text-[13px] font-medium text-hull">{error}</p>}
       {saved && (
-        <div className="mt-3 flex items-center gap-2 rounded-md bg-patina/10 px-4 py-2 text-[13px] text-patina">
+        <div className="mt-3 flex items-center gap-2 rounded-sm border border-hull/20 bg-hull/[0.03] px-4 py-2 text-[13px] font-medium text-hull">
           <Check size={16} /> Hotspots saved.
         </div>
       )}

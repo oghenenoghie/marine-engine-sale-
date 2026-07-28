@@ -12,7 +12,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
 
   if (photos.length === 0) {
     return (
-      <div className="grid aspect-[4/3] w-full place-items-center rounded-md border border-steel/15 bg-white text-steel/40">
+      <div className="grid aspect-[4/3] w-full place-items-center rounded-sm border border-steel/15 bg-white text-steel/40">
         <ImageIcon size={40} />
       </div>
     );
@@ -22,7 +22,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
 
   return (
     <div>
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md border border-steel/15 bg-white">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-steel/15 bg-white">
         <Image
           src={current.url}
           alt={current.alt}
@@ -30,7 +30,7 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
           unoptimized
           priority
           sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-contain"
+          className="object-contain transition-opacity duration-300"
         />
       </div>
       {photos.length > 1 && (
@@ -41,8 +41,8 @@ export function Gallery({ images, title }: { images: StockImage[]; title: string
               onClick={() => setActive(i)}
               aria-label={`Show photo ${i + 1}`}
               className={cn(
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded border",
-                i === active ? "border-blueprint" : "border-steel/20",
+                "relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border transition-colors",
+                i === active ? "border-hull" : "border-steel/20 hover:border-steel/50",
               )}
             >
               <Image src={img.url} alt={img.alt} fill unoptimized className="object-cover" />

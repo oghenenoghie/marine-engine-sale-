@@ -19,7 +19,7 @@ export function PhotoUploader({ photoUrls, onChange }: { photoUrls: string[]; on
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return (
-      <div className="flex items-start gap-2 rounded-md border border-dashed border-steel/25 px-3 py-3 text-steel">
+      <div className="flex items-start gap-2 rounded-sm border border-dashed border-steel/25 px-3 py-3 text-steel">
         <Upload size={16} className="mt-0.5 shrink-0" />
         <span className="text-[12px]">Photo upload is not configured yet — reply-all any photos to the confirmation email.</span>
       </div>
@@ -62,7 +62,7 @@ export function PhotoUploader({ photoUrls, onChange }: { photoUrls: string[]; on
       {photoUrls.length > 0 && (
         <div className="grid grid-cols-4 gap-2">
           {photoUrls.map((url) => (
-            <div key={url} className="group relative aspect-square overflow-hidden rounded-md border border-steel/20">
+            <div key={url} className="group relative aspect-square overflow-hidden rounded-sm border border-steel/20">
               <Image src={url} alt="Uploaded equipment photo" fill unoptimized className="object-cover" />
               <button
                 type="button"
@@ -95,7 +95,7 @@ export function PhotoUploader({ photoUrls, onChange }: { photoUrls: string[]; on
         {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
         {uploading ? "Uploading…" : "Add photos"}
       </Button>
-      {error && <p className="text-[12px] text-signal">{error}</p>}
+      {error && <p className="text-[12px] font-medium text-hull">{error}</p>}
     </div>
   );
 }
