@@ -4,6 +4,7 @@ import { PhotoUploader } from "./photo-uploader";
 
 // vi.mock calls are hoisted above these imports by vitest's transform.
 vi.mock("next/image", () => ({
+  // eslint-disable-next-line @next/next/no-img-element -- stand-in for next/image in jsdom, not shipped code
   default: (props: { src: string; alt: string }) => <img src={props.src} alt={props.alt} />,
 }));
 
