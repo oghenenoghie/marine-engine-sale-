@@ -79,6 +79,10 @@ export default async function HomePage() {
                 <Link href="/sell">Sell your equipment</Link>
               </Button>
             </div>
+            <span className="label mt-10 inline-flex items-center gap-2 border border-paper/15 px-4 py-1.5 text-paper/60">
+              <span className="h-1 w-1 shrink-0 rounded-full bg-paper/60" aria-hidden />
+              Drawing-driven part discovery
+            </span>
           </FadeIn>
         </div>
 
