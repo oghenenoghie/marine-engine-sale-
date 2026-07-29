@@ -43,8 +43,13 @@ export async function POST(request: Request) {
 
   const resend = getResend();
   const notifyTo = process.env.ENQUIRY_NOTIFY_EMAIL || "sales@shipcovetrading.com";
+  const kind = data.type === "rfq" ? "enquiry" : "sell enquiry";
+
   if (resend) {
-    const { error: emailError } = await resend.emails.send({
+    // The enquiry is already saved above regardless of either email's outcome —
+    // both sends are best-effort notification, so a failure here shouldn't fail
+    // the request the visitor sees, but it must not fail silently either.
+    const { error: notifyError } = await resend.emails.send({
       from: "Shipcove Trading <sales@shipcovetrading.com>",
       to: notifyTo,
       replyTo: data.email,
@@ -55,14 +60,46 @@ export async function POST(request: Request) {
         `\n— ${data.name}${data.company ? ` (${data.company})` : ""}\n${data.email}${data.phone ? ` · ${data.phone}` : ""}`,
       ].join(""),
     });
-    // The enquiry is already saved above regardless of email outcome — this is
-    // best-effort notification, so a failure here shouldn't fail the request
-    // the visitor sees, but it must not fail silently either.
-    if (emailError) {
-      console.error("[enquiry] Resend notification failed — enquiry was still saved", emailError, { type: data.type, to: notifyTo });
+    if (notifyError) {
+      console.error("[enquiry] Recipient notification failed — enquiry was still saved", notifyError, { type: data.type, to: notifyTo });
+    }
+
+    // Confirmation copy back to the customer, recapping exactly what they
+    // submitted — separate send so a failure on one side doesn't affect the other.
+    const confirmationLines = [
+      `Hi ${data.name},`,
+      "",
+      `Thanks for reaching out to Shipcove Trading. Here's a copy of what you submitted:`,
+      "",
+      data.message,
+    ];
+    if (data.attachments?.length) confirmationLines.push("", `Photos attached: ${data.attachments.length}`);
+    confirmationLines.push("", `Name: ${data.name}${data.company ? ` (${data.company})` : ""}`, `Email: ${data.email}`);
+    if (data.phone) confirmationLines.push(`Phone: ${data.phone}`);
+    confirmationLines.push(
+      "",
+      data.type === "rfq"
+        ? "We'll come back to you with a quote within 24 hours."
+        : "We'll come back with an offer within 24 hours.",
+      "",
+      "— Shipcove Trading",
+    );
+
+    const { error: confirmError } = await resend.emails.send({
+      from: "Shipcove Trading <sales@shipcovetrading.com>",
+      to: data.email,
+      replyTo: notifyTo,
+      subject: `We've received your ${kind} — Shipcove Trading`,
+      text: confirmationLines.join("\n"),
+    });
+    if (confirmError) {
+      console.error("[enquiry] Customer confirmation email failed — enquiry was still saved", confirmError, { type: data.type, to: data.email });
     }
   } else {
-    console.warn("[enquiry] RESEND_API_KEY not set — recipient notification skipped for enquiry", { type: data.type, email: data.email });
+    console.warn("[enquiry] RESEND_API_KEY not set — recipient notification and customer confirmation both skipped", {
+      type: data.type,
+      email: data.email,
+    });
   }
 
   return NextResponse.json({ ok: true });

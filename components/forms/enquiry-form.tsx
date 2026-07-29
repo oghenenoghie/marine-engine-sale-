@@ -51,7 +51,7 @@ export function EnquiryForm({
   if (status === "sent") {
     return (
       <div className={cn("flex items-center gap-2 rounded-sm border border-hull/20 bg-hull/[0.03] px-4 py-3 text-[13px] font-medium text-hull", className)}>
-        <Check size={16} className="shrink-0" /> Thanks — we&apos;ll reply within 24 hours.
+        <Check size={16} className="shrink-0" /> Thanks — a confirmation is on its way to your inbox, and we&apos;ll reply within 24 hours.
       </div>
     );
   }
