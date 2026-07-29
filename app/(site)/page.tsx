@@ -60,10 +60,11 @@ export default async function HomePage() {
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
               Marine diesel · engines &amp; parts
             </span>
-            {/* Visible headline removed so the drawing reveal reads as the hero's
-                focal element — kept for SEO/screen readers as the page's h1. */}
-            <h1 className="sr-only">Find the part by pointing at the drawing.</h1>
-            <p className="mt-6 max-w-[56ch] text-[15px] leading-relaxed text-paper/70">
+            <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">
+              Trading the fleet — engines, parts and power,{" "}
+              <span className="border-b-2 border-paper/25 pb-0.5">across every major brand.</span>
+            </h1>
+            <p className="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-paper/70">
               Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and
               Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link
               straight to live stock.
