@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     // both sends are best-effort notification, so a failure here shouldn't fail
     // the request the visitor sees, but it must not fail silently either.
     const { error: notifyError } = await resend.emails.send({
-      from: "Shipcove Trading <sales@shipcovetrading.com>",
+      from: "Shipcove Trading <sales@contact.shipcovetrading.com>",
       to: notifyTo,
       replyTo: data.email,
       subject: `${data.type === "rfq" ? "New RFQ" : "New sell enquiry"} — ${data.name}`,
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     );
 
     const { error: confirmError } = await resend.emails.send({
-      from: "Shipcove Trading <sales@shipcovetrading.com>",
+      from: "Shipcove Trading <sales@contact.shipcovetrading.com>",
       to: data.email,
       replyTo: notifyTo,
       subject: `We've received your ${kind} — Shipcove Trading`,
