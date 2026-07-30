@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
+import { getHeroImageUrl } from "@/lib/data/settings";
+import { HeroImageUploader } from "@/components/admin/hero-image-uploader";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +16,7 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries] = await Promise.all([getAllStock(), getAllEnquiries()]);
+  const [stock, enquiries, heroImageUrl] = await Promise.all([getAllStock(), getAllEnquiries(), getHeroImageUrl()]);
   const stats = {
     total: stock.length,
     available: stock.filter((i) => i.status === "available").length,
@@ -34,6 +36,16 @@ export default async function AdminDashboardPage() {
         <Stat label="Available" value={stats.available} />
         <Stat label="Reserved" value={stats.reserved} />
         <Stat label="Expected" value={stats.expected} />
+      </div>
+
+      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
+        <div className="mb-1">
+          <h2 className="font-display text-base font-bold text-hull">Homepage hero image</h2>
+          <p className="text-[12px] text-steel">Background photo shown behind the homepage hero copy.</p>
+        </div>
+        <div className="mt-3">
+          <HeroImageUploader initialUrl={heroImageUrl} />
+        </div>
       </div>
 
       <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">

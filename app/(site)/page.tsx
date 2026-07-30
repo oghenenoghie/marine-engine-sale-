@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { DrawingReveal } from "@/components/motion/drawing-reveal";
@@ -10,6 +11,7 @@ import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getAllDrawings, getAllStock, getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
+import { getHeroImageUrl } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
@@ -33,11 +35,12 @@ const HERO_CATEGORIES: SliderCategory[] = [
 ];
 
 export default async function HomePage() {
-  const [featured, drawings, allStock, brands] = await Promise.all([
+  const [featured, drawings, allStock, brands, heroImageUrl] = await Promise.all([
     getFeaturedStock(8),
     getAllDrawings(),
     getAllStock(),
     getAllBrands(),
+    getHeroImageUrl(),
   ]);
   const heroDrawing = drawings[0];
   const stockById = Object.fromEntries(allStock.map((s) => [s.id, s]));
@@ -46,6 +49,12 @@ export default async function HomePage() {
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
+        {heroImageUrl && (
+          <>
+            <Image src={heroImageUrl} alt="" fill unoptimized priority className="object-cover" aria-hidden />
+            <div className="absolute inset-0 bg-hull/80" aria-hidden />
+          </>
+        )}
         <div
           className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
           aria-hidden

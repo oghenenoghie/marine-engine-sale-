@@ -117,6 +117,12 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["enquiries"]["Insert"]>;
         Relationships: [];
       };
+      site_settings: {
+        Row: { key: string; value: string | null; updated_at: string };
+        Insert: { key: string; value?: string | null; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["site_settings"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
