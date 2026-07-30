@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getResend } from "@/lib/resend";
 import { createAdminClient } from "@/lib/supabase/server";
+import { confirmationEmailHtml, confirmationEmailText } from "@/lib/email-templates";
 
 const enquirySchema = z.object({
   type: z.enum(["rfq", "sell"]),
@@ -66,31 +67,23 @@ export async function POST(request: Request) {
 
     // Confirmation copy back to the customer, recapping exactly what they
     // submitted — separate send so a failure on one side doesn't affect the other.
-    const confirmationLines = [
-      `Hi ${data.name},`,
-      "",
-      `Thanks for reaching out to Shipcove Trading. Here's a copy of what you submitted:`,
-      "",
-      data.message,
-    ];
-    if (data.attachments?.length) confirmationLines.push("", `Photos attached: ${data.attachments.length}`);
-    confirmationLines.push("", `Name: ${data.name}${data.company ? ` (${data.company})` : ""}`, `Email: ${data.email}`);
-    if (data.phone) confirmationLines.push(`Phone: ${data.phone}`);
-    confirmationLines.push(
-      "",
-      data.type === "rfq"
-        ? "We'll come back to you with a quote within 24 hours."
-        : "We'll come back with an offer within 24 hours.",
-      "",
-      "— Shipcove Trading",
-    );
+    const confirmationInput = {
+      type: data.type,
+      name: data.name,
+      company: data.company,
+      email: data.email,
+      phone: data.phone,
+      message: data.message,
+      attachmentsCount: data.attachments?.length,
+    };
 
     const { error: confirmError } = await resend.emails.send({
       from: "Shipcove Trading <sales@contact.shipcovetrading.com>",
       to: data.email,
       replyTo: notifyTo,
       subject: `We've received your ${kind} — Shipcove Trading`,
-      text: confirmationLines.join("\n"),
+      html: confirmationEmailHtml(confirmationInput),
+      text: confirmationEmailText(confirmationInput),
     });
     if (confirmError) {
       console.error("[enquiry] Customer confirmation email failed — enquiry was still saved", confirmError, { type: data.type, to: data.email });
