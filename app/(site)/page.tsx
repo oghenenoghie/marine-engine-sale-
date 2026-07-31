@@ -49,7 +49,12 @@ export default async function HomePage() {
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
-        {heroImages.length > 0 && <HeroSlider images={heroImages} />}
+        {heroImages.length > 0 && (
+          <>
+            <HeroSlider key={heroImages.join("|")} images={heroImages} />
+            <div className="absolute inset-0 bg-hull/25" aria-hidden />
+          </>
+        )}
         {heroImages.length === 0 && (
           <>
             <div

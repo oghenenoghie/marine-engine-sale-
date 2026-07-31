@@ -97,7 +97,12 @@ export function HeroImageUploader({ initialUrls }: { initialUrls: string[] }) {
       {/* Live replica of the public hero section — same classes/structure as
           the "Hero" block in app/(site)/page.tsx, scaled down for the dashboard. */}
       <div className="relative isolate overflow-hidden rounded-sm border border-steel/20 bg-hull text-paper">
-        {urls.length > 0 && <HeroSlider images={urls} />}
+        {urls.length > 0 && (
+          <>
+            <HeroSlider key={urls.join("|")} images={urls} />
+            <div className="absolute inset-0 bg-hull/25" aria-hidden />
+          </>
+        )}
         {urls.length === 0 && (
           <>
             <div
