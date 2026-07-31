@@ -49,19 +49,18 @@ export default async function HomePage() {
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
-        {heroImages.length > 0 && (
+        {heroImages.length > 0 && <HeroSlider images={heroImages} />}
+        {heroImages.length === 0 && (
           <>
-            <HeroSlider images={heroImages} />
-            <div className="absolute inset-0 bg-hull/55" aria-hidden />
+            <div
+              className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
+              aria-hidden
+            />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
+              <DrawingReveal className="h-[640px] w-[640px] text-paper/20" />
+            </div>
           </>
         )}
-        <div
-          className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
-          <DrawingReveal className="h-[640px] w-[640px] text-paper/20" />
-        </div>
 
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center lg:py-32">
           <FadeIn className="flex flex-col items-center">
