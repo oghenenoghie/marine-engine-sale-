@@ -100,7 +100,7 @@ export function HeroImageUploader({ initialUrls }: { initialUrls: string[] }) {
         {urls.length > 0 && (
           <>
             <HeroSlider key={urls.join("|")} images={urls} />
-            <div className="absolute inset-0 bg-hull/25" aria-hidden />
+            <div className="absolute inset-0 bg-hull/45" aria-hidden />
           </>
         )}
         {urls.length === 0 && (

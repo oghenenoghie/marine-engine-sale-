@@ -52,7 +52,7 @@ export default async function HomePage() {
         {heroImages.length > 0 && (
           <>
             <HeroSlider key={heroImages.join("|")} images={heroImages} />
-            <div className="absolute inset-0 bg-hull/25" aria-hidden />
+            <div className="absolute inset-0 bg-hull/45" aria-hidden />
           </>
         )}
         {heroImages.length === 0 && (
