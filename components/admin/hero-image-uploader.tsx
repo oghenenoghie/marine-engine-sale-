@@ -97,19 +97,18 @@ export function HeroImageUploader({ initialUrls }: { initialUrls: string[] }) {
       {/* Live replica of the public hero section — same classes/structure as
           the "Hero" block in app/(site)/page.tsx, scaled down for the dashboard. */}
       <div className="relative isolate overflow-hidden rounded-sm border border-steel/20 bg-hull text-paper">
-        {urls.length > 0 && (
+        {urls.length > 0 && <HeroSlider images={urls} />}
+        {urls.length === 0 && (
           <>
-            <HeroSlider images={urls} />
-            <div className="absolute inset-0 bg-hull/55" aria-hidden />
+            <div
+              className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
+              aria-hidden
+            />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
+              <DrawingReveal className="h-[220px] w-[220px] text-paper/20" />
+            </div>
           </>
         )}
-        <div
-          className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
-          <DrawingReveal className="h-[220px] w-[220px] text-paper/20" />
-        </div>
 
         <div className="relative mx-auto flex max-w-lg flex-col items-center px-6 py-14 text-center">
           <span className="label inline-flex items-center gap-2 border border-paper/20 px-3 py-1 text-[10px] text-paper/80">
