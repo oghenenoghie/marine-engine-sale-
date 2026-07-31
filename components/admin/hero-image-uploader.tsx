@@ -40,9 +40,14 @@ export function HeroImageUploader({ initialUrls }: { initialUrls: string[] }) {
   }
 
   const save = async (next: string[]) => {
-    setUrls(next);
     const result = await saveHeroImagesAction(next);
-    if (!result.ok) setError(result.error);
+    if (!result.ok) {
+      setError(result.error);
+      return false;
+    }
+    setUrls(next);
+    setError(null);
+    return true;
   };
 
   const onFilesSelected = async (files: FileList | null) => {
@@ -95,7 +100,7 @@ export function HeroImageUploader({ initialUrls }: { initialUrls: string[] }) {
         {urls.length > 0 && (
           <>
             <HeroSlider images={urls} />
-            <div className="absolute inset-0 bg-hull/80" aria-hidden />
+            <div className="absolute inset-0 bg-hull/55" aria-hidden />
           </>
         )}
         <div

@@ -52,7 +52,7 @@ export default async function HomePage() {
         {heroImages.length > 0 && (
           <>
             <HeroSlider images={heroImages} />
-            <div className="absolute inset-0 bg-hull/80" aria-hidden />
+            <div className="absolute inset-0 bg-hull/55" aria-hidden />
           </>
         )}
         <div
