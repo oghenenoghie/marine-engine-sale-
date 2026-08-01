@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm rounded-sm border border-paper/10 bg-paper/5 p-6">
         <div className="flex items-center gap-2 text-paper">
           <Anchor size={20} className="text-paper" />
-          <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK ADMIN</span>
+          <span className="font-display text-lg font-extrabold tracking-tight">SHIPCOVE ADMIN</span>
         </div>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div>

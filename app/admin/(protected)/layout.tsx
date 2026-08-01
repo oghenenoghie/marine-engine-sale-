@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="hidden w-60 shrink-0 flex-col bg-hull md:flex">
         <div className="flex items-center gap-2 px-5 py-5 text-paper">
           <Anchor size={22} className="text-paper" />
-          <span className="font-display text-lg font-extrabold tracking-tight">DRYDOCK</span>
+          <span className="font-display text-lg font-extrabold tracking-tight">SHIPCOVE</span>
         </div>
         <nav className="px-3">
           {NAV_ITEMS.map((item) => (
