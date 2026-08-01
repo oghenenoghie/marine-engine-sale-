@@ -28,3 +28,48 @@ export const getHeroImages = cache(async (): Promise<string[]> => {
     return [];
   }
 });
+
+/**
+ * Homepage hero copy (eyebrow badge, headline, paragraph, bottom tagline
+ * badge) — admin-editable via components/admin/hero-copy-editor.tsx, same
+ * site_settings key/value row shape as hero images (key: hero_copy).
+ * Unlike hero images, there's no reasonable "empty" state for hero copy, so
+ * this falls back to the original launch copy (DEFAULT_HERO_COPY) rather
+ * than blanks when unset or Supabase is unreachable.
+ */
+export type HeroCopy = {
+  eyebrow: string;
+  headline: string;
+  paragraph: string;
+  tagline: string;
+};
+
+export const DEFAULT_HERO_COPY: HeroCopy = {
+  eyebrow: "Marine diesel · engines & parts",
+  headline: "Trading the fleet — engines, parts and power, across every major brand.",
+  paragraph:
+    "Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link straight to live stock.",
+  tagline: "Drawing-driven part discovery",
+};
+
+const HERO_COPY_KEY = "hero_copy";
+
+export const getHeroCopy = cache(async (): Promise<HeroCopy> => {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_COPY_KEY).maybeSingle();
+    if (error) throw new Error(`getHeroCopy: ${error.message}`);
+    if (!data?.value) return DEFAULT_HERO_COPY;
+    const parsed = JSON.parse(data.value);
+    return {
+      eyebrow: typeof parsed.eyebrow === "string" && parsed.eyebrow.trim() ? parsed.eyebrow : DEFAULT_HERO_COPY.eyebrow,
+      headline: typeof parsed.headline === "string" && parsed.headline.trim() ? parsed.headline : DEFAULT_HERO_COPY.headline,
+      paragraph:
+        typeof parsed.paragraph === "string" && parsed.paragraph.trim() ? parsed.paragraph : DEFAULT_HERO_COPY.paragraph,
+      tagline: typeof parsed.tagline === "string" && parsed.tagline.trim() ? parsed.tagline : DEFAULT_HERO_COPY.tagline,
+    };
+  } catch (err) {
+    console.warn("[lib/data/settings] getHeroCopy falling back to default copy:", err);
+    return DEFAULT_HERO_COPY;
+  }
+});

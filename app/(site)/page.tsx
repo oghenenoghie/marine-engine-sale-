@@ -11,7 +11,7 @@ import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getAllDrawings, getAllStock, getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { getHeroImages } from "@/lib/data/settings";
+import { getHeroImages, getHeroCopy } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
@@ -35,12 +35,13 @@ const HERO_CATEGORIES: SliderCategory[] = [
 ];
 
 export default async function HomePage() {
-  const [featured, drawings, allStock, brands, heroImages] = await Promise.all([
+  const [featured, drawings, allStock, brands, heroImages, heroCopy] = await Promise.all([
     getFeaturedStock(8),
     getAllDrawings(),
     getAllStock(),
     getAllBrands(),
     getHeroImages(),
+    getHeroCopy(),
   ]);
   const heroDrawing = drawings[0];
   const stockById = Object.fromEntries(allStock.map((s) => [s.id, s]));
@@ -71,17 +72,10 @@ export default async function HomePage() {
           <FadeIn className="flex flex-col items-center">
             <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
-              Marine diesel · engines &amp; parts
+              {heroCopy.eyebrow}
             </span>
-            <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">
-              Trading the fleet — engines, parts and power,{" "}
-              <span className="border-b-2 border-paper/25 pb-0.5">across every major brand.</span>
-            </h1>
-            <p className="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-paper/70">
-              Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and
-              Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link
-              straight to live stock.
-            </p>
+            <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">{heroCopy.headline}</h1>
+            <p className="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild variant="inverse" size="lg">
                 <Link href="/parts">
@@ -94,7 +88,7 @@ export default async function HomePage() {
             </div>
             <span className="label mt-10 inline-flex items-center gap-2 border border-paper/15 px-4 py-1.5 text-paper/60">
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper/60" aria-hidden />
-              Drawing-driven part discovery
+              {heroCopy.tagline}
             </span>
           </FadeIn>
         </div>

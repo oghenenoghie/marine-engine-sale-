@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
-import { getHeroImages } from "@/lib/data/settings";
+import { getHeroImages, getHeroCopy } from "@/lib/data/settings";
 import { HeroImageUploader } from "@/components/admin/hero-image-uploader";
+import { HeroCopyEditor } from "@/components/admin/hero-copy-editor";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,12 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries, heroImages] = await Promise.all([getAllStock(), getAllEnquiries(), getHeroImages()]);
+  const [stock, enquiries, heroImages, heroCopy] = await Promise.all([
+    getAllStock(),
+    getAllEnquiries(),
+    getHeroImages(),
+    getHeroCopy(),
+  ]);
   const stats = {
     total: stock.length,
     available: stock.filter((i) => i.status === "available").length,
@@ -45,6 +51,16 @@ export default async function AdminDashboardPage() {
         </div>
         <div className="mt-3">
           <HeroImageUploader initialUrls={heroImages} />
+        </div>
+      </div>
+
+      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
+        <div className="mb-1">
+          <h2 className="font-display text-base font-bold text-hull">Homepage hero copy</h2>
+          <p className="text-[12px] text-steel">Eyebrow badge, headline, paragraph, and bottom tagline shown over the hero.</p>
+        </div>
+        <div className="mt-3">
+          <HeroCopyEditor initial={heroCopy} />
         </div>
       </div>
 
