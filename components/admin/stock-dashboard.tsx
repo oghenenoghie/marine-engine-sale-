@@ -73,26 +73,36 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
   const saveItem = async (data: StockItem) => {
     setSaving(true);
     setError(null);
-    const result = await saveStockItemAction(data);
-    if (result.ok) {
-      setItems((prev) => (prev.some((i) => i.id === data.id) ? prev.map((i) => (i.id === data.id ? data : i)) : [data, ...prev]));
-      setEditing(null);
-    } else {
-      setError(result.error);
+    try {
+      const result = await saveStockItemAction(data);
+      if (result.ok) {
+        setItems((prev) => (prev.some((i) => i.id === data.id) ? prev.map((i) => (i.id === data.id ? data : i)) : [data, ...prev]));
+        setEditing(null);
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error saving stock item");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
   const removeItem = async (id: string) => {
     setSaving(true);
     setError(null);
-    const result = await deleteStockItemAction(id);
-    if (result.ok) {
-      setItems((prev) => prev.filter((i) => i.id !== id));
-      setDeleteTarget(null);
-    } else {
-      setError(result.error);
+    try {
+      const result = await deleteStockItemAction(id);
+      if (result.ok) {
+        setItems((prev) => prev.filter((i) => i.id !== id));
+        setDeleteTarget(null);
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error deleting stock item");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   return (
@@ -396,7 +406,7 @@ function StockForm({
         </div>
 
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
-          <Field label="Title">
+          <Field label="Title *">
             <input
               value={f.title}
               onChange={(e) => set("title", e.target.value)}
@@ -405,7 +415,7 @@ function StockForm({
             />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="SKU">
+            <Field label="SKU *">
               <input
                 value={f.sku}
                 onChange={(e) => set("sku", e.target.value)}
@@ -557,7 +567,8 @@ function StockForm({
           </Field>
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-steel/15 px-5 py-4">
+        <div className="flex items-center justify-end gap-3 border-t border-steel/15 px-5 py-4">
+          {!canSave && <span className="text-[12px] text-steel">Title and SKU are required</span>}
           <button onClick={onClose} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
             Cancel
           </button>
