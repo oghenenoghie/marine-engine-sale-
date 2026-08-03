@@ -14,7 +14,7 @@ export function BlogTicker({ posts }: { posts: { slug: string; title: string }[]
   return (
     <div className="flex min-w-0 items-center gap-3">
       <span className="flex shrink-0 items-center gap-1.5">
-        <Newspaper size={12} className="shrink-0 text-paper" />
+        <Newspaper size={12} className="shrink-0 text-hull" />
         <span className="label text-red-500">Latest</span>
       </span>
       <InfiniteScroll speed="slow" className="min-w-0 flex-1">
@@ -22,7 +22,7 @@ export function BlogTicker({ posts }: { posts: { slug: string; title: string }[]
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="whitespace-nowrap text-[12px] font-bold text-paper transition-colors hover:text-paper/80"
+            className="whitespace-nowrap text-[12px] font-bold text-hull transition-colors hover:text-steel"
           >
             {post.title}
           </Link>
