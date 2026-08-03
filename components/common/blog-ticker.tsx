@@ -1,43 +1,33 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
 import { Newspaper } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-const ROTATE_MS = 4500;
+import { InfiniteScroll } from "@/components/motion/infinite-scroll";
 
 /**
- * Compact header badge that cycles through the latest published blog posts,
- * linking to whichever one is currently shown — "swapping button" for the
- * latest blog update. Posts come from the server (Header fetches via
- * lib/data/blog.ts); this component only owns the rotation.
+ * Scrolling header strip of the latest published blog posts — "news flash"
+ * ticker. Reuses the same marquee mechanism as the homepage brand row
+ * (components/motion/infinite-scroll.tsx): continuous horizontal scroll,
+ * falling back to a plain scrollable row under prefers-reduced-motion.
  */
 export function BlogTicker({ posts }: { posts: { slug: string; title: string }[] }) {
-  const reduceMotion = useReducedMotion();
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (reduceMotion || posts.length < 2) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % posts.length), ROTATE_MS);
-    return () => clearInterval(id);
-  }, [reduceMotion, posts.length]);
-
   if (posts.length === 0) return null;
-  const post = posts[index % posts.length]!;
 
   return (
-    <Link
-      href={`/blog/${post.slug}`}
-      title={post.title}
-      className="group flex min-w-0 items-center gap-2 text-[12px] font-medium text-paper/75 transition-colors hover:text-paper"
-    >
-      <Newspaper size={12} className="shrink-0 text-paper" />
-      <span className="label shrink-0 text-red-500">Latest</span>
-      <span key={post.slug} className={cn("min-w-0 truncate", !reduceMotion && "animate-in fade-in duration-300")}>
-        {post.title}
+    <div className="flex min-w-0 items-center gap-3">
+      <span className="flex shrink-0 items-center gap-1.5">
+        <Newspaper size={12} className="shrink-0 text-paper" />
+        <span className="label text-red-500">Latest</span>
       </span>
-    </Link>
+      <InfiniteScroll speed="slow" className="min-w-0 flex-1">
+        {posts.map((post) => (
+          <Link
+            key={post.slug}
+            href={`/blog/${post.slug}`}
+            className="whitespace-nowrap text-[12px] font-medium text-paper/75 transition-colors hover:text-paper"
+          >
+            {post.title}
+          </Link>
+        ))}
+      </InfiniteScroll>
+    </div>
   );
 }
