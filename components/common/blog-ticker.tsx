@@ -22,7 +22,7 @@ export function BlogTicker({ posts }: { posts: { slug: string; title: string }[]
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="whitespace-nowrap text-[12px] font-medium text-paper/75 transition-colors hover:text-paper"
+            className="whitespace-nowrap text-[12px] font-bold text-paper transition-colors hover:text-paper/80"
           >
             {post.title}
           </Link>
