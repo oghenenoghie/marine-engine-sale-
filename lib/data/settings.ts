@@ -73,3 +73,23 @@ export const getHeroCopy = cache(async (): Promise<HeroCopy> => {
     return DEFAULT_HERO_COPY;
   }
 });
+
+/**
+ * Site favicon — admin-uploaded via components/admin/favicon-uploader.tsx,
+ * same site_settings key/value row shape as the hero image(s) (key:
+ * favicon_url). No seed fallback: an unset/unreachable value just means the
+ * browser default favicon, same reasoning as hero images.
+ */
+const FAVICON_KEY = "favicon_url";
+
+export const getFaviconUrl = cache(async (): Promise<string | null> => {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("site_settings").select("value").eq("key", FAVICON_KEY).maybeSingle();
+    if (error) throw new Error(`getFaviconUrl: ${error.message}`);
+    return data?.value ?? null;
+  } catch (err) {
+    console.warn("[lib/data/settings] getFaviconUrl falling back to no favicon:", err);
+    return null;
+  }
+});

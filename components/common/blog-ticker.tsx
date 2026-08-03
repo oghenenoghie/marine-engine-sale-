@@ -33,8 +33,8 @@ export function BlogTicker({ posts }: { posts: { slug: string; title: string }[]
       title={post.title}
       className="group flex min-w-0 items-center gap-2 text-[12px] font-medium text-paper/75 transition-colors hover:text-paper"
     >
-      <Newspaper size={12} className="shrink-0" />
-      <span className="label shrink-0 text-paper/50">Latest</span>
+      <Newspaper size={12} className="shrink-0 text-paper" />
+      <span className="label shrink-0 text-red-500">Latest</span>
       <span key={post.slug} className={cn("min-w-0 truncate", !reduceMotion && "animate-in fade-in duration-300")}>
         {post.title}
       </span>
