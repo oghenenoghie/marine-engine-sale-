@@ -105,6 +105,19 @@ export interface Enquiry {
   createdAt: string;
 }
 
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string;
+  coverImage?: string;
+  published: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Denormalized view used across the UI (StockItem + resolved Brand/Model/Category)
 export interface StockItemView extends StockItem {
   brand: Brand;

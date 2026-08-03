@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Anchor, ArrowUpRight } from "lucide-react";
 import { PartNumberSearch } from "@/components/common/part-number-search";
 import { MobileNav } from "@/components/common/mobile-nav";
+import { BlogTicker } from "@/components/common/blog-ticker";
+import { getAllBlogPosts, latestBlogPosts } from "@/lib/data/blog";
 
 const NAV = [
   { href: "/engines", label: "Engines" },
@@ -12,12 +14,23 @@ const NAV = [
   { href: "/rentals", label: "Rentals" },
   { href: "/brands", label: "Brands" },
   { href: "/stock", label: "Stock" },
+  { href: "/blog", label: "Blog" },
   { href: "/sell", label: "Sell to us" },
 ];
 
-export function Header() {
+export async function Header() {
+  const posts = await getAllBlogPosts();
+  const tickerPosts = latestBlogPosts(posts, 3).map((p) => ({ slug: p.slug, title: p.title }));
+
   return (
     <header className="sticky top-0 z-30 border-b border-paper/10 bg-hull text-paper">
+      {tickerPosts.length > 0 && (
+        <div className="border-b border-paper/10 bg-graphite px-4 py-1.5 sm:px-6">
+          <div className="mx-auto max-w-7xl">
+            <BlogTicker posts={tickerPosts} />
+          </div>
+        </div>
+      )}
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3.5 sm:gap-6 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <Anchor size={20} className="text-paper" />

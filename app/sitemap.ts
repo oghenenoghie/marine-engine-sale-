@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllStock, getAllDrawings } from "@/lib/data/stock";
 import { getAllBrands, getAllModels } from "@/lib/data/taxonomy";
+import { getAllBlogPosts } from "@/lib/data/blog";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/power-plants",
     "/gas-turbines",
     "/stock",
+    "/blog",
     "/rentals",
     ...RENTAL_CATEGORIES.map((c) => `/rentals/${c.slug}`),
     "/sell",
@@ -27,11 +29,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
-  const [allStock, allDrawings, brands, engineModels] = await Promise.all([
+  const [allStock, allDrawings, brands, engineModels, blogPosts] = await Promise.all([
     getAllStock(),
     getAllDrawings(),
     getAllBrands(),
     getAllModels(),
+    getAllBlogPosts(),
   ]);
   const brandRoutes = brands.map((b) => ({ url: `${base}/brands/${b.slug}`, lastModified: new Date() }));
   const modelRoutes = engineModels.map((m) => {
@@ -43,6 +46,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(item.createdAt),
   }));
   const drawingRoutes = allDrawings.map((d) => ({ url: `${base}/drawings/${d.slug}`, lastModified: new Date() }));
+  const blogRoutes = blogPosts.map((p) => ({
+    url: `${base}/blog/${p.slug}`,
+    lastModified: new Date(p.updatedAt),
+  }));
 
-  return [...staticRoutes, ...brandRoutes, ...modelRoutes, ...stockRoutes, ...drawingRoutes];
+  return [...staticRoutes, ...brandRoutes, ...modelRoutes, ...stockRoutes, ...drawingRoutes, ...blogRoutes];
 }

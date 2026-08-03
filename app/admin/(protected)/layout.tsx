@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Anchor, ClipboardList, Database, LayoutDashboard, Layers, LayoutGrid, Package, Ship, Tag } from "lucide-react";
+import { Anchor, ClipboardList, Database, LayoutDashboard, Layers, LayoutGrid, Newspaper, Package, Ship, Tag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 const NAV_ITEMS = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/stock", icon: Package, label: "Stock" },
   { href: "/admin/drawings", icon: Layers, label: "Drawings" },
+  { href: "/admin/blog", icon: Newspaper, label: "Blog" },
   { href: "/admin/enquiries", icon: ClipboardList, label: "Enquiries" },
   { href: "/admin/brands", icon: Ship, label: "Brands" },
   { href: "/admin/categories", icon: Tag, label: "Categories" },
