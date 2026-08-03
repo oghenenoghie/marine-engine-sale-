@@ -68,14 +68,14 @@ export default async function HomePage() {
           </>
         )}
 
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-24 text-center lg:py-32">
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-14 text-center lg:py-20">
           <FadeIn className="flex flex-col items-center">
             <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
               {heroCopy.eyebrow}
             </span>
             <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">{heroCopy.headline}</h1>
-            <p className="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
+            <p className="mt-5 max-w-[56ch] text-[13px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild variant="inverse" size="lg">
                 <Link href="/parts">
@@ -93,12 +93,12 @@ export default async function HomePage() {
           </FadeIn>
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-6 pb-14 sm:pb-20">
+        <div className="relative mx-auto max-w-7xl px-6 pb-8 sm:pb-10">
           <FadeIn delay={0.1}>
-            <div className="flex items-center justify-between gap-4 border-t border-paper/10 pt-8">
+            <div className="flex items-center justify-between gap-4 border-t border-paper/10 pt-6">
               <span className="label text-paper/50">Browse by category</span>
             </div>
-            <CategorySlider categories={HERO_CATEGORIES} className="mt-5" />
+            <CategorySlider categories={HERO_CATEGORIES} className="mt-4" />
           </FadeIn>
         </div>
       </section>
