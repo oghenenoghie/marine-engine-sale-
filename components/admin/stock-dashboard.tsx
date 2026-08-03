@@ -115,8 +115,8 @@ export function StockDashboard({ initialItems, brands, models, categories, produ
             className="w-64 rounded-md border border-steel/25 bg-white py-2 pl-9 pr-3 font-mono text-[12px] outline-none focus:ring-2 focus:ring-hull"
           />
         </div>
-        <Button onClick={() => setEditing({})}>
-          <Plus size={16} /> Add item
+        <Button size="lg" onClick={() => setEditing({})}>
+          <Plus size={18} /> Add item
         </Button>
       </div>
 
