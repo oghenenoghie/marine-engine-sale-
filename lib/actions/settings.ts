@@ -9,6 +9,7 @@ export type { ActionResult };
 
 const HERO_IMAGES_KEY = "hero_images";
 const HERO_COPY_KEY = "hero_copy";
+const FAVICON_KEY = "favicon_url";
 
 export async function saveHeroImagesAction(urls: string[]): Promise<ActionResult> {
   const admin = await requireAdmin();
@@ -50,5 +51,22 @@ export async function saveHeroCopyAction(copy: HeroCopy): Promise<ActionResult> 
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero copy" };
+  }
+}
+
+export async function saveFaviconAction(url: string | null): Promise<ActionResult> {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert({ key: FAVICON_KEY, value: url, updated_at: new Date().toISOString() });
+    if (error) return { ok: false, error: error.message };
+    revalidatePath("/", "layout");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving favicon" };
   }
 }

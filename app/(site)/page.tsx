@@ -74,7 +74,7 @@ export default async function HomePage() {
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
               {heroCopy.eyebrow}
             </span>
-            <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">{heroCopy.headline}</h1>
+            <h1 className="mt-5 text-display-lg font-display font-extrabold tracking-tight">{heroCopy.headline}</h1>
             <p className="mt-5 max-w-[56ch] text-[13px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild variant="inverse" size="lg">

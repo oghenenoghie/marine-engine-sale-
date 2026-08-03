@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
-import { getHeroImages, getHeroCopy } from "@/lib/data/settings";
+import { getHeroImages, getHeroCopy, getFaviconUrl } from "@/lib/data/settings";
 import { HeroImageUploader } from "@/components/admin/hero-image-uploader";
 import { HeroCopyEditor } from "@/components/admin/hero-copy-editor";
+import { FaviconUploader } from "@/components/admin/favicon-uploader";
 
 export const dynamic = "force-dynamic";
 
@@ -17,11 +18,12 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries, heroImages, heroCopy] = await Promise.all([
+  const [stock, enquiries, heroImages, heroCopy, faviconUrl] = await Promise.all([
     getAllStock(),
     getAllEnquiries(),
     getHeroImages(),
     getHeroCopy(),
+    getFaviconUrl(),
   ]);
   const stats = {
     total: stock.length,
@@ -61,6 +63,16 @@ export default async function AdminDashboardPage() {
         </div>
         <div className="mt-3">
           <HeroCopyEditor initial={heroCopy} />
+        </div>
+      </div>
+
+      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
+        <div className="mb-1">
+          <h2 className="font-display text-base font-bold text-hull">Site favicon</h2>
+          <p className="text-[12px] text-steel">Shown in the browser tab and bookmarks.</p>
+        </div>
+        <div className="mt-3 max-w-sm">
+          <FaviconUploader initialUrl={faviconUrl} />
         </div>
       </div>
 
