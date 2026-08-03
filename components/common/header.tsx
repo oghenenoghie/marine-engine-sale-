@@ -25,7 +25,7 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-paper/10 bg-hull text-paper">
       {tickerPosts.length > 0 && (
-        <div className="border-b border-paper/10 bg-graphite px-4 py-1.5 sm:px-6">
+        <div className="border-b border-steel/15 bg-paper px-4 py-1.5 sm:px-6">
           <div className="mx-auto max-w-7xl">
             <BlogTicker posts={tickerPosts} />
           </div>
