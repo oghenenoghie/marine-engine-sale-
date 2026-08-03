@@ -572,8 +572,8 @@ function StockForm({
           <button onClick={onClose} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
             Cancel
           </button>
-          <Button onClick={handleSave} disabled={!canSave || saving} variant="dark">
-            <Check size={15} /> {saving ? "Saving…" : isNew ? "Create item" : "Save changes"}
+          <Button onClick={handleSave} disabled={!canSave || saving} variant="dark" size="lg">
+            <Check size={17} /> {saving ? "Saving…" : isNew ? "Create item" : "Save changes"}
           </Button>
         </div>
       </div>
