@@ -8,9 +8,13 @@ import type { BlogPost } from "@/types";
 export type { ActionResult };
 
 function revalidateBlogPaths() {
-  revalidatePath("/");
-  revalidatePath("/blog");
-  revalidatePath("/blog/[slug]", "page");
+  // The Header renders a live blog ticker (components/common/blog-ticker.tsx)
+  // on every (site) route via app/(site)/layout.tsx, not just /blog itself —
+  // most of those routes aren't force-dynamic, so they're statically cached.
+  // Revalidating only "/blog"-ish paths (as before) left the ticker stale
+  // everywhere else. Bust the whole tree from the root layout instead, same
+  // fix as saveFaviconAction in lib/actions/settings.ts for the same reason.
+  revalidatePath("/", "layout");
   revalidatePath("/admin/blog");
 }
 
