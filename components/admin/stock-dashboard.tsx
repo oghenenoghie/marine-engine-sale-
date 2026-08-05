@@ -557,11 +557,14 @@ function StockForm({
           </Field>
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-steel/15 px-5 py-4">
-          <button onClick={onClose} className="rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel">
+        <div className="flex items-center gap-2 border-t border-steel/15 px-5 py-4">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-md border border-steel/25 px-4 py-2 text-[13px] font-medium text-steel"
+          >
             Cancel
           </button>
-          <Button onClick={handleSave} disabled={!canSave || saving} variant="dark">
+          <Button onClick={handleSave} disabled={!canSave || saving} variant="dark" className="flex-1 justify-center">
             <Check size={15} /> {saving ? "Saving…" : isNew ? "Create item" : "Save changes"}
           </Button>
         </div>
