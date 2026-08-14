@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Anchor } from "lucide-react";
+import { Anchor, Facebook } from "lucide-react";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 const COLUMNS = [
@@ -45,6 +45,15 @@ export function Footer() {
           <p className="mt-3 max-w-[26ch] text-[13px] text-paper/60">
             Marine diesel engines and spare parts, found by drawing, part number and model.
           </p>
+          <a
+            href="https://www.facebook.com/share/1Esn8boGQd/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Shipcove Trading on Facebook"
+            className="mt-4 inline-flex h-8 w-8 items-center justify-center rounded-sm border border-paper/15 text-paper/75 transition-colors hover:border-paper/40 hover:text-paper"
+          >
+            <Facebook size={16} />
+          </a>
         </div>
 
         {COLUMNS.map((col) => (
