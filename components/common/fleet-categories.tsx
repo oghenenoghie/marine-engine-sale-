@@ -136,10 +136,14 @@ export function FleetCategories() {
             const Icon = category.icon;
             return (
               <FadeIn key={category.label} delay={i * 0.04}>
-                <div className="flex h-full flex-col rounded-sm border border-hull/15 bg-hull p-5 text-paper">
-                  <Icon className="h-8 w-8 shrink-0 text-paper" />
-                  <div className="mt-4 font-display text-base font-bold tracking-tight">{category.label}</div>
-                  <ul className="mt-2.5 space-y-1">
+                <div className="flex h-full flex-col overflow-hidden rounded-sm border border-hull/15 bg-hull text-paper">
+                  <div className="relative flex h-36 items-center justify-center border-b border-paper/10 p-6">
+                    <Icon className="h-full w-full text-paper" />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-hull from-40% to-transparent px-4 pb-2.5 pt-10">
+                      <div className="font-display text-base font-bold tracking-tight">{category.label}</div>
+                    </div>
+                  </div>
+                  <ul className="space-y-1 p-4">
                     {category.highlights.map((h) => (
                       <li key={h} className="flex gap-2 text-[12px] leading-relaxed text-paper/65">
                         <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-paper/50" aria-hidden />
