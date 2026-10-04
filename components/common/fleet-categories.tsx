@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FadeIn } from "@/components/motion/fade-in";
 
 type IconProps = { className?: string };
@@ -81,43 +82,52 @@ function BargeIcon({ className }: IconProps) {
 
 export interface FleetCategory {
   label: string;
+  slug: string;
   icon: (props: IconProps) => JSX.Element;
   highlights: string[];
 }
 
+// slugs match lib/data/rentals.ts RENTAL_CATEGORIES — each card links to /rentals/[slug].
 export const FLEET_CATEGORIES: FleetCategory[] = [
   {
     label: "Well intervention vessels",
+    slug: "well-intervention-vessel",
     icon: WellInterventionIcon,
     highlights: ["Light well intervention vessels (LWIV)", "Riser-based intervention vessels", "Coiled tubing & pumping support"],
   },
   {
     label: "Jack-up rigs",
+    slug: "jack-up-rig",
     icon: JackUpRigIcon,
     highlights: ["Independent-leg jack-ups", "Mat-supported jack-ups", "Caisson-supported jack-ups"],
   },
   {
     label: "Dredgers",
+    slug: "dredger",
     icon: DredgerIcon,
     highlights: ["Backhoe dredger", "Grab/clamshell dredger", "Bucket dredger", "Dipper dredger"],
   },
   {
     label: "Pontoons",
+    slug: "pontoon",
     icon: PontoonIcon,
     highlights: ["Traditional (bi-toon)", "Tri-toon", "Performance tri-toon"],
   },
   {
     label: "Workboats",
+    slug: "workboat",
     icon: WorkboatIcon,
     highlights: ["Multicats & shoalbusters", "Pilot boats, PSVs & CTVs", "Fireboats & research boats", "RIBs"],
   },
   {
     label: "Tugs",
+    slug: "tug",
     icon: TugIcon,
     highlights: ["Harbor/river tugs", "Ocean-going tugs", "Anchor handling tugs", "Salvage & fire-fighting"],
   },
   {
     label: "Barges",
+    slug: "barge",
     icon: BargeIcon,
     highlights: ["Deck & hopper barges", "Dry bulk & liquid tank barges", "Crane/derrick barges", "Spud/jack-up barges"],
   },
@@ -136,9 +146,12 @@ export function FleetCategories() {
             const Icon = category.icon;
             return (
               <FadeIn key={category.label} delay={i * 0.04}>
-                <div className="flex h-full flex-col overflow-hidden rounded-sm border border-hull/15 bg-hull text-paper">
+                <Link
+                  href={`/rentals/${category.slug}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-sm border border-hull/15 bg-hull text-paper transition-colors duration-200 hover:border-paper/30"
+                >
                   <div className="relative flex h-36 items-center justify-center border-b border-paper/10 p-6">
-                    <Icon className="h-full w-full text-paper" />
+                    <Icon className="h-full w-full text-paper transition-transform duration-200 group-hover:scale-105" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-hull from-40% to-transparent px-4 pb-2.5 pt-10">
                       <div className="font-display text-base font-bold tracking-tight">{category.label}</div>
                     </div>
@@ -151,7 +164,7 @@ export function FleetCategories() {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </Link>
               </FadeIn>
             );
           })}

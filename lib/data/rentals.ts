@@ -70,6 +70,43 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     ],
   },
   {
+    slug: "well-intervention-vessel",
+    label: "Well intervention vessel rental",
+    description:
+      "Light and riser-based well intervention vessels with coiled tubing and pumping support for offshore well work.",
+    highlights: [
+      "Light well intervention vessels (LWIV)",
+      "Riser-based intervention vessels",
+      "Coiled tubing & pumping support",
+      "Mobilisation handled end to end",
+    ],
+  },
+  {
+    slug: "jack-up-rig",
+    label: "Jack-up rig rental",
+    description:
+      "Independent-leg, mat-supported and caisson-supported jack-up rigs for offshore drilling and construction work.",
+    highlights: [
+      "Independent-leg jack-ups",
+      "Mat-supported jack-ups",
+      "Caisson-supported jack-ups",
+      "Operators available on request",
+    ],
+  },
+  {
+    slug: "workboat",
+    label: "Workboat rental",
+    description:
+      "Multicats, pilot boats, PSVs, CTVs, fireboats, research boats and RIBs for offshore and nearshore support work.",
+    highlights: ["Multicats & shoalbusters", "Pilot boats, PSVs & CTVs", "Fireboats & research boats", "RIBs"],
+  },
+  {
+    slug: "tug",
+    label: "Tug rental",
+    description: "Harbor, river and ocean-going tugs, including anchor handling and salvage/fire-fighting capability.",
+    highlights: ["Harbor/river tugs", "Ocean-going tugs", "Anchor handling tugs", "Salvage & fire-fighting"],
+  },
+  {
     slug: "crane",
     label: "Crane rental",
     description: "Mobile harbour cranes and floating crane barges for lifting, loading and marine construction work.",
