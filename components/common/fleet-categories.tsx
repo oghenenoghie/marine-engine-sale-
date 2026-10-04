@@ -150,20 +150,12 @@ export function FleetCategories() {
                   href={`/rentals/${category.slug}`}
                   className="group flex h-full flex-col overflow-hidden rounded-sm border border-hull/15 bg-hull text-paper transition-colors duration-200 hover:border-paper/30"
                 >
-                  <div className="relative flex h-36 items-center justify-center border-b border-paper/10 p-6">
+                  <div className="flex h-36 items-center justify-center p-6">
                     <Icon className="h-full w-full text-paper transition-transform duration-200 group-hover:scale-105" />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-hull from-40% to-transparent px-4 pb-2.5 pt-10">
-                      <div className="font-display text-base font-bold tracking-tight">{category.label}</div>
-                    </div>
                   </div>
-                  <ul className="space-y-1 p-4">
-                    {category.highlights.map((h) => (
-                      <li key={h} className="flex gap-2 text-[12px] leading-relaxed text-paper/65">
-                        <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-paper/50" aria-hidden />
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="border-t border-paper/10 px-4 py-3 text-center font-display text-base font-bold tracking-tight">
+                    {category.label}
+                  </div>
                 </Link>
               </FadeIn>
             );
