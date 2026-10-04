@@ -2,10 +2,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { DrawingReveal } from "@/components/motion/drawing-reveal";
-import { InfiniteScroll } from "@/components/motion/infinite-scroll";
 import { CategorySlider, type SliderCategory } from "@/components/motion/category-slider";
 import { HeroSlider } from "@/components/motion/hero-slider";
 import { BrandLogo } from "@/components/common/brand-logo";
+import { FleetCategories } from "@/components/common/fleet-categories";
 import { ExplodedDrawing } from "@/components/drawings/exploded-drawing";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
@@ -103,29 +103,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Brand marquee: horizontal infinite scroll */}
-      {brands.length > 0 && (
-        <section className="border-b border-steel/10 bg-white py-10">
-          <div className="mx-auto max-w-7xl px-6">
-            <span className="label text-steel">Brands we trade across</span>
-          </div>
-          <div className="mt-5">
-            <InfiniteScroll speed="normal">
-              {brands.map((brand) => (
-                <Link
-                  key={brand.id}
-                  href={`/brands/${brand.slug}`}
-                  className="group flex h-full w-64 flex-col justify-center rounded-sm border border-steel/15 bg-paper px-5 py-4 transition-colors duration-200 hover:border-hull/40"
-                >
-                  <BrandLogo brand={brand} className="mb-2" />
-                  <div className="font-display text-base font-bold text-hull">{brand.name}</div>
-                  {brand.blurb && <p className="mt-1 line-clamp-2 text-[12px] text-steel">{brand.blurb}</p>}
-                </Link>
-              ))}
-            </InfiniteScroll>
-          </div>
-        </section>
-      )}
+      {/* Fleet categories */}
+      <FleetCategories />
 
       {/* Signature: interactive exploded drawing */}
       {heroDrawing && (
