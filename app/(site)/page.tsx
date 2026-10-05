@@ -2,49 +2,25 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { DrawingReveal } from "@/components/motion/drawing-reveal";
-import { CategorySlider, type SliderCategory } from "@/components/motion/category-slider";
 import { HeroSlider } from "@/components/motion/hero-slider";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
-import { ExplodedDrawing } from "@/components/drawings/exploded-drawing";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
-import { getAllDrawings, getAllStock, getFeaturedStock } from "@/lib/data/stock";
+import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
 import { getHeroImages, getHeroCopy } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
-const HERO_CATEGORIES: SliderCategory[] = [
-  { label: "Ship engines", href: "/engines" },
-  { label: "Ship spare parts", href: "/parts" },
-  { label: "Marine parts", href: "/parts" },
-  { label: "Ship rental", href: "/rentals/ship" },
-  { label: "Marine equipment rental", href: "/rentals/marine-equipment" },
-  { label: "Dredger rental", href: "/rentals/dredger" },
-  { label: "Power plant", href: "/power-plants" },
-  { label: "Gas turbines", href: "/gas-turbines" },
-  { label: "Brands", href: "/brands" },
-  { label: "Stock", href: "/stock" },
-  { label: "Pontoon rental", href: "/rentals/pontoon" },
-  { label: "Barge rental", href: "/rentals/barge" },
-  { label: "Crane rental", href: "/rentals/crane" },
-  { label: "Yacht rental", href: "/rentals/yacht" },
-  { label: "Sell to us", href: "/sell" },
-];
-
 export default async function HomePage() {
-  const [featured, drawings, allStock, brands, heroImages, heroCopy] = await Promise.all([
+  const [featured, brands, heroImages, heroCopy] = await Promise.all([
     getFeaturedStock(8),
-    getAllDrawings(),
-    getAllStock(),
     getAllBrands(),
     getHeroImages(),
     getHeroCopy(),
   ]);
-  const heroDrawing = drawings[0];
-  const stockById = Object.fromEntries(allStock.map((s) => [s.id, s]));
 
   return (
     <>
@@ -68,7 +44,7 @@ export default async function HomePage() {
           </>
         )}
 
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-14 text-center lg:py-20">
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-11 text-center lg:py-16">
           <FadeIn className="flex flex-col items-center">
             <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
@@ -92,47 +68,10 @@ export default async function HomePage() {
             </span>
           </FadeIn>
         </div>
-
-        <div className="relative mx-auto max-w-7xl px-6 pb-8 sm:pb-10">
-          <FadeIn delay={0.1}>
-            <div className="flex items-center justify-between gap-4 border-t border-paper/10 pt-6">
-              <span className="label text-paper/50">Browse by category</span>
-            </div>
-            <CategorySlider categories={HERO_CATEGORIES} className="mt-4" />
-          </FadeIn>
-        </div>
       </section>
 
       {/* Fleet categories */}
       <FleetCategories />
-
-      {/* Signature: interactive exploded drawing */}
-      {heroDrawing && (
-        <section className="mx-auto max-w-7xl px-6 py-16">
-          <FadeIn>
-            <div className="mb-6 flex items-end justify-between gap-4">
-              <div>
-                <span className="label text-steel">Drawing-driven discovery</span>
-                <h2 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">
-                  Tap a callout, land on the part.
-                </h2>
-              </div>
-              <Link
-                href={`/drawings/${heroDrawing.slug}`}
-                className="hidden shrink-0 text-[13px] font-semibold text-hull underline underline-offset-4 sm:block"
-              >
-                Open full diagram →
-              </Link>
-            </div>
-            <ExplodedDrawing
-              assetKey={heroDrawing.assetKey}
-              title={heroDrawing.title}
-              hotspots={heroDrawing.hotspots}
-              stockById={stockById}
-            />
-          </FadeIn>
-        </section>
-      )}
 
       {/* Featured stock */}
       <section className="border-t border-steel/10 bg-white py-16">
