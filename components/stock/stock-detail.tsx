@@ -24,7 +24,7 @@ export async function StockDetail({ item }: { item: StockItemView }) {
 
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
-          <Gallery images={item.images} title={item.title} />
+          <Gallery categorySlug={item.category.slug} itemType={item.type} />
         </div>
 
         <div>

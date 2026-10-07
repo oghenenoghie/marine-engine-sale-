@@ -1,55 +1,10 @@
-"use client";
+import { TechnicalDrawing } from "@/components/stock/technical-drawing";
+import type { StockType } from "@/types";
 
-import Image from "next/image";
-import { useState } from "react";
-import { ImageIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { StockImage } from "@/types";
-
-export function Gallery({ images, title }: { images: StockImage[]; title: string }) {
-  const [active, setActive] = useState(0);
-  const photos = images.filter((img) => img.type === "photo");
-
-  if (photos.length === 0) {
-    return (
-      <div className="grid aspect-[4/3] w-full place-items-center rounded-sm border border-steel/15 bg-white text-steel/40">
-        <ImageIcon size={40} />
-      </div>
-    );
-  }
-
-  const current = photos[active] ?? photos[0]!;
-
+export function Gallery({ categorySlug, itemType }: { categorySlug: string; itemType: StockType }) {
   return (
-    <div>
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-steel/15 bg-white">
-        <Image
-          src={current.url}
-          alt={current.alt}
-          fill
-          unoptimized
-          priority
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-contain transition-opacity duration-300"
-        />
-      </div>
-      {photos.length > 1 && (
-        <div className="mt-3 flex gap-2 overflow-x-auto">
-          {photos.map((img, i) => (
-            <button
-              key={img.url + i}
-              onClick={() => setActive(i)}
-              aria-label={`Show photo ${i + 1}`}
-              className={cn(
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border transition-colors",
-                i === active ? "border-hull" : "border-steel/20 hover:border-steel/50",
-              )}
-            >
-              <Image src={img.url} alt={img.alt} fill unoptimized className="object-cover" />
-            </button>
-          ))}
-        </div>
-      )}
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-steel/15">
+      <TechnicalDrawing categorySlug={categorySlug} itemType={itemType} />
     </div>
   );
 }
