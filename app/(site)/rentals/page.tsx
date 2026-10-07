@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { FadeIn } from "@/components/motion/fade-in";
+import { VesselReveal } from "@/components/motion/vessel-reveal";
+import { Button } from "@/components/ui/button";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 export const metadata: Metadata = {
@@ -10,32 +13,76 @@ export const metadata: Metadata = {
 
 export default function RentalsPage() {
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
-      <span className="label text-steel">Rental</span>
-      <h1 className="mt-1 text-display-lg font-display font-bold tracking-tight text-hull">Rental fleet</h1>
-      <p className="mt-2 max-w-[60ch] text-[14px] text-steel">
-        Vessels and equipment available for charter alongside our sale catalog — tell us the dates and job, and we&apos;ll
-        come back with availability.
-      </p>
+    <>
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden bg-hull text-paper">
+        <div
+          className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
+          aria-hidden
+        />
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] items-center lg:flex" aria-hidden>
+          <VesselReveal className="w-full text-paper/25" />
+        </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {RENTAL_CATEGORIES.map((category) => (
-          <Link
-            key={category.slug}
-            href={`/rentals/${category.slug}`}
-            className="group block rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="font-display text-lg font-bold text-hull">{category.label}</div>
-              <ArrowRight
-                size={16}
-                className="mt-1 shrink-0 text-steel transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-hull"
-              />
+        <div className="relative mx-auto max-w-7xl px-6 py-14 lg:py-20">
+          <FadeIn className="max-w-xl">
+            <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
+              <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
+              Marine rental · vessel &amp; equipment charter
+            </span>
+            <h1 className="mt-5 text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
+              Charter without limits.
+            </h1>
+            <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">
+              Specialized vessels and marine equipment for offshore operations, intervention, construction and heavy
+              logistics — tell us the dates and job, and we&apos;ll come back with availability.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button asChild variant="inverse" size="lg">
+                <Link href="#fleet">
+                  Browse rental fleet <ArrowRight size={16} />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
+                <Link href="/contact">Request availability</Link>
+              </Button>
             </div>
-            <p className="mt-1.5 text-[13px] text-steel">{category.description}</p>
-          </Link>
-        ))}
+          </FadeIn>
+
+          <FadeIn delay={0.15} className="mt-16 grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50 sm:mt-24">
+            <span>Fleet</span>
+            <span className="data text-paper/80">{RENTAL_CATEGORIES.length} categories</span>
+            <span>Availability</span>
+            <span className="data text-paper/80">On request</span>
+            <span>Mobilisation</span>
+            <span className="data text-paper/80">End to end</span>
+            <span>Crew</span>
+            <span className="data text-paper/80">Either</span>
+          </FadeIn>
+        </div>
+      </section>
+
+      <div id="fleet" className="mx-auto max-w-7xl px-6 py-10 scroll-mt-20">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {RENTAL_CATEGORIES.map((category, i) => (
+            <FadeIn key={category.slug} delay={i * 0.04}>
+              <Link
+                href={`/rentals/${category.slug}`}
+                className="group block h-full rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="font-display text-lg font-bold text-hull">{category.label}</div>
+                  <ArrowRight
+                    size={16}
+                    className="mt-1 shrink-0 text-steel transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-hull"
+                  />
+                </div>
+                <p className="mt-1.5 text-[13px] text-steel">{category.description}</p>
+              </Link>
+            </FadeIn>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
