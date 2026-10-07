@@ -1,12 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
-import { Ship, ImageIcon } from "lucide-react";
 import type { StockItemView } from "@/types";
-import { formatPrice, primaryImage } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { StatusBadge } from "@/components/stock/status-badge";
+import { TechnicalDrawing } from "@/components/stock/technical-drawing";
 
 export function StockCard({ item }: { item: StockItemView }) {
-  const img = primaryImage(item.images);
   const href = `/${item.type === "engine" ? "engines" : "parts"}/${item.slug}`;
 
   return (
@@ -14,22 +12,13 @@ export function StockCard({ item }: { item: StockItemView }) {
       href={href}
       className="group block overflow-hidden rounded-sm border border-steel/15 bg-white transition-colors duration-300 hover:border-hull/40"
     >
-      <div className="relative aspect-[4/3] w-full bg-paper">
-        {img ? (
-          <Image
-            src={img.url}
-            alt={img.alt}
-            fill
-            unoptimized
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="grid h-full w-full place-items-center text-steel/40">
-            {item.type === "engine" ? <Ship size={32} /> : <ImageIcon size={32} />}
-          </div>
-        )}
-        <div className="absolute left-3 top-3">
+      <div className="relative aspect-[4/3] w-full">
+        <TechnicalDrawing
+          categorySlug={item.category.slug}
+          itemType={item.type}
+          className="transition-transform duration-300 group-hover:scale-[1.03]"
+        />
+        <div className="absolute left-3 top-3 rounded-sm bg-paper/95 p-0.5">
           <StatusBadge status={item.status} />
         </div>
       </div>

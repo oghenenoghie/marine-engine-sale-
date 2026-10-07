@@ -1,58 +1,42 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
-import { DrawingReveal } from "@/components/motion/drawing-reveal";
-import { HeroSlider } from "@/components/motion/hero-slider";
+import { VesselReveal } from "@/components/motion/vessel-reveal";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { getHeroImages, getHeroCopy } from "@/lib/data/settings";
+import { getHeroCopy } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featured, brands, heroImages, heroCopy] = await Promise.all([
-    getFeaturedStock(8),
-    getAllBrands(),
-    getHeroImages(),
-    getHeroCopy(),
-  ]);
+  const [featured, brands, heroCopy] = await Promise.all([getFeaturedStock(8), getAllBrands(), getHeroCopy()]);
 
   return (
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
-        {heroImages.length > 0 && (
-          <>
-            <HeroSlider key={heroImages.join("|")} images={heroImages} />
-            <div className="absolute inset-0 bg-hull/45" aria-hidden />
-          </>
-        )}
-        {heroImages.length === 0 && (
-          <>
-            <div
-              className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_35%,black,transparent)]"
-              aria-hidden
-            />
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
-              <DrawingReveal className="h-[640px] w-[640px] text-paper/20" />
-            </div>
-          </>
-        )}
+        <div
+          className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
+          aria-hidden
+        />
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] items-center lg:flex" aria-hidden>
+          <VesselReveal className="w-full text-paper/25" />
+        </div>
 
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-11 text-center lg:py-16">
-          <FadeIn className="flex flex-col items-center">
+        <div className="relative mx-auto max-w-7xl px-6 py-14 lg:py-20">
+          <FadeIn className="max-w-xl">
             <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
               {heroCopy.eyebrow}
             </span>
-            <h1 className="mt-5 text-display-lg font-display font-extrabold tracking-tight">{heroCopy.headline}</h1>
-            <p className="mt-5 max-w-[56ch] text-[13px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <h1 className="mt-5 text-display-xl font-display font-extrabold tracking-tight">{heroCopy.headline}</h1>
+            <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild variant="inverse" size="lg">
                 <Link href="/parts">
                   Browse parts <ArrowRight size={16} />
