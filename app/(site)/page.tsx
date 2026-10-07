@@ -24,8 +24,11 @@ export default async function HomePage() {
           className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[60%] items-center lg:flex" aria-hidden>
-          <FadeIn className="w-full" delay={0.1}>
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 flex h-48 items-end justify-end overflow-hidden opacity-30 sm:h-56 lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[60%] lg:items-center lg:justify-center lg:opacity-100"
+          aria-hidden
+        >
+          <FadeIn className="w-[85%] lg:w-full" delay={0.1}>
             <Image
               src="/hero/well-intervention-vessel.png"
               alt=""
