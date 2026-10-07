@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
-import { VesselReveal } from "@/components/motion/vessel-reveal";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
 import { StockCard } from "@/components/stock/stock-card";
@@ -24,8 +24,18 @@ export default async function HomePage() {
           className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
           aria-hidden
         />
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] items-center lg:flex" aria-hidden>
-          <VesselReveal className="w-full text-paper/25" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[60%] items-center lg:flex" aria-hidden>
+          <FadeIn className="w-full" delay={0.1}>
+            <Image
+              src="/hero/well-intervention-vessel.png"
+              alt=""
+              width={1794}
+              height={877}
+              unoptimized
+              priority
+              className="w-full object-contain opacity-80 mix-blend-luminosity"
+            />
+          </FadeIn>
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 py-14 lg:py-20">
