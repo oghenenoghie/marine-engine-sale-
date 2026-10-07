@@ -3,12 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireAdmin, type ActionResult } from "@/lib/actions/auth";
-import type { HeroCopy } from "@/lib/data/settings";
+import type { HeroCopy, HeroDrawing } from "@/lib/data/settings";
 
 export type { ActionResult };
 
 const HERO_IMAGES_KEY = "hero_images";
 const HERO_COPY_KEY = "hero_copy";
+const HERO_DRAWINGS_KEY = "hero_drawings";
 const FAVICON_KEY = "favicon_url";
 
 export async function saveHeroImagesAction(urls: string[]): Promise<ActionResult> {
@@ -51,6 +52,27 @@ export async function saveHeroCopyAction(copy: HeroCopy): Promise<ActionResult> 
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero copy" };
+  }
+}
+
+export async function saveHeroDrawingsAction(drawings: HeroDrawing[]): Promise<ActionResult> {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin;
+  const cleaned = drawings.map((d) => ({ url: d.url, caption: d.caption.trim() })).filter((d) => d.url.trim() !== "");
+  if (cleaned.length === 0) {
+    return { ok: false, error: "At least one hero drawing is required." };
+  }
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert({ key: HERO_DRAWINGS_KEY, value: JSON.stringify(cleaned), updated_at: new Date().toISOString() });
+    if (error) return { ok: false, error: error.message };
+    revalidatePath("/");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero drawings" };
   }
 }
 

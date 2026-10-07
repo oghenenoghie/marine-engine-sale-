@@ -75,6 +75,48 @@ export const getHeroCopy = cache(async (): Promise<HeroCopy> => {
 });
 
 /**
+ * Technical line-drawing(s) shown in the homepage hero, each with a short
+ * caption — admin-editable via components/admin/hero-drawings-uploader.tsx,
+ * same site_settings key/value row shape as hero images/copy (key:
+ * hero_drawings). Unlike the hero photo slider (which can legitimately be
+ * empty), the hero always shows at least one vessel drawing, so this falls
+ * back to DEFAULT_HERO_DRAWINGS (the originally-shipped well-intervention
+ * vessel asset in public/hero/) rather than an empty array, same reasoning
+ * as DEFAULT_HERO_COPY.
+ */
+export type HeroDrawing = {
+  url: string;
+  caption: string;
+};
+
+export const DEFAULT_HERO_DRAWINGS: HeroDrawing[] = [
+  {
+    url: "/hero/well-intervention-vessel.png",
+    caption: "Light well intervention vessel — technical line drawing",
+  },
+];
+
+const HERO_DRAWINGS_KEY = "hero_drawings";
+
+export const getHeroDrawings = cache(async (): Promise<HeroDrawing[]> => {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_DRAWINGS_KEY).maybeSingle();
+    if (error) throw new Error(`getHeroDrawings: ${error.message}`);
+    if (!data?.value) return DEFAULT_HERO_DRAWINGS;
+    const parsed = JSON.parse(data.value);
+    if (!Array.isArray(parsed)) return DEFAULT_HERO_DRAWINGS;
+    const drawings = parsed.filter(
+      (d): d is HeroDrawing => typeof d === "object" && d !== null && typeof d.url === "string" && d.url.trim() !== "",
+    ).map((d) => ({ url: d.url, caption: typeof d.caption === "string" ? d.caption : "" }));
+    return drawings.length > 0 ? drawings : DEFAULT_HERO_DRAWINGS;
+  } catch (err) {
+    console.warn("[lib/data/settings] getHeroDrawings falling back to default drawing:", err);
+    return DEFAULT_HERO_DRAWINGS;
+  }
+});
+
+/**
  * Site favicon — admin-uploaded via components/admin/favicon-uploader.tsx,
  * same site_settings key/value row shape as the hero image(s) (key:
  * favicon_url). No seed fallback: an unset/unreachable value just means the

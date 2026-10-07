@@ -1,20 +1,25 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
+import { HeroDrawingCycle } from "@/components/motion/hero-drawing-cycle";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { getHeroCopy } from "@/lib/data/settings";
+import { getHeroCopy, getHeroDrawings } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featured, brands, heroCopy] = await Promise.all([getFeaturedStock(8), getAllBrands(), getHeroCopy()]);
+  const [featured, brands, heroCopy, heroDrawings] = await Promise.all([
+    getFeaturedStock(8),
+    getAllBrands(),
+    getHeroCopy(),
+    getHeroDrawings(),
+  ]);
 
   return (
     <>
@@ -29,15 +34,7 @@ export default async function HomePage() {
           aria-hidden
         >
           <FadeIn className="w-[85%] lg:w-full" delay={0.1}>
-            <Image
-              src="/hero/well-intervention-vessel.png"
-              alt=""
-              width={1794}
-              height={877}
-              unoptimized
-              priority
-              className="w-full object-contain opacity-80 mix-blend-luminosity"
-            />
+            <HeroDrawingCycle drawings={heroDrawings} />
           </FadeIn>
         </div>
 

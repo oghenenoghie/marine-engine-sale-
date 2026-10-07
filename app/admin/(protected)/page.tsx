@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
-import { getHeroImages, getHeroCopy, getFaviconUrl } from "@/lib/data/settings";
+import { getHeroImages, getHeroCopy, getHeroDrawings, getFaviconUrl } from "@/lib/data/settings";
 import { HeroImageUploader } from "@/components/admin/hero-image-uploader";
 import { HeroCopyEditor } from "@/components/admin/hero-copy-editor";
+import { HeroDrawingsUploader } from "@/components/admin/hero-drawings-uploader";
 import { FaviconUploader } from "@/components/admin/favicon-uploader";
 
 export const dynamic = "force-dynamic";
@@ -18,11 +19,12 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries, heroImages, heroCopy, faviconUrl] = await Promise.all([
+  const [stock, enquiries, heroImages, heroCopy, heroDrawings, faviconUrl] = await Promise.all([
     getAllStock(),
     getAllEnquiries(),
     getHeroImages(),
     getHeroCopy(),
+    getHeroDrawings(),
     getFaviconUrl(),
   ]);
   const stats = {
@@ -63,6 +65,18 @@ export default async function AdminDashboardPage() {
         </div>
         <div className="mt-3">
           <HeroCopyEditor initial={heroCopy} />
+        </div>
+      </div>
+
+      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
+        <div className="mb-1">
+          <h2 className="font-display text-base font-bold text-hull">Homepage hero technical drawings</h2>
+          <p className="text-[12px] text-steel">
+            Vessel/equipment line drawings shown next to the hero copy, each with a caption.
+          </p>
+        </div>
+        <div className="mt-3">
+          <HeroDrawingsUploader initial={heroDrawings} />
         </div>
       </div>
 
