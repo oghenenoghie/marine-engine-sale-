@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { VesselReveal } from "@/components/motion/vessel-reveal";
+import { CategoryCard } from "@/components/common/category-card";
+import { rentalIcon } from "@/components/common/rental-icons";
 import { Button } from "@/components/ui/button";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
@@ -66,19 +68,12 @@ export default function RentalsPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {RENTAL_CATEGORIES.map((category, i) => (
             <FadeIn key={category.slug} delay={i * 0.04}>
-              <Link
+              <CategoryCard
                 href={`/rentals/${category.slug}`}
-                className="group block h-full rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="font-display text-lg font-bold text-hull">{category.label}</div>
-                  <ArrowRight
-                    size={16}
-                    className="mt-1 shrink-0 text-steel transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-hull"
-                  />
-                </div>
-                <p className="mt-1.5 text-[13px] text-steel">{category.description}</p>
-              </Link>
+                icon={rentalIcon(category.slug)}
+                label={category.label.replace(/ rental$/i, "")}
+                highlights={category.highlights}
+              />
             </FadeIn>
           ))}
         </div>
