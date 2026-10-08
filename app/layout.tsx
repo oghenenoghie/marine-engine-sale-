@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { archivo, plexSans, plexMono } from "@/lib/fonts";
+import { spaceGrotesk, inter, plexMono } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { getFaviconUrl } from "@/lib/data/settings";
 import "./globals.css";
@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn(archivo.variable, plexSans.variable, plexMono.variable)}>
+    <html lang="en" className={cn(spaceGrotesk.variable, inter.variable, plexMono.variable)}>
       <body>{children}</body>
     </html>
   );

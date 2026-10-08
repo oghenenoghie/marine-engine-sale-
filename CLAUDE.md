@@ -188,8 +188,9 @@ monochrome pass — this file is the source of truth for current tokens).
   communicated by dot fill/outline and label weight (solid = available,
   hollow = reserved, dashed = expected, struck-through = sold), never by hue.
 - **Type roles** (`lib/fonts.ts`, CSS vars `--font-display` / `--font-body` / `--font-mono`):
-  Archivo 700/800 for display, IBM Plex Sans 400/500/600 for body/UI,
-  IBM Plex Mono 400/500 for part numbers/SKUs/specs (`tabular-nums`).
+  Space Grotesk 600/700 for display (tops out at 700 — `font-extrabold`
+  synthetic-bolds from it), Inter 400/500/600 for body/UI, IBM Plex Mono
+  400/500 for part numbers/SKUs/specs (`tabular-nums`).
 - Sharp, machined edges: `rounded-sm` (2px) on cards/inputs/buttons, not
   `rounded-md`/`rounded-lg`. Thin hairline borders (`border-steel/15`–`/40`)
   over shadows; hover states shift border/background tone, not drop-shadow.
