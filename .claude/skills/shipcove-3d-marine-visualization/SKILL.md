@@ -53,6 +53,33 @@ colors, no neon/cyberpunk treatment.
 - SVG/HTML overlays only for labels, dimensions, callouts, specs, markers,
   and UI chrome — Three.js is the only renderer for the model itself.
 
+## Typography direction (fonts only — scope note)
+
+A much larger "Shipcove Marine 3D UI Architect" redesign brief was proposed
+externally (full vessel-marketplace IA, a new dark `#080A0C`/cyan-accent
+color system, GSAP scroll-storytelling hero, nav restructuring into
+Vessels/Charter/Equipment, etc.), referencing a Westfield Subsea-style
+hero as visual inspiration. **Only its font recommendation has been
+adopted here — explicitly not the rest.** Do not build the vessel
+marketplace, color system, or navigation changes from that brief unless
+separately requested; CLAUDE.md's existing monochrome palette
+(`hull`/`graphite`/`steel`/`ash`/`paper`) and current site architecture
+remain the source of truth until/unless that changes.
+
+New font stack for future work under this skill (not yet applied to
+`lib/fonts.ts` or CLAUDE.md's "Type roles" section — that swap is an
+implementation step, not done as part of this doc update):
+
+- **Space Grotesk** 600/700 — display/headlines, replacing Archivo.
+- **Inter** 400/500 — body/UI text, replacing IBM Plex Sans.
+- **IBM Plex Mono** 400/500 — technical/data (part numbers, specs,
+  dimensions, callouts) — **unchanged**, keeps its current role.
+
+When the actual font swap is implemented, it touches `lib/fonts.ts` (the
+`--font-display`/`--font-body`/`--font-mono` CSS vars), the Google Fonts
+imports, and CLAUDE.md's "Type roles" line — `tailwind.config.ts`'s color
+tokens are untouched by this, since colors are out of scope here.
+
 ## 3D model architecture
 
 Every vessel/machine is built from reusable, named components so parts of
