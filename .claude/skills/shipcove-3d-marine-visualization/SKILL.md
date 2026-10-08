@@ -80,6 +80,37 @@ When the actual font swap is implemented, it touches `lib/fonts.ts` (the
 imports, and CLAUDE.md's "Type roles" line — `tailwind.config.ts`'s color
 tokens are untouched by this, since colors are out of scope here.
 
+## Reconciled from the external brief (second pass)
+
+The same external brief later arrived as a full standalone skill proposal
+("Shipcove Marine 3D UI Architect" — 55 sections covering a vessel
+sales/charter marketplace, a new dark/cyan color system, nav restructuring
+into Vessels/Charter/Equipment, scroll-storytelling hero copy, and more).
+Rather than save it as a second, competing skill, its **engineering and
+process guidance has been folded into this skill** below (file
+architecture, camera restraint, hover staging, loading sequencing, data-
+accuracy principles, pre-build audit habit). The following were deliberately
+**not** adopted, because they conflict with current, deliberate decisions
+elsewhere in this repo rather than merely extending them:
+
+- **Color system** (`#080A0C` + cyan accent) — contradicts CLAUDE.md's
+  explicit "no hue-based accent color" monochrome design system, which was
+  itself a deliberate pass, not an oversight. Stays `hull`/`graphite`/
+  `steel`/`ash`/`paper`, no hue accent.
+- **Vessel sales/charter marketplace** (`/vessels/*` routes, a `Vessel`
+  entity with LOA/DWT/DP-class/IMO/classification, sale-vs-charter status,
+  vessel detail pages) — this is a new business line with no backing data,
+  schema, or admin CRUD anywhere in the repo today. `lib/data/rentals.ts` is
+  explicitly documented as content-only, no inventory/availability system.
+  Building this is a product decision for the user to make explicitly, not
+  something to infer from a UI brief — not in scope here.
+- **Navigation restructure** (Vessels / Charter / Equipment / Company) —
+  downstream of the marketplace decision above; not adopted until that is.
+- **New hero headlines/copy** ("MARINE ASSETS. ENGINEERED FOR THE SEA.") —
+  tied to the marketplace reframing; the existing admin-editable
+  `getHeroCopy()`/`getHeroDrawings()` system (see `lib/data/settings.ts`)
+  already covers hero content and stays as the real content, not this.
+
 ## 3D model architecture
 
 Every vessel/machine is built from reusable, named components so parts of
@@ -110,6 +141,75 @@ already encodes per engine model.
 
 Don't build one monolithic mesh when a vessel/machine needs interactive,
 independently-highlightable components.
+
+## File & component architecture
+
+Keep 3D logic out of page components and out of one giant file. Names are
+generic (not `Vessel*`-prefixed) since this architecture serves both the
+rentals and part-discovery surfaces:
+
+```
+components/three/
+  SceneRoot.tsx          — Canvas + Suspense + WebGL-support check
+  ModelViewer.tsx         — loads the GLB/GLTF, applies materials/edges
+  TechnicalWireframe.tsx  — EdgesGeometry/LineSegments layer
+  BlueprintGrid.tsx       — environment grid/blueprint backdrop
+  DimensionLines.tsx      — projected HTML/SVG dimension overlays
+  ModelHotspots.tsx       — hotspot markers + callouts
+  ExplodedView.tsx        — exploded-state transform logic
+  CameraRig.tsx           — camera mode presets + damped transitions
+  SceneLighting.tsx
+  SceneEnvironment.tsx
+
+lib/three/
+  animations.ts   — shared GSAP timelines (load sequence, state
+                    transitions) — don't scatter ad-hoc timelines across
+                    components
+  camera.ts        — camera preset positions/easing
+  materials.ts      — shared materials mapped to hull/graphite/steel/ash
+  performance.ts     — device-capability detection, LOD tier selection
+```
+
+## Camera & interaction discipline
+
+- Damped, limited-range orbit — never unrestricted free rotation outside an
+  explicit "inspection mode."
+- Preset positions only (the camera-mode buttons already listed under
+  Rendering approach), with eased transitions between them — no free-form
+  fly-camera.
+- **Hover staging**, for cards/listing previews specifically: default state
+  shows the flat technical drawing; on hover, the drawing's lines animate;
+  shortly after (~300ms), the 3D model crossfades in; spec metadata appears
+  last. Reverse the same sequence on exit — no instant hard swaps.
+- **Load sequencing**: show the technical drawing immediately (it's cheap
+  and already the current UI), then transition into the 3D model once it's
+  ready. Never block the page waiting on the 3D asset to show something.
+
+## Data accuracy
+
+Never fabricate a spec, dimension, or capability that isn't in
+`StockItem.specs`, `RENTAL_CATEGORIES`, or a real source — this extends the
+existing "Vessel/machine category notes" rule to every surface this skill
+touches, not just rentals. Where a number is genuinely unknown, render
+"Available on request," not a plausible-looking placeholder. If a technical
+drawing or 3D model is a stylized/representative illustration rather than an
+accurate engineering drawing of the specific item (true of the current
+`TechnicalDrawing` category icons, for instance), don't present it as
+certified documentation — that distinction matters for a trading platform
+where buyers may rely on it.
+
+## Before starting implementation
+
+Before touching code under this skill: re-read the current state of
+whichever surface you're changing (`rentals/[type]/page.tsx` or
+`exploded-drawing.tsx` + the hotspot editor) rather than assuming the plan
+above is still accurate — other work may have landed since. Note what's
+reusable (existing `Hotspot`/`StockItem`/`RENTAL_CATEGORIES` data, existing
+motion/reduced-motion conventions) versus genuinely new, and build the
+3D system progressively (shared infra → one pilot category/drawing on
+placeholder geometry → roll out) rather than attempting it all in one pass
+— see the implementation plan delivered alongside this skill for the actual
+phase breakdown.
 
 ## Model states
 
@@ -208,8 +308,9 @@ overlay/callout layer → GSAP transform timeline → page`. Where no asset
 exists yet, use clearly-placeholder primitive geometry (boxes/cylinders in
 the right proportions) so the surrounding system (states, cameras,
 overlays, animation) can be built and tested, and swap in real assets
-later without touching that system. Use Draco/KTX2 compression, instancing,
-and LOD once real assets exist.
+later without touching that system. Use Draco/Meshopt/KTX2 compression,
+instancing, and LOD once real assets exist — optimize before loading, never
+ship an unoptimized high-res asset and rely on the viewer to cope.
 
 ## Performance, mobile, accessibility
 
@@ -217,12 +318,15 @@ and LOD once real assets exist.
   Share Three.js infra/materials/geometries across rental cards rather than
   independent WebGL contexts per card; render only visible models.
 - LOD tiers: full detail (individual page) → preview (listing card) →
-  thumbnail → mobile-simplified.
+  thumbnail → mobile-simplified, selected via `lib/three/performance.ts`
+  device-capability detection (not just a viewport-width guess).
 - Mobile: lower-poly, fewer technical lines, reduced lighting/animation,
   touch rotation; 3D is an enhancement — core content (specs, description,
   enquiry form) must remain accessible without WebGL, matching the existing
   accessibility floor in CLAUDE.md (visible keyboard focus, Radix a11y
-  defaults, `useReducedMotion()`).
+  defaults, `useReducedMotion()`). On WebGL-unsupported or low-capability
+  devices, fall back to the current static technical-drawing image rather
+  than attempting a degraded 3D render.
 - `prefers-reduced-motion`: disable auto-rotation, camera animation,
   continuous motion; keep a static model, user-controlled interaction, and
   instant transitions.
