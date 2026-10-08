@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
+import { HeroSlider } from "@/components/motion/hero-slider";
 import { HeroDrawingCycle } from "@/components/motion/hero-drawing-cycle";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
@@ -8,23 +9,30 @@ import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { getHeroCopy, getHeroDrawings } from "@/lib/data/settings";
+import { getHeroCopy, getHeroDrawings, getHeroImages } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featured, brands, heroCopy, heroDrawings] = await Promise.all([
+  const [featured, brands, heroCopy, heroDrawings, heroImages] = await Promise.all([
     getFeaturedStock(8),
     getAllBrands(),
     getHeroCopy(),
     getHeroDrawings(),
+    getHeroImages(),
   ]);
 
   return (
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
+        {heroImages.length > 0 && (
+          <>
+            <HeroSlider images={heroImages} className="opacity-50" />
+            <div className="absolute inset-0 bg-hull/60" aria-hidden />
+          </>
+        )}
         <div
           className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
           aria-hidden
@@ -60,6 +68,20 @@ export default async function HomePage() {
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper/60" aria-hidden />
               {heroCopy.tagline}
             </span>
+          </FadeIn>
+
+          <FadeIn
+            delay={0.15}
+            className="mt-10 grid max-w-md grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50 sm:mt-14"
+          >
+            <span>Brands</span>
+            <span className="data text-paper/80">{brands.length} manufacturers</span>
+            <span>Search</span>
+            <span className="data text-paper/80">By OEM number</span>
+            <span>Condition</span>
+            <span className="data text-paper/80">New &amp; reconditioned</span>
+            <span>Enquiry response</span>
+            <span className="data text-paper/80">Within 24 hours</span>
           </FadeIn>
         </div>
       </section>
