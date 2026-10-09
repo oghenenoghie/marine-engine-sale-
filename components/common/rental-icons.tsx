@@ -130,20 +130,41 @@ export function YachtIcon({ className }: IconProps) {
   );
 }
 
+export function TriToonIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...common} className={className}>
+      <path d="M2 18.5h4M9 18.5h4M16 18.5h4" />
+      <path d="M2 21c2-1.3 4-1.3 6 0s4 1.3 6 0 4-1.3 6 0" />
+      <rect x="3" y="12" width="18" height="4.5" rx="0.5" />
+      <path d="M8 12V9h2.5v3M13.5 12V9H16v3" />
+    </svg>
+  );
+}
+
+export function BunkeringTankerIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...common} className={className}>
+      <path d="M2 18l2 3h16l2-3-2-1H4l-2 1Z" />
+      <rect x="5" y="11" width="14" height="5" />
+      <circle cx="9" cy="8.5" r="1.4" />
+      <circle cx="15" cy="8.5" r="1.4" />
+      <path d="M9 9.9v1.1M15 9.9v1.1" />
+    </svg>
+  );
+}
+
 // Keyed by lib/data/rentals.ts RENTAL_CATEGORIES slugs — every slug there
 // must have an entry here.
 const RENTAL_ICON_MAP: Record<string, IconComponent> = {
-  ship: ShipIcon,
-  "marine-equipment": MarineEquipmentIcon,
-  "well-intervention-vessel": WellInterventionIcon,
-  "jack-up-rig": JackUpRigIcon,
-  dredger: DredgerIcon,
-  pontoon: PontoonIcon,
-  barge: BargeIcon,
-  crane: CraneIcon,
-  workboat: WorkboatIcon,
-  tug: TugIcon,
-  yacht: YachtIcon,
+  "well-intervention-vessels": WellInterventionIcon,
+  "jack-up-rigs": JackUpRigIcon,
+  dredgers: DredgerIcon,
+  workboats: WorkboatIcon,
+  tugboats: TugIcon,
+  barges: BargeIcon,
+  pontoons: PontoonIcon,
+  "tri-toon-vessels": TriToonIcon,
+  "bunkering-tankers": BunkeringTankerIcon,
 };
 
 export function rentalIcon(slug: string): IconComponent {

@@ -5,7 +5,7 @@ import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 // Curated subset of RENTAL_CATEGORIES for the homepage — the offshore/technical
 // fleet lines. The full set renders on /rentals (see that page).
-const FEATURED_SLUGS = ["well-intervention-vessel", "jack-up-rig", "dredger", "pontoon", "workboat", "tug", "barge"];
+const FEATURED_SLUGS = ["well-intervention-vessels", "jack-up-rigs", "dredgers", "pontoons", "workboats", "tugboats", "barges"];
 
 const FEATURED_CATEGORIES = FEATURED_SLUGS.map((slug) => RENTAL_CATEGORIES.find((c) => c.slug === slug)).filter(
   (c): c is (typeof RENTAL_CATEGORIES)[number] => c !== undefined,
@@ -26,7 +26,7 @@ export function FleetCategories() {
                 href={`/rentals/${category.slug}`}
                 icon={rentalIcon(category.slug)}
                 label={category.label.replace(/ rental$/i, "")}
-                highlights={category.highlights}
+                highlights={category.applications}
               />
             </FadeIn>
           ))}

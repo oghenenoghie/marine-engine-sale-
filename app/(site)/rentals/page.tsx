@@ -10,7 +10,8 @@ import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 export const metadata: Metadata = {
   title: "Rental fleet",
-  description: "Charter ships, marine equipment, dredgers, pontoons, barges, cranes and yachts from Shipcove Trading.",
+  description:
+    "Charter well intervention vessels, jack-up rigs, dredgers, workboats, tugboats, barges, pontoons, tri-toon vessels and bunkering tankers from Shipcove Trading.",
 };
 
 export default function RentalsPage() {
@@ -75,7 +76,7 @@ export default function RentalsPage() {
                 href={`/rentals/${category.slug}`}
                 icon={rentalIcon(category.slug)}
                 label={category.label.replace(/ rental$/i, "")}
-                highlights={category.highlights}
+                highlights={category.applications}
               />
             </FadeIn>
           ))}
