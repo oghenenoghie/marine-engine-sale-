@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, ImageIcon } from "lucide-react";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 export const metadata: Metadata = {
   title: "Rental fleet",
-  description: "Charter ships, marine equipment, dredgers, pontoons, barges, cranes and yachts from Shipcove Trading.",
+  description:
+    "Charter well intervention vessels, jack-up rigs, dredgers, workboats, tugboats, barges, pontoons, tri-toon vessels and bunkering tankers from Shipcove Trading.",
 };
 
 export default function RentalsPage() {
@@ -23,16 +25,33 @@ export default function RentalsPage() {
           <Link
             key={category.slug}
             href={`/rentals/${category.slug}`}
-            className="group block rounded-sm border border-steel/15 bg-white p-6 transition-colors duration-200 hover:border-hull/40"
+            className="group flex flex-col overflow-hidden rounded-sm border border-steel/15 bg-white transition-colors duration-200 hover:border-hull/40"
           >
-            <div className="flex items-start justify-between gap-3">
-              <div className="font-display text-lg font-bold text-hull">{category.label}</div>
-              <ArrowRight
-                size={16}
-                className="mt-1 shrink-0 text-steel transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-hull"
-              />
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-paper">
+              {category.image ? (
+                <Image
+                  src={category.image}
+                  alt={category.drawingNote}
+                  fill
+                  unoptimized
+                  className="object-contain p-3 transition-transform duration-300 group-hover:scale-[1.03]"
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center text-steel/30">
+                  <ImageIcon size={28} />
+                </div>
+              )}
             </div>
-            <p className="mt-1.5 text-[13px] text-steel">{category.description}</p>
+            <div className="p-6">
+              <div className="flex items-start justify-between gap-3">
+                <div className="font-display text-lg font-bold text-hull">{category.label}</div>
+                <ArrowRight
+                  size={16}
+                  className="mt-1 shrink-0 text-steel transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-hull"
+                />
+              </div>
+              <p className="mt-1.5 text-[13px] text-steel">{category.description}</p>
+            </div>
           </Link>
         ))}
       </div>
