@@ -1,25 +1,38 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
-import { VesselReveal } from "@/components/motion/vessel-reveal";
+import { HeroSlider } from "@/components/motion/hero-slider";
+import { HeroDrawingCycle } from "@/components/motion/hero-drawing-cycle";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
+import { getHeroCopy, getHeroDrawings, getHeroImages } from "@/lib/data/settings";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featured, brands] = await Promise.all([getFeaturedStock(8), getAllBrands()]);
+  const [featured, brands, heroCopy, heroDrawings, heroImages] = await Promise.all([
+    getFeaturedStock(8),
+    getAllBrands(),
+    getHeroCopy(),
+    getHeroDrawings(),
+    getHeroImages(),
+  ]);
 
   return (
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
       <section className="relative isolate overflow-hidden bg-hull text-paper">
+        {heroImages.length > 0 && (
+          <>
+            <HeroSlider images={heroImages} className="opacity-50" />
+            <div className="absolute inset-0 bg-hull/60" aria-hidden />
+          </>
+        )}
         <div
           className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
           aria-hidden
@@ -28,46 +41,49 @@ export default async function HomePage() {
           className="pointer-events-none absolute inset-x-0 bottom-0 flex h-48 items-end justify-end overflow-hidden opacity-30 sm:h-56 lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[55%] lg:items-center lg:justify-center lg:opacity-100"
           aria-hidden
         >
-          <VesselReveal className="w-[85%] text-paper/25 lg:w-full" />
+          <FadeIn className="w-[85%] lg:w-full" delay={0.1}>
+            <HeroDrawingCycle drawings={heroDrawings} />
+          </FadeIn>
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 py-14 lg:py-20">
           <FadeIn className="max-w-xl">
             <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
               <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
-              Marine rental · vessel &amp; equipment charter
+              {heroCopy.eyebrow}
             </span>
             <h1 className="mt-5 text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
-              Charter without limits.
+              {heroCopy.headline}
             </h1>
-            <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">
-              Specialized vessels and marine equipment for offshore operations, intervention, construction and heavy
-              logistics — tell us the dates and job, and we&apos;ll come back with availability.
-            </p>
+            <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">{heroCopy.paragraph}</p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild variant="inverse" size="lg">
-                <Link href="/rentals#fleet">
-                  Browse rental fleet <ArrowRight size={16} />
+                <Link href="/parts">
+                  Browse parts <ArrowRight size={16} />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
-                <Link href="/contact">Request availability</Link>
+                <Link href="/sell">Sell your equipment</Link>
               </Button>
             </div>
+            <span className="label mt-10 inline-flex items-center gap-2 border border-paper/15 px-4 py-1.5 text-paper/60">
+              <span className="h-1 w-1 shrink-0 rounded-full bg-paper/60" aria-hidden />
+              {heroCopy.tagline}
+            </span>
           </FadeIn>
 
           <FadeIn
             delay={0.15}
-            className="mt-16 grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50 sm:mt-24"
+            className="mt-10 grid max-w-md grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50 sm:mt-14"
           >
-            <span>Fleet</span>
-            <span className="data text-paper/80">{RENTAL_CATEGORIES.length} categories</span>
-            <span>Availability</span>
-            <span className="data text-paper/80">On request</span>
-            <span>Mobilisation</span>
-            <span className="data text-paper/80">End to end</span>
-            <span>Crew</span>
-            <span className="data text-paper/80">Either</span>
+            <span>Brands</span>
+            <span className="data text-paper/80">{brands.length} manufacturers</span>
+            <span>Search</span>
+            <span className="data text-paper/80">By OEM number</span>
+            <span>Condition</span>
+            <span className="data text-paper/80">New &amp; reconditioned</span>
+            <span>Enquiry response</span>
+            <span className="data text-paper/80">Within 24 hours</span>
           </FadeIn>
         </div>
       </section>

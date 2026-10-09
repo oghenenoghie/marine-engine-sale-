@@ -81,8 +81,9 @@ export const getHeroCopy = cache(async (): Promise<HeroCopy> => {
  * hero_drawings). Unlike the hero photo slider (which can legitimately be
  * empty), the hero always shows at least one vessel drawing, so this falls
  * back to DEFAULT_HERO_DRAWINGS (the originally-shipped well-intervention
- * vessel asset in public/hero/) rather than an empty array, same reasoning
- * as DEFAULT_HERO_COPY.
+ * vessel asset plus three more equipment drawings cut from the rental
+ * fleet's isometric line art, all in public/hero/) rather than an empty
+ * array, same reasoning as DEFAULT_HERO_COPY.
  */
 export type HeroDrawing = {
   url: string;
@@ -93,6 +94,18 @@ export const DEFAULT_HERO_DRAWINGS: HeroDrawing[] = [
   {
     url: "/hero/well-intervention-vessel.png",
     caption: "Light well intervention vessel — technical line drawing",
+  },
+  {
+    url: "/hero/jack-up-rig.png",
+    caption: "Jack-up rig — technical line drawing",
+  },
+  {
+    url: "/hero/workboat.png",
+    caption: "Workboat — technical line drawing",
+  },
+  {
+    url: "/hero/tri-toon-vessel.png",
+    caption: "Tri-toon vessel — technical line drawing",
   },
 ];
 
