@@ -159,3 +159,6 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
 export function rentalBySlug(slug: string): RentalCategory | undefined {
   return RENTAL_CATEGORIES.find((r) => r.slug === slug);
 }
+
+/** Every supplied rental drawing, in category order — reused as stand-in artwork on stock cards that have no photo. */
+export const RENTAL_DRAWINGS: string[] = RENTAL_CATEGORIES.flatMap((category) => (category.image ? [category.image] : []));
