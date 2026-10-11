@@ -25,6 +25,7 @@ export function FleetCategories() {
               <CategoryCard
                 href={`/rentals/${category.slug}`}
                 icon={rentalIcon(category.slug)}
+                image={category.image}
                 label={category.label.replace(/ rental$/i, "")}
                 highlights={category.applications}
               />
