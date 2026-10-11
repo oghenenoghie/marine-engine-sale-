@@ -108,8 +108,8 @@ elsewhere in this repo rather than merely extending them:
   downstream of the marketplace decision above; not adopted until that is.
 - **New hero headlines/copy** ("MARINE ASSETS. ENGINEERED FOR THE SEA.") —
   tied to the marketplace reframing; the existing admin-editable
-  `getHeroCopy()`/`getHeroDrawings()` system (see `lib/data/settings.ts`)
-  already covers hero content and stays as the real content, not this.
+  `getHeroSlides()` system (see `lib/data/settings.ts`) already covers hero
+  content and stays as the real content, not this.
 
 ## 3D model architecture
 

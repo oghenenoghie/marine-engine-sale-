@@ -7,39 +7,33 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { VesselReveal } from "@/components/motion/vessel-reveal";
-import { HeroDrawingCycle } from "@/components/motion/hero-drawing-cycle";
-import { HeroSlider } from "@/components/motion/hero-slider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { HeroDrawing } from "@/lib/data/settings";
 
 export interface FleetHeroSlide {
   id: string;
-  /** Names the slide for the pagination buttons and the caption under the drawing. */
+  /** Names the slide for the pagination buttons. */
   label: string;
   eyebrow: string;
   headline: string;
   body: string;
   primary: { href: string; label: string };
   secondary: { href: string; label: string };
-  /**
-   * What to show on the right. Priority: `drawings` (admin-editable,
-   * cross-fades via <HeroDrawingCycle>, each with its own caption) > `image`
-   * (a single static linework drawing under /public) > the animated
-   * <VesselReveal> fallback when neither is set.
-   */
-  image?: string;
-  drawings?: HeroDrawing[];
+  /** Dimmed full-bleed backdrop behind this slide only. Omit for just the tech-grid backdrop. */
+  backgroundImage?: string;
+  /** Technical line drawing on the right, with an optional caption. Omit for the animated <VesselReveal/> placeholder. */
+  drawing?: { url: string; caption?: string };
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const SWIPE_PX = 50;
 
 /**
- * Homepage hero as a carousel: every slide is a copy of the rental hero
- * (eyebrow, headline, copy, CTAs, technical drawing on the right) over one
- * shared hull/tech-grid backdrop. Slides cross-fade in place, stacked in one
- * grid cell so the hero never changes height between them.
+ * Homepage hero as a single carousel: every slide is fully self-contained
+ * (eyebrow, headline, copy, CTAs, its own optional background photo and
+ * technical drawing) over one shared hull/tech-grid backdrop. Slides
+ * cross-fade in place, stacked in one grid cell so the hero never changes
+ * height between them.
  *
  * Autoplay is driven by the active pagination bar's CSS fill animation
  * (animationend → next slide), so pausing it pauses the timer too. It pauses
@@ -48,12 +42,9 @@ const SWIPE_PX = 50;
  */
 export function FleetHeroSlider({
   slides,
-  heroImages = [],
   children,
 }: {
   slides: FleetHeroSlide[];
-  /** Admin-uploaded background photos (lib/data/settings.ts getHeroImages()) — dimmed, behind everything else. */
-  heroImages?: string[];
   children?: ReactNode;
 }) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -114,9 +105,25 @@ export function FleetHeroSlider({
       onTouchStart={multiple ? onTouchStart : undefined}
       onTouchEnd={multiple ? onTouchEnd : undefined}
     >
-      {heroImages.length > 0 && (
+      {/* Background photos — one dimmed layer per slide, cross-faded with the active slide */}
+      {slides.some((slide) => slide.backgroundImage) && (
         <>
-          <HeroSlider images={heroImages} className="opacity-50" />
+          <div className="absolute inset-0" aria-hidden>
+            {slides.map(
+              (slide, i) =>
+                slide.backgroundImage && (
+                  <motion.div
+                    key={slide.id}
+                    initial={false}
+                    animate={{ opacity: i === index ? 0.5 : 0 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
+                    className="absolute inset-0"
+                  >
+                    <Image src={slide.backgroundImage} alt="" fill unoptimized className="object-cover" />
+                  </motion.div>
+                ),
+            )}
+          </div>
           <div className="absolute inset-0 bg-hull/60" aria-hidden />
         </>
       )}
@@ -138,11 +145,14 @@ export function FleetHeroSlider({
             transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
             className="absolute inset-0 flex items-end justify-end lg:items-center lg:justify-center"
           >
-            {slide.drawings && slide.drawings.length > 0 ? (
-              <HeroDrawingCycle drawings={slide.drawings} />
-            ) : slide.image ? (
+            {slide.drawing ? (
               <div className="relative h-full w-[85%] lg:aspect-[3/2] lg:h-auto lg:w-full lg:opacity-60">
-                <Image src={slide.image} alt="" fill unoptimized className="object-contain object-bottom lg:object-center" />
+                <Image src={slide.drawing.url} alt="" fill unoptimized className="object-contain object-bottom lg:object-center" />
+                {slide.drawing.caption && (
+                  <p className="absolute inset-x-0 bottom-1 text-right font-mono text-[10px] uppercase tracking-wider text-paper/50">
+                    {slide.drawing.caption}
+                  </p>
+                )}
               </div>
             ) : (
               <VesselReveal className="w-[85%] text-paper/25 lg:w-full" />

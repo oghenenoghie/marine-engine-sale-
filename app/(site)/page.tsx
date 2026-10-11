@@ -8,7 +8,7 @@ import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { getHeroCopy, getHeroDrawings, getHeroImages } from "@/lib/data/settings";
+import { getHeroSlides } from "@/lib/data/settings";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 
 const firstSentence = (text: string) => text.match(/^.*?\.(?=\s|$)/)?.[0] ?? text;
 
-// Every rental line with a drawing + tagline gets a slide after the admin-editable fleet slide below.
+// Every rental line with a drawing + tagline gets a slide after the admin-editable slides below.
 const RENTAL_SLIDES: FleetHeroSlide[] = RENTAL_CATEGORIES.flatMap((category) =>
   category.image && category.tagline
     ? [
@@ -28,43 +28,38 @@ const RENTAL_SLIDES: FleetHeroSlide[] = RENTAL_CATEGORIES.flatMap((category) =>
           body: firstSentence(category.description),
           primary: { href: `/rentals/${category.slug}`, label: `View ${category.label.toLowerCase()}` },
           secondary: { href: `/rentals/${category.slug}#request-availability`, label: "Request availability" },
-          image: category.image,
+          drawing: { url: category.image },
         },
       ]
     : [],
 );
 
 export default async function HomePage() {
-  const [featured, brands, heroCopy, heroDrawings, heroImages] = await Promise.all([
-    getFeaturedStock(8),
-    getAllBrands(),
-    getHeroCopy(),
-    getHeroDrawings(),
-    getHeroImages(),
-  ]);
+  const [featured, brands, heroSlides] = await Promise.all([getFeaturedStock(8), getAllBrands(), getHeroSlides()]);
 
-  // Admin-editable (lib/data/settings.ts / the /admin dashboard's hero panels) — the one slide
-  // every deployment has regardless of rental-category content, so editing it from /admin always
-  // has a visible effect on the live homepage.
-  const heroSlides: FleetHeroSlide[] = [
-    {
-      id: "fleet",
-      label: "Marine diesel & rentals",
-      eyebrow: heroCopy.eyebrow,
-      headline: heroCopy.headline,
-      body: heroCopy.paragraph,
-      primary: { href: "/parts", label: "Browse parts" },
-      secondary: { href: "/rentals#fleet", label: "Browse rental fleet" },
-      drawings: heroDrawings,
-    },
+  // Admin-editable (lib/data/settings.ts getHeroSlides() / the /admin dashboard) — the slides every
+  // deployment has regardless of rental-category content, so editing them from /admin always has a
+  // visible effect on the live homepage. Rental-category slides are appended after these.
+  const allSlides: FleetHeroSlide[] = [
+    ...heroSlides.map((slide) => ({
+      id: slide.id,
+      label: slide.eyebrow,
+      eyebrow: slide.eyebrow,
+      headline: slide.headline,
+      body: slide.body,
+      primary: { href: slide.primaryHref, label: slide.primaryLabel },
+      secondary: { href: slide.secondaryHref, label: slide.secondaryLabel },
+      backgroundImage: slide.backgroundImage || undefined,
+      drawing: slide.drawingUrl ? { url: slide.drawingUrl, caption: slide.drawingCaption || undefined } : undefined,
+    })),
     ...RENTAL_SLIDES,
   ];
 
   return (
     <>
-      {/* Hero — the sticky Header sits flush above this and doubles as its navbar. The first slide is
-          admin-editable (/admin dashboard); each rental line with a drawing + tagline gets one after it. */}
-      <FleetHeroSlider slides={heroSlides} heroImages={heroImages}>
+      {/* Hero — the sticky Header sits flush above this and doubles as its navbar. The admin-editable
+          slides (/admin dashboard) lead; each rental line with a drawing + tagline gets one after them. */}
+      <FleetHeroSlider slides={allSlides}>
         <FadeIn
           delay={0.15}
           className="grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50"

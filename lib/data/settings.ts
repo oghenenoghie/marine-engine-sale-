@@ -6,113 +6,87 @@ import { createPublicClient } from "@/lib/supabase/server";
  * see supabase/migrations/0006_site_settings.sql. RLS: public read, admin
  * write via lib/actions/settings.ts. No seed fallback: unlike taxonomy/stock
  * this is optional decoration, so an unreachable/unconfigured Supabase
- * project just means "no hero images" rather than a page that needs to degrade.
+ * project just means default hero content rather than a page that needs to
+ * degrade.
  *
- * Hero images are stored as a JSON-encoded array of Supabase Storage public
- * URLs in the `value` text column (key: hero_images) — the homepage hero is
- * a slider, not a single background photo.
+ * The homepage hero is one carousel (components/common/fleet-hero-slider.tsx)
+ * and each slide is a single self-contained unit — eyebrow/headline/body,
+ * both CTAs, an optional background photo, and an optional technical
+ * drawing + caption. Admins manage the full ordered list (add/remove/reorder)
+ * via components/admin/hero-slides-editor.tsx; the list is stored as one
+ * JSON-encoded array in the `value` text column (key: hero_slides). Rental
+ * category slides (app/(site)/page.tsx RENTAL_SLIDES) are appended after
+ * these at render time — they come from lib/data/rentals.ts, not this table.
  */
-
-const HERO_IMAGES_KEY = "hero_images";
-
-export const getHeroImages = cache(async (): Promise<string[]> => {
-  try {
-    const supabase = createPublicClient();
-    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_IMAGES_KEY).maybeSingle();
-    if (error) throw new Error(`getHeroImages: ${error.message}`);
-    if (!data?.value) return [];
-    const parsed = JSON.parse(data.value);
-    return Array.isArray(parsed) ? parsed.filter((url): url is string => typeof url === "string") : [];
-  } catch (err) {
-    console.warn("[lib/data/settings] getHeroImages falling back to no images:", err);
-    return [];
-  }
-});
-
-/**
- * Homepage hero copy (eyebrow badge, headline, paragraph, bottom tagline
- * badge) — admin-editable via components/admin/hero-copy-editor.tsx, same
- * site_settings key/value row shape as hero images (key: hero_copy).
- * Unlike hero images, there's no reasonable "empty" state for hero copy, so
- * this falls back to the original launch copy (DEFAULT_HERO_COPY) rather
- * than blanks when unset or Supabase is unreachable.
- */
-export type HeroCopy = {
+export type HeroSlide = {
+  id: string;
   eyebrow: string;
   headline: string;
-  paragraph: string;
-  tagline: string;
+  body: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+  /** Supabase Storage public URL, or "" for no background photo (just the tech-grid backdrop). */
+  backgroundImage: string;
+  /** Supabase Storage public URL, or "" to fall back to the animated <VesselReveal/> placeholder. */
+  drawingUrl: string;
+  drawingCaption: string;
 };
 
-export const DEFAULT_HERO_COPY: HeroCopy = {
-  eyebrow: "Marine diesel · engines & parts",
-  headline: "Trading the fleet — engines, parts and power, across every major brand.",
-  paragraph:
-    "Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link straight to live stock.",
-  tagline: "Drawing-driven part discovery",
-};
-
-const HERO_COPY_KEY = "hero_copy";
-
-export const getHeroCopy = cache(async (): Promise<HeroCopy> => {
-  try {
-    const supabase = createPublicClient();
-    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_COPY_KEY).maybeSingle();
-    if (error) throw new Error(`getHeroCopy: ${error.message}`);
-    if (!data?.value) return DEFAULT_HERO_COPY;
-    const parsed = JSON.parse(data.value);
-    return {
-      eyebrow: typeof parsed.eyebrow === "string" && parsed.eyebrow.trim() ? parsed.eyebrow : DEFAULT_HERO_COPY.eyebrow,
-      headline: typeof parsed.headline === "string" && parsed.headline.trim() ? parsed.headline : DEFAULT_HERO_COPY.headline,
-      paragraph:
-        typeof parsed.paragraph === "string" && parsed.paragraph.trim() ? parsed.paragraph : DEFAULT_HERO_COPY.paragraph,
-      tagline: typeof parsed.tagline === "string" && parsed.tagline.trim() ? parsed.tagline : DEFAULT_HERO_COPY.tagline,
-    };
-  } catch (err) {
-    console.warn("[lib/data/settings] getHeroCopy falling back to default copy:", err);
-    return DEFAULT_HERO_COPY;
-  }
-});
-
-/**
- * Technical line-drawing(s) shown in the homepage hero, each with a short
- * caption — admin-editable via components/admin/hero-drawings-uploader.tsx,
- * same site_settings key/value row shape as hero images/copy (key:
- * hero_drawings). Unlike the hero photo slider (which can legitimately be
- * empty), the hero always shows at least one vessel drawing, so this falls
- * back to DEFAULT_HERO_DRAWINGS (the originally-shipped well-intervention
- * vessel asset in public/hero/) rather than an empty array, same reasoning
- * as DEFAULT_HERO_COPY.
- */
-export type HeroDrawing = {
-  url: string;
-  caption: string;
-};
-
-export const DEFAULT_HERO_DRAWINGS: HeroDrawing[] = [
+export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   {
-    url: "/hero/well-intervention-vessel.png",
-    caption: "Light well intervention vessel — technical line drawing",
+    id: "fleet",
+    eyebrow: "Marine diesel · engines & parts",
+    headline: "Trading the fleet — engines, parts and power, across every major brand.",
+    body: "Shipcove Trading trades complete marine diesel engines and spare parts across Wärtsilä, MAN, MaK, Deutz and Caterpillar — searchable by OEM number, by model, and through interactive exploded diagrams that link straight to live stock.",
+    primaryHref: "/parts",
+    primaryLabel: "Browse parts",
+    secondaryHref: "/rentals#fleet",
+    secondaryLabel: "Browse rental fleet",
+    backgroundImage: "",
+    drawingUrl: "/hero/well-intervention-vessel.png",
+    drawingCaption: "Light well intervention vessel — technical line drawing",
   },
 ];
 
-const HERO_DRAWINGS_KEY = "hero_drawings";
+const HERO_SLIDES_KEY = "hero_slides";
 
-export const getHeroDrawings = cache(async (): Promise<HeroDrawing[]> => {
+const asHeroSlide = (v: unknown): HeroSlide | null => {
+  if (typeof v !== "object" || v === null) return null;
+  const d = v as Record<string, unknown>;
+  const str = (k: string) => (typeof d[k] === "string" ? (d[k] as string) : "");
+  if (!str("eyebrow") || !str("headline") || !str("body") || !str("primaryHref") || !str("primaryLabel") || !str("secondaryHref") || !str("secondaryLabel")) {
+    return null;
+  }
+  return {
+    id: str("id") || crypto.randomUUID(),
+    eyebrow: str("eyebrow"),
+    headline: str("headline"),
+    body: str("body"),
+    primaryHref: str("primaryHref"),
+    primaryLabel: str("primaryLabel"),
+    secondaryHref: str("secondaryHref"),
+    secondaryLabel: str("secondaryLabel"),
+    backgroundImage: str("backgroundImage"),
+    drawingUrl: str("drawingUrl"),
+    drawingCaption: str("drawingCaption"),
+  };
+};
+
+export const getHeroSlides = cache(async (): Promise<HeroSlide[]> => {
   try {
     const supabase = createPublicClient();
-    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_DRAWINGS_KEY).maybeSingle();
-    if (error) throw new Error(`getHeroDrawings: ${error.message}`);
-    if (!data?.value) return DEFAULT_HERO_DRAWINGS;
+    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_SLIDES_KEY).maybeSingle();
+    if (error) throw new Error(`getHeroSlides: ${error.message}`);
+    if (!data?.value) return DEFAULT_HERO_SLIDES;
     const parsed = JSON.parse(data.value);
-    if (!Array.isArray(parsed)) return DEFAULT_HERO_DRAWINGS;
-    const drawings = parsed.filter(
-      (d): d is HeroDrawing => typeof d === "object" && d !== null && typeof d.url === "string" && d.url.trim() !== "",
-    ).map((d) => ({ url: d.url, caption: typeof d.caption === "string" ? d.caption : "" }));
-    return drawings.length > 0 ? drawings : DEFAULT_HERO_DRAWINGS;
+    if (!Array.isArray(parsed)) return DEFAULT_HERO_SLIDES;
+    const slides = parsed.map(asHeroSlide).filter((s): s is HeroSlide => s !== null);
+    return slides.length > 0 ? slides : DEFAULT_HERO_SLIDES;
   } catch (err) {
-    console.warn("[lib/data/settings] getHeroDrawings falling back to default drawing:", err);
-    return DEFAULT_HERO_DRAWINGS;
+    console.warn("[lib/data/settings] getHeroSlides falling back to default slides:", err);
+    return DEFAULT_HERO_SLIDES;
   }
 });
 

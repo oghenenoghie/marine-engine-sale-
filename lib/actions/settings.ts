@@ -3,76 +3,49 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireAdmin, type ActionResult } from "@/lib/actions/auth";
-import type { HeroCopy, HeroDrawing } from "@/lib/data/settings";
+import type { HeroSlide } from "@/lib/data/settings";
 
 export type { ActionResult };
 
-const HERO_IMAGES_KEY = "hero_images";
-const HERO_COPY_KEY = "hero_copy";
-const HERO_DRAWINGS_KEY = "hero_drawings";
+const HERO_SLIDES_KEY = "hero_slides";
 const FAVICON_KEY = "favicon_url";
 
-export async function saveHeroImagesAction(urls: string[]): Promise<ActionResult> {
+export async function saveHeroSlidesAction(slides: HeroSlide[]): Promise<ActionResult> {
   const admin = await requireAdmin();
   if (!admin.ok) return admin;
-  try {
-    const supabase = createAdminClient();
-    const { error } = await supabase
-      .from("site_settings")
-      .upsert({ key: HERO_IMAGES_KEY, value: JSON.stringify(urls), updated_at: new Date().toISOString() });
-    if (error) return { ok: false, error: error.message };
-    revalidatePath("/");
-    revalidatePath("/admin");
-    return { ok: true };
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero images" };
+  const trimmed: HeroSlide[] = slides.map((s) => ({
+    id: s.id,
+    eyebrow: s.eyebrow.trim(),
+    headline: s.headline.trim(),
+    body: s.body.trim(),
+    primaryHref: s.primaryHref.trim(),
+    primaryLabel: s.primaryLabel.trim(),
+    secondaryHref: s.secondaryHref.trim(),
+    secondaryLabel: s.secondaryLabel.trim(),
+    backgroundImage: s.backgroundImage.trim(),
+    drawingUrl: s.drawingUrl.trim(),
+    drawingCaption: s.drawingCaption.trim(),
+  }));
+  if (trimmed.length === 0) {
+    return { ok: false, error: "At least one hero slide is required." };
   }
-}
-
-export async function saveHeroCopyAction(copy: HeroCopy): Promise<ActionResult> {
-  const admin = await requireAdmin();
-  if (!admin.ok) return admin;
-  const trimmed: HeroCopy = {
-    eyebrow: copy.eyebrow.trim(),
-    headline: copy.headline.trim(),
-    paragraph: copy.paragraph.trim(),
-    tagline: copy.tagline.trim(),
-  };
-  if (!trimmed.eyebrow || !trimmed.headline || !trimmed.paragraph || !trimmed.tagline) {
-    return { ok: false, error: "All hero copy fields are required." };
-  }
-  try {
-    const supabase = createAdminClient();
-    const { error } = await supabase
-      .from("site_settings")
-      .upsert({ key: HERO_COPY_KEY, value: JSON.stringify(trimmed), updated_at: new Date().toISOString() });
-    if (error) return { ok: false, error: error.message };
-    revalidatePath("/");
-    revalidatePath("/admin");
-    return { ok: true };
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero copy" };
-  }
-}
-
-export async function saveHeroDrawingsAction(drawings: HeroDrawing[]): Promise<ActionResult> {
-  const admin = await requireAdmin();
-  if (!admin.ok) return admin;
-  const cleaned = drawings.map((d) => ({ url: d.url, caption: d.caption.trim() })).filter((d) => d.url.trim() !== "");
-  if (cleaned.length === 0) {
-    return { ok: false, error: "At least one hero drawing is required." };
+  const incomplete = trimmed.find(
+    (s) => !s.eyebrow || !s.headline || !s.body || !s.primaryHref || !s.primaryLabel || !s.secondaryHref || !s.secondaryLabel,
+  );
+  if (incomplete) {
+    return { ok: false, error: "Every hero slide needs an eyebrow, headline, body and both CTAs filled in." };
   }
   try {
     const supabase = createAdminClient();
     const { error } = await supabase
       .from("site_settings")
-      .upsert({ key: HERO_DRAWINGS_KEY, value: JSON.stringify(cleaned), updated_at: new Date().toISOString() });
+      .upsert({ key: HERO_SLIDES_KEY, value: JSON.stringify(trimmed), updated_at: new Date().toISOString() });
     if (error) return { ok: false, error: error.message };
     revalidatePath("/");
     revalidatePath("/admin");
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero drawings" };
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero slides" };
   }
 }
 

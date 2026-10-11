@@ -32,7 +32,7 @@ const SLIDES: FleetHeroSlide[] = [
     body: "Barge copy.",
     primary: { href: "/rentals/barges", label: "View barges" },
     secondary: { href: "/rentals/barges#request-availability", label: "Request availability" },
-    image: "/rentals/barges.webp",
+    drawing: { url: "/rentals/barges.webp" },
   },
   {
     id: "pontoons",
@@ -42,7 +42,7 @@ const SLIDES: FleetHeroSlide[] = [
     body: "Pontoon copy.",
     primary: { href: "/rentals/pontoons", label: "View pontoons" },
     secondary: { href: "/rentals/pontoons#request-availability", label: "Request availability" },
-    image: "/rentals/pontoons.webp",
+    drawing: { url: "/rentals/pontoons.webp" },
   },
 ];
 
@@ -56,7 +56,7 @@ describe("FleetHeroSlider", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Charter without limits.");
     expect(screen.getAllByRole("heading", { level: 2, hidden: true })).toHaveLength(2);
     expect(activeSlide()).toHaveAttribute("aria-label", "1 of 3: Rental fleet");
-    // Drawing layers render for image slides only; the first slide uses the inline SVG drawing instead.
+    // Drawing layers render for slides with a `drawing` only; the first slide uses the inline SVG fallback instead.
     expect(document.querySelectorAll("img")).toHaveLength(2);
   });
 
