@@ -15,8 +15,15 @@ export interface RentalCategory {
   applications: string[];
   /** What the technical drawing depicts — used as the image's alt text, and as a caption when no image is available yet. */
   drawingNote: string;
-  /** Path under /public, when a drawing has been supplied for this category. */
+  /**
+   * Path under /public, when a drawing has been supplied for this category.
+   * Drawings are paper-coloured linework on a transparent background, so they
+   * only read on a hull (dark) backdrop — see the rental detail page and the
+   * homepage hero slider (components/common/fleet-hero-slider.tsx).
+   */
   image?: string;
+  /** Short display headline for this line's homepage hero slide — only categories with an `image` get a slide. */
+  tagline?: string;
 }
 
 export const RENTAL_CATEGORIES: RentalCategory[] = [
@@ -40,8 +47,9 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       },
     ],
     applications: ["Offshore well servicing", "Subsea maintenance", "Well integrity programs", "Production optimization"],
-    drawingNote: "Offshore vessel hull, aft accommodation, intervention tower or intervention equipment, deck piping, crane, and subsea support equipment.",
+    drawingNote: "Barge-hulled intervention unit with accommodation block and bridge, intervention derrick, pipe rack, deck crane, winches, and mooring bollards.",
     image: "/rentals/well-intervention-vessels.webp",
+    tagline: "Well servicing, on station.",
   },
   {
     slug: "jack-up-rigs",
@@ -54,8 +62,9 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       { name: "Caisson-supported units" },
     ],
     applications: ["Offshore drilling", "Platform maintenance", "Construction support", "Inspection", "Well servicing"],
-    drawingNote: "Elevated platform, lattice legs, seabed footings, drilling derrick, deck cranes, accommodation block, and deck equipment.",
+    drawingNote: "Elevated platform on three lattice legs with seabed footings, drilling derrick, two deck cranes, accommodation block with helideck, and deck equipment.",
     image: "/rentals/jack-up-rigs.webp",
+    tagline: "Stable above the swell.",
   },
   {
     slug: "dredgers",
@@ -86,8 +95,9 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       { name: "Rigid Inflatable Boats (RIBs)", description: "Rapid personnel transfers, patrols, and nearshore support." },
     ],
     applications: ["Offshore logistics", "Personnel transfers", "Marine construction", "Survey operations", "Port support"],
-    drawingNote: "Compact marine hull, wheelhouse, work deck, fenders, mast, and crane where appropriate.",
+    drawingNote: "Multicat-style workboat with aft wheelhouse and mast, open work deck, two knuckle-boom deck cranes, bow push fenders, tyre fenders, and bollards.",
     image: "/rentals/workboats.webp",
+    tagline: "Workhorses for every job.",
   },
   {
     slug: "tugboats",
@@ -110,7 +120,9 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       { name: "Specialized Work Barges", description: "Platforms configured for marine construction, maintenance, and industrial support." },
     ],
     applications: ["Offshore construction", "Heavy equipment transportation", "Bridge works", "Port development", "Marine infrastructure projects"],
-    drawingNote: "Long rectangular hull, broad open deck, towing fittings, deck cranes where applicable, cargo arrangements, bollards, and fenders.",
+    drawingNote: "Long deck cargo barge with aft deckhouse and wheelhouse, open cargo deck, two deck cranes, bollards, and tyre fenders.",
+    image: "/rentals/barges.webp",
+    tagline: "Heavy cargo, open deck.",
   },
   {
     slug: "pontoons",
@@ -119,7 +131,9 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       "Work pontoons provide floating platforms for marine construction, maintenance, and operations in locations where stable access from land is limited. Their modular or rectangular configurations can accommodate selected equipment, tools, temporary working areas, and project materials, subject to rated capacity and stability requirements. Depending on the unit, pontoons may feature open working decks, crane mounts, equipment supports, access systems, and mooring arrangements.",
     configurations: [],
     applications: ["Bridge construction", "Quay maintenance", "Piling operations", "Nearshore works", "Dredging support", "Temporary marine work platforms"],
-    drawingNote: "Rectangular floating platform, reinforced edges, flat deck, modular sections, access ladders, mooring points, and optional mounted cranes.",
+    drawingNote: "Rectangular work pontoon with deckhouse and wheelhouse, flat deck, knuckle-boom crane, pile stack, generator and container, access ladder, mooring bollards, and tyre fenders.",
+    image: "/rentals/pontoons.webp",
+    tagline: "A work site on the water.",
   },
   {
     slug: "tri-toon-vessels",

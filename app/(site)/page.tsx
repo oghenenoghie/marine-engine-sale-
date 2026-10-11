@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
-import { VesselReveal } from "@/components/motion/vessel-reveal";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { FleetCategories } from "@/components/common/fleet-categories";
+import { FleetHeroSlider, type FleetHeroSlide } from "@/components/common/fleet-hero-slider";
 import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
@@ -13,64 +13,58 @@ import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 // Stock/drawings are admin-editable — never bake this into a static build.
 export const dynamic = "force-dynamic";
 
+const firstSentence = (text: string) => text.match(/^.*?\.(?=\s|$)/)?.[0] ?? text;
+
+const HERO_SLIDES: FleetHeroSlide[] = [
+  {
+    id: "fleet",
+    label: "Rental fleet",
+    eyebrow: "Marine rental · vessel & equipment charter",
+    headline: "Charter without limits.",
+    body: "Specialized vessels and marine equipment for offshore operations, intervention, construction and heavy logistics — tell us the dates and job, and we'll come back with availability.",
+    primary: { href: "/rentals#fleet", label: "Browse rental fleet" },
+    secondary: { href: "/contact", label: "Request availability" },
+  },
+  ...RENTAL_CATEGORIES.flatMap((category) =>
+    category.image && category.tagline
+      ? [
+          {
+            id: category.slug,
+            label: category.label,
+            eyebrow: `Rental fleet · ${category.label}`,
+            headline: category.tagline,
+            body: firstSentence(category.description),
+            primary: { href: `/rentals/${category.slug}`, label: `View ${category.label.toLowerCase()}` },
+            secondary: { href: `/rentals/${category.slug}#request-availability`, label: "Request availability" },
+            image: category.image,
+          },
+        ]
+      : [],
+  ),
+];
+
 export default async function HomePage() {
   const [featured, brands] = await Promise.all([getFeaturedStock(8), getAllBrands()]);
 
   return (
     <>
-      {/* Hero — the sticky Header sits flush above this and doubles as its navbar */}
-      <section className="relative isolate overflow-hidden bg-hull text-paper">
-        <div
-          className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 flex h-48 items-end justify-end overflow-hidden opacity-30 sm:h-56 lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[55%] lg:items-center lg:justify-center lg:opacity-100"
-          aria-hidden
+      {/* Hero — the sticky Header sits flush above this and doubles as its navbar. The first slide is the
+          fleet-wide charter hero; each rental line with a drawing + tagline gets a copy of it after that. */}
+      <FleetHeroSlider slides={HERO_SLIDES}>
+        <FadeIn
+          delay={0.15}
+          className="grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50"
         >
-          <VesselReveal className="w-[85%] text-paper/25 lg:w-full" />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-6 py-14 lg:py-20">
-          <FadeIn className="max-w-xl">
-            <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
-              <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
-              Marine rental · vessel &amp; equipment charter
-            </span>
-            <h1 className="mt-5 text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
-              Charter without limits.
-            </h1>
-            <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">
-              Specialized vessels and marine equipment for offshore operations, intervention, construction and heavy
-              logistics — tell us the dates and job, and we&apos;ll come back with availability.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild variant="inverse" size="lg">
-                <Link href="/rentals#fleet">
-                  Browse rental fleet <ArrowRight size={16} />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
-                <Link href="/contact">Request availability</Link>
-              </Button>
-            </div>
-          </FadeIn>
-
-          <FadeIn
-            delay={0.15}
-            className="mt-16 grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50 sm:mt-24"
-          >
-            <span>Fleet</span>
-            <span className="data text-paper/80">{RENTAL_CATEGORIES.length} categories</span>
-            <span>Availability</span>
-            <span className="data text-paper/80">On request</span>
-            <span>Mobilisation</span>
-            <span className="data text-paper/80">End to end</span>
-            <span>Crew</span>
-            <span className="data text-paper/80">Either</span>
-          </FadeIn>
-        </div>
-      </section>
+          <span>Fleet</span>
+          <span className="data text-paper/80">{RENTAL_CATEGORIES.length} categories</span>
+          <span>Availability</span>
+          <span className="data text-paper/80">On request</span>
+          <span>Mobilisation</span>
+          <span className="data text-paper/80">End to end</span>
+          <span>Crew</span>
+          <span className="data text-paper/80">Either</span>
+        </FadeIn>
+      </FleetHeroSlider>
 
       {/* Fleet categories */}
       <FleetCategories />

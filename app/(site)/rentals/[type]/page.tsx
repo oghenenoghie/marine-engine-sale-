@@ -35,11 +35,13 @@ export default async function RentalCategoryPage({ params }: { params: Promise<{
       <h1 className="text-display-lg font-display font-bold tracking-tight text-hull">{category.label}</h1>
       <p className="mt-2 max-w-[65ch] text-[14px] leading-relaxed text-steel">{category.description}</p>
 
-      <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-sm border border-steel/15 bg-white">
+      {/* Drawings are paper-coloured linework on transparent (see lib/data/rentals.ts), so they sit on a hull backdrop */}
+      <div className="relative isolate mt-8 aspect-[16/9] w-full overflow-hidden rounded-sm bg-hull">
+        <div className="tech-grid absolute inset-0 opacity-70" aria-hidden />
         {category.image ? (
-          <Image src={category.image} alt={category.drawingNote} fill unoptimized className="object-contain p-4" />
+          <Image src={category.image} alt={category.drawingNote} fill unoptimized className="object-contain p-4 opacity-90" />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-steel/50">
+          <div className="relative flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-paper/40">
             <ImageIcon size={32} />
             <p className="max-w-[40ch] text-[12px]">{category.drawingNote}</p>
           </div>
@@ -82,7 +84,7 @@ export default async function RentalCategoryPage({ params }: { params: Promise<{
           </div>
         </div>
 
-        <div className="h-fit rounded-sm border border-steel/15 bg-white p-6">
+        <div id="request-availability" className="h-fit scroll-mt-24 rounded-sm border border-steel/15 bg-white p-6">
           <h2 className="font-display text-base font-bold text-hull">Request availability</h2>
           <p className="mt-1 text-[13px] text-steel">
             Tell us the dates and job — we&apos;ll come back with availability and a quote.

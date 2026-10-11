@@ -65,7 +65,7 @@ app/
 
 components/
 ├── ui/                 shadcn-style primitives (button, input, select, dialog, accordion…)
-├── common/              Header, Footer, PartNumberSearch, PageSpinner
+├── common/              Header, Footer, PartNumberSearch, PageSpinner, FleetHeroSlider
 ├── stock/                StockCard, Gallery, SpecTable, FacetRail, StockListing, StockDetail, StatusBadge
 ├── drawings/              ExplodedDrawing, HotspotEditor
 ├── forms/                  EnquiryForm, SellForm, PhotoUploader
@@ -146,6 +146,11 @@ referencing an optional `StockItem`.
     have no inventory/availability system yet, so `/rentals/[type]` pages are
     content + an enquiry form, not a stock listing. If real rental inventory
     is ever added, this should move to Supabase like `stock.ts`.
+    Category drawings (`public/rentals/<slug>.webp`) are paper-coloured
+    linework on a transparent background (blue-on-white source art with the
+    white keyed out to alpha), so they only read on a hull backdrop. Any
+    category with both `image` and `tagline` automatically gets a slide in the
+    homepage hero carousel (`components/common/fleet-hero-slider.tsx`).
 - **Admin writes go through server actions** (`lib/actions/stock.ts`,
   `lib/actions/taxonomy.ts`), which call `requireAdmin()` (`lib/actions/auth.ts`)
   to check `user.app_metadata.role === "admin"` before writing via the
