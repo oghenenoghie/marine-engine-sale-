@@ -7,8 +7,11 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { VesselReveal } from "@/components/motion/vessel-reveal";
+import { HeroDrawingCycle } from "@/components/motion/hero-drawing-cycle";
+import { HeroSlider } from "@/components/motion/hero-slider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { HeroDrawing } from "@/lib/data/settings";
 
 export interface FleetHeroSlide {
   id: string;
@@ -19,8 +22,14 @@ export interface FleetHeroSlide {
   body: string;
   primary: { href: string; label: string };
   secondary: { href: string; label: string };
-  /** Linework drawing under /public (paper-on-transparent); omitted → the animated <VesselReveal> drawing. */
+  /**
+   * What to show on the right. Priority: `drawings` (admin-editable,
+   * cross-fades via <HeroDrawingCycle>, each with its own caption) > `image`
+   * (a single static linework drawing under /public) > the animated
+   * <VesselReveal> fallback when neither is set.
+   */
   image?: string;
+  drawings?: HeroDrawing[];
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -37,7 +46,16 @@ const SWIPE_PX = 50;
  * on hover, keyboard focus and the explicit pause button, and is off entirely
  * under prefers-reduced-motion. `children` renders bottom-left (the stats row).
  */
-export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]; children?: ReactNode }) {
+export function FleetHeroSlider({
+  slides,
+  heroImages = [],
+  children,
+}: {
+  slides: FleetHeroSlide[];
+  /** Admin-uploaded background photos (lib/data/settings.ts getHeroImages()) — dimmed, behind everything else. */
+  heroImages?: string[];
+  children?: ReactNode;
+}) {
   const reduceMotion = useReducedMotion() ?? false;
   const [index, setIndex] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
@@ -96,6 +114,12 @@ export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]
       onTouchStart={multiple ? onTouchStart : undefined}
       onTouchEnd={multiple ? onTouchEnd : undefined}
     >
+      {heroImages.length > 0 && (
+        <>
+          <HeroSlider images={heroImages} className="opacity-50" />
+          <div className="absolute inset-0 bg-hull/60" aria-hidden />
+        </>
+      )}
       <div
         className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
         aria-hidden
@@ -114,7 +138,9 @@ export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]
             transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
             className="absolute inset-0 flex items-end justify-end lg:items-center lg:justify-center"
           >
-            {slide.image ? (
+            {slide.drawings && slide.drawings.length > 0 ? (
+              <HeroDrawingCycle drawings={slide.drawings} />
+            ) : slide.image ? (
               <div className="relative h-full w-[85%] lg:aspect-[3/2] lg:h-auto lg:w-full lg:opacity-60">
                 <Image src={slide.image} alt="" fill unoptimized className="object-contain object-bottom lg:object-center" />
               </div>

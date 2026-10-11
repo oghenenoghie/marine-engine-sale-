@@ -8,6 +8,7 @@ import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
+import { getHeroCopy, getHeroDrawings, getHeroImages } from "@/lib/data/settings";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
@@ -15,42 +16,55 @@ export const dynamic = "force-dynamic";
 
 const firstSentence = (text: string) => text.match(/^.*?\.(?=\s|$)/)?.[0] ?? text;
 
-const HERO_SLIDES: FleetHeroSlide[] = [
-  {
-    id: "fleet",
-    label: "Rental fleet",
-    eyebrow: "Marine rental · vessel & equipment charter",
-    headline: "Charter without limits.",
-    body: "Specialized vessels and marine equipment for offshore operations, intervention, construction and heavy logistics — tell us the dates and job, and we'll come back with availability.",
-    primary: { href: "/rentals#fleet", label: "Browse rental fleet" },
-    secondary: { href: "/contact", label: "Request availability" },
-  },
-  ...RENTAL_CATEGORIES.flatMap((category) =>
-    category.image && category.tagline
-      ? [
-          {
-            id: category.slug,
-            label: category.label,
-            eyebrow: `Rental fleet · ${category.label}`,
-            headline: category.tagline,
-            body: firstSentence(category.description),
-            primary: { href: `/rentals/${category.slug}`, label: `View ${category.label.toLowerCase()}` },
-            secondary: { href: `/rentals/${category.slug}#request-availability`, label: "Request availability" },
-            image: category.image,
-          },
-        ]
-      : [],
-  ),
-];
+// Every rental line with a drawing + tagline gets a slide after the admin-editable fleet slide below.
+const RENTAL_SLIDES: FleetHeroSlide[] = RENTAL_CATEGORIES.flatMap((category) =>
+  category.image && category.tagline
+    ? [
+        {
+          id: category.slug,
+          label: category.label,
+          eyebrow: `Rental fleet · ${category.label}`,
+          headline: category.tagline,
+          body: firstSentence(category.description),
+          primary: { href: `/rentals/${category.slug}`, label: `View ${category.label.toLowerCase()}` },
+          secondary: { href: `/rentals/${category.slug}#request-availability`, label: "Request availability" },
+          image: category.image,
+        },
+      ]
+    : [],
+);
 
 export default async function HomePage() {
-  const [featured, brands] = await Promise.all([getFeaturedStock(8), getAllBrands()]);
+  const [featured, brands, heroCopy, heroDrawings, heroImages] = await Promise.all([
+    getFeaturedStock(8),
+    getAllBrands(),
+    getHeroCopy(),
+    getHeroDrawings(),
+    getHeroImages(),
+  ]);
+
+  // Admin-editable (lib/data/settings.ts / the /admin dashboard's hero panels) — the one slide
+  // every deployment has regardless of rental-category content, so editing it from /admin always
+  // has a visible effect on the live homepage.
+  const heroSlides: FleetHeroSlide[] = [
+    {
+      id: "fleet",
+      label: "Marine diesel & rentals",
+      eyebrow: heroCopy.eyebrow,
+      headline: heroCopy.headline,
+      body: heroCopy.paragraph,
+      primary: { href: "/parts", label: "Browse parts" },
+      secondary: { href: "/rentals#fleet", label: "Browse rental fleet" },
+      drawings: heroDrawings,
+    },
+    ...RENTAL_SLIDES,
+  ];
 
   return (
     <>
-      {/* Hero — the sticky Header sits flush above this and doubles as its navbar. The first slide is the
-          fleet-wide charter hero; each rental line with a drawing + tagline gets a copy of it after that. */}
-      <FleetHeroSlider slides={HERO_SLIDES}>
+      {/* Hero — the sticky Header sits flush above this and doubles as its navbar. The first slide is
+          admin-editable (/admin dashboard); each rental line with a drawing + tagline gets one after it. */}
+      <FleetHeroSlider slides={heroSlides} heroImages={heroImages}>
         <FadeIn
           delay={0.15}
           className="grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50"
