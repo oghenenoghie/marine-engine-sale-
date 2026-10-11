@@ -37,9 +37,14 @@ const config: Config = {
         "infinite-scroll": {
           to: { transform: "translateX(-50%)" },
         },
+        "slide-progress": {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
       },
       animation: {
         "infinite-scroll": "infinite-scroll var(--scroll-duration, 36s) var(--scroll-direction, forwards) linear infinite",
+        "slide-progress": "slide-progress var(--slide-duration, 7s) linear forwards",
       },
     },
   },
