@@ -148,9 +148,15 @@ referencing an optional `StockItem`.
     is ever added, this should move to Supabase like `stock.ts`.
     Category drawings (`public/rentals/<slug>.webp`) are paper-coloured
     linework on a transparent background (blue-on-white source art with the
-    white keyed out to alpha), so they only read on a hull backdrop. Any
-    category with both `image` and `tagline` automatically gets a slide in the
-    homepage hero carousel (`components/common/fleet-hero-slider.tsx`).
+    white keyed out to alpha), so they only read on a hull backdrop.
+  - The homepage hero carousel (`components/common/fleet-hero-slider.tsx`) is
+    admin-editable — slides, order and seconds-per-slide — from the `/admin`
+    dashboard (`components/admin/hero-slider-editor.tsx`), stored as one JSON
+    row in `site_settings` (key `hero_slider`, read by `getHeroSlider()`).
+    Types, validation and the defaults live in `lib/data/hero-slides.ts`; with
+    no saved row, every rental category with both `image` and `tagline` gets a
+    default slide. Once an admin saves, the slides are fixed until they edit
+    them or hit "Restore defaults" (which deletes the row).
 - **Admin writes go through server actions** (`lib/actions/stock.ts`,
   `lib/actions/taxonomy.ts`), which call `requireAdmin()` (`lib/actions/auth.ts`)
   to check `user.app_metadata.role === "admin"` before writing via the

@@ -99,3 +99,20 @@ describe("FleetHeroSlider", () => {
     expect(screen.queryByRole("button", { name: "Next slide" })).not.toBeInTheDocument();
   });
 });
+
+describe("FleetHeroSlider (editable content)", () => {
+  it("hides an empty badge, paragraph and second button, and applies the slide speed", () => {
+    const { container } = render(
+      <FleetHeroSlider
+        intervalSeconds={3}
+        slides={[{ ...SLIDES[0]!, eyebrow: "", body: "", secondary: { label: "", href: "" } }, SLIDES[1]!]}
+      />,
+    );
+
+    const first = screen.getByRole("group", { name: "1 of 2: Rental fleet" });
+    expect(first.querySelector(".label")).toBeNull();
+    expect(first.querySelector("p")).toBeNull();
+    expect(first.querySelectorAll("a")).toHaveLength(1);
+    expect((container.firstChild as HTMLElement).style.getPropertyValue("--slide-duration")).toBe("3s");
+  });
+});

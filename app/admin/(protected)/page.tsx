@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
-import { getHeroImages, getHeroCopy, getHeroDrawings, getFaviconUrl } from "@/lib/data/settings";
-import { HeroImageUploader } from "@/components/admin/hero-image-uploader";
-import { HeroCopyEditor } from "@/components/admin/hero-copy-editor";
-import { HeroDrawingsUploader } from "@/components/admin/hero-drawings-uploader";
+import { getHeroSlider, getFaviconUrl } from "@/lib/data/settings";
+import { HeroSliderEditor } from "@/components/admin/hero-slider-editor";
 import { FaviconUploader } from "@/components/admin/favicon-uploader";
 
 export const dynamic = "force-dynamic";
@@ -19,12 +17,10 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries, heroImages, heroCopy, heroDrawings, faviconUrl] = await Promise.all([
+  const [stock, enquiries, heroSlider, faviconUrl] = await Promise.all([
     getAllStock(),
     getAllEnquiries(),
-    getHeroImages(),
-    getHeroCopy(),
-    getHeroDrawings(),
+    getHeroSlider(),
     getFaviconUrl(),
   ]);
   const stats = {
@@ -51,32 +47,12 @@ export default async function AdminDashboardPage() {
       <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
         <div className="mb-1">
           <h2 className="font-display text-base font-bold text-hull">Homepage hero slider</h2>
-          <p className="text-[12px] text-steel">Background photos shown behind the homepage hero copy, in order.</p>
-        </div>
-        <div className="mt-3">
-          <HeroImageUploader initialUrls={heroImages} />
-        </div>
-      </div>
-
-      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
-        <div className="mb-1">
-          <h2 className="font-display text-base font-bold text-hull">Homepage hero copy</h2>
-          <p className="text-[12px] text-steel">Eyebrow badge, headline, paragraph, and bottom tagline shown over the hero.</p>
-        </div>
-        <div className="mt-3">
-          <HeroCopyEditor initial={heroCopy} />
-        </div>
-      </div>
-
-      <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
-        <div className="mb-1">
-          <h2 className="font-display text-base font-bold text-hull">Homepage hero technical drawings</h2>
           <p className="text-[12px] text-steel">
-            Vessel/equipment line drawings shown next to the hero copy, each with a caption.
+            The slides at the top of the homepage — text, buttons, drawing, order and speed.
           </p>
         </div>
         <div className="mt-3">
-          <HeroDrawingsUploader initial={heroDrawings} />
+          <HeroSliderEditor initial={heroSlider} />
         </div>
       </div>
 

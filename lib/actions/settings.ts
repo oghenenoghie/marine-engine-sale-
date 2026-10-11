@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireAdmin, type ActionResult } from "@/lib/actions/auth";
 import type { HeroCopy, HeroDrawing } from "@/lib/data/settings";
+import { validateHeroSlider, type HeroSliderSettings } from "@/lib/data/hero-slides";
 
 export type { ActionResult };
 
@@ -11,6 +12,7 @@ const HERO_IMAGES_KEY = "hero_images";
 const HERO_COPY_KEY = "hero_copy";
 const HERO_DRAWINGS_KEY = "hero_drawings";
 const FAVICON_KEY = "favicon_url";
+const HERO_SLIDER_KEY = "hero_slider";
 
 export async function saveHeroImagesAction(urls: string[]): Promise<ActionResult> {
   const admin = await requireAdmin();
@@ -90,5 +92,40 @@ export async function saveFaviconAction(url: string | null): Promise<ActionResul
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving favicon" };
+  }
+}
+
+export async function saveHeroSliderAction(input: HeroSliderSettings): Promise<ActionResult> {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin;
+  const checked = validateHeroSlider(input);
+  if (!checked.ok) return checked;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert({ key: HERO_SLIDER_KEY, value: JSON.stringify(checked.value), updated_at: new Date().toISOString() });
+    if (error) return { ok: false, error: error.message };
+    revalidatePath("/");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error saving hero slider" };
+  }
+}
+
+/** Drops the saved slider so the homepage goes back to the defaults derived from lib/data/rentals.ts. */
+export async function resetHeroSliderAction(): Promise<ActionResult> {
+  const admin = await requireAdmin();
+  if (!admin.ok) return admin;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from("site_settings").delete().eq("key", HERO_SLIDER_KEY);
+    if (error) return { ok: false, error: error.message };
+    revalidatePath("/");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error resetting hero slider" };
   }
 }

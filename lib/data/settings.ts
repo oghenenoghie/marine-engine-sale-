@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createPublicClient } from "@/lib/supabase/server";
+import { DEFAULT_HERO_SLIDER, parseHeroSlider, type HeroSliderSettings } from "@/lib/data/hero-slides";
 
 /**
  * Small admin-editable site content that doesn't warrant its own table —
@@ -133,5 +134,27 @@ export const getFaviconUrl = cache(async (): Promise<string | null> => {
   } catch (err) {
     console.warn("[lib/data/settings] getFaviconUrl falling back to no favicon:", err);
     return null;
+  }
+});
+
+/**
+ * Homepage hero carousel (slides + autoplay speed) — admin-editable via
+ * components/admin/hero-slider-editor.tsx (key: hero_slider). Types, defaults
+ * and validation live in lib/data/hero-slides.ts so the client editor can share
+ * them. Falls back to DEFAULT_HERO_SLIDER when unset or unreachable, like
+ * DEFAULT_HERO_COPY — the hero always needs at least one slide.
+ */
+const HERO_SLIDER_KEY = "hero_slider";
+
+export const getHeroSlider = cache(async (): Promise<HeroSliderSettings> => {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.from("site_settings").select("value").eq("key", HERO_SLIDER_KEY).maybeSingle();
+    if (error) throw new Error(`getHeroSlider: ${error.message}`);
+    if (!data?.value) return DEFAULT_HERO_SLIDER;
+    return parseHeroSlider(JSON.parse(data.value));
+  } catch (err) {
+    console.warn("[lib/data/settings] getHeroSlider falling back to default slides:", err);
+    return DEFAULT_HERO_SLIDER;
   }
 });

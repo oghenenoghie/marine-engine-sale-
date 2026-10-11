@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FocusEvent, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
+import { useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
@@ -8,20 +8,10 @@ import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react
 import { FadeIn } from "@/components/motion/fade-in";
 import { VesselReveal } from "@/components/motion/vessel-reveal";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_SLIDE_INTERVAL, type HeroSlide } from "@/lib/data/hero-slides";
 import { cn } from "@/lib/utils";
 
-export interface FleetHeroSlide {
-  id: string;
-  /** Names the slide for the pagination buttons and the caption under the drawing. */
-  label: string;
-  eyebrow: string;
-  headline: string;
-  body: string;
-  primary: { href: string; label: string };
-  secondary: { href: string; label: string };
-  /** Linework drawing under /public (paper-on-transparent); omitted → the animated <VesselReveal> drawing. */
-  image?: string;
-}
+export type FleetHeroSlide = HeroSlide;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const SWIPE_PX = 50;
@@ -32,12 +22,22 @@ const SWIPE_PX = 50;
  * shared hull/tech-grid backdrop. Slides cross-fade in place, stacked in one
  * grid cell so the hero never changes height between them.
  *
- * Autoplay is driven by the active pagination bar's CSS fill animation
- * (animationend → next slide), so pausing it pauses the timer too. It pauses
- * on hover, keyboard focus and the explicit pause button, and is off entirely
- * under prefers-reduced-motion. `children` renders bottom-left (the stats row).
+ * Slides and speed are admin-editable (lib/data/hero-slides.ts). Autoplay is
+ * driven by the active pagination bar's CSS fill animation (animationend →
+ * next slide, duration from `intervalSeconds`), so pausing it pauses the timer
+ * too. It pauses on hover, keyboard focus and the explicit pause button, and is
+ * off entirely under prefers-reduced-motion. `children` renders bottom-left
+ * (the stats row).
  */
-export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]; children?: ReactNode }) {
+export function FleetHeroSlider({
+  slides,
+  intervalSeconds = DEFAULT_SLIDE_INTERVAL,
+  children,
+}: {
+  slides: FleetHeroSlide[];
+  intervalSeconds?: number;
+  children?: ReactNode;
+}) {
   const reduceMotion = useReducedMotion() ?? false;
   const [index, setIndex] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
@@ -89,6 +89,7 @@ export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]
       aria-roledescription="carousel"
       aria-label="Rental fleet"
       className="relative isolate overflow-hidden bg-hull text-paper"
+      style={{ "--slide-duration": `${intervalSeconds}s` } as CSSProperties}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={onFocus}
@@ -111,7 +112,7 @@ export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]
             key={slide.id}
             initial={false}
             animate={i === index ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
-            transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
+            transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE }}
             className="absolute inset-0 flex items-end justify-end lg:items-center lg:justify-center"
           >
             {slide.image ? (
@@ -145,26 +146,30 @@ export function FleetHeroSlider({ slides, children }: { slides: FleetHeroSlide[]
                       ? { opacity: 1, y: 0, visibility: "visible" }
                       : { opacity: 0, y: reduceMotion ? 0 : 8, transitionEnd: { visibility: "hidden" } }
                   }
-                  transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE, delay: active && !reduceMotion ? 0.15 : 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.4, ease: EASE, delay: active && !reduceMotion ? 0.1 : 0 }}
                   className="[grid-area:1/1]"
                 >
-                  <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
-                    <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
-                    {slide.eyebrow}
-                  </span>
-                  <Heading className="mt-5 text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
+                  {slide.eyebrow && (
+                    <span className="label mb-5 inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
+                      <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
+                      {slide.eyebrow}
+                    </span>
+                  )}
+                  <Heading className="text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
                     {slide.headline}
                   </Heading>
-                  <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">{slide.body}</p>
+                  {slide.body && <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">{slide.body}</p>}
                   <div className="mt-8 flex flex-wrap items-center gap-3">
                     <Button asChild variant="inverse" size="lg">
                       <Link href={slide.primary.href}>
                         {slide.primary.label} <ArrowRight size={16} />
                       </Link>
                     </Button>
-                    <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
-                      <Link href={slide.secondary.href}>{slide.secondary.label}</Link>
-                    </Button>
+                    {slide.secondary.label && slide.secondary.href && (
+                      <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
+                        <Link href={slide.secondary.href}>{slide.secondary.label}</Link>
+                      </Button>
+                    )}
                   </div>
                 </motion.div>
               );
