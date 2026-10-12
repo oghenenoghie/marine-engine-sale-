@@ -79,6 +79,7 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     ],
     applications: ["Port development", "Harbor deepening", "Channel maintenance", "Reclamation", "Seabed preparation"],
     drawingNote: "Dredging hull, excavator or boom, grab bucket, lifting cables, deck machinery, and dredging equipment.",
+    image: "/rentals/dredgers.webp",
   },
   {
     slug: "workboats",
@@ -107,6 +108,7 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     configurations: [],
     applications: ["Port operations", "Vessel escort", "Barge transportation", "Offshore towing", "Marine construction support"],
     drawingNote: "Compact heavy-duty hull, raised wheelhouse, towing winch, towing hook, bollards, fenders, and exhaust stacks.",
+    image: "/rentals/tugboats.webp",
   },
   {
     slug: "barges",
