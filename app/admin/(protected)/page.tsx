@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
-import { getHeroSlider, getFaviconUrl } from "@/lib/data/settings";
-import { HeroSliderEditor } from "@/components/admin/hero-slider-editor";
+import { getHeroSlides, getFaviconUrl } from "@/lib/data/settings";
+import { HeroSlidesEditor } from "@/components/admin/hero-slides-editor";
 import { FaviconUploader } from "@/components/admin/favicon-uploader";
 
 export const dynamic = "force-dynamic";
@@ -17,10 +17,10 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries, heroSlider, faviconUrl] = await Promise.all([
+  const [stock, enquiries, heroSlides, faviconUrl] = await Promise.all([
     getAllStock(),
     getAllEnquiries(),
-    getHeroSlider(),
+    getHeroSlides(),
     getFaviconUrl(),
   ]);
   const stats = {
@@ -46,13 +46,14 @@ export default async function AdminDashboardPage() {
 
       <div className="mt-8 rounded-sm border border-steel/15 bg-white p-5">
         <div className="mb-1">
-          <h2 className="font-display text-base font-bold text-hull">Homepage hero slider</h2>
+          <h2 className="font-display text-base font-bold text-hull">Homepage hero slides</h2>
           <p className="text-[12px] text-steel">
-            The slides at the top of the homepage — text, buttons, drawing, order and speed.
+            One carousel, admin-editable end to end — reorder slides, or edit each slide&apos;s copy, CTAs,
+            background photo, and technical drawing. Rental-category slides are appended after these automatically.
           </p>
         </div>
         <div className="mt-3">
-          <HeroSliderEditor initial={heroSlider} />
+          <HeroSlidesEditor initial={heroSlides} />
         </div>
       </div>
 

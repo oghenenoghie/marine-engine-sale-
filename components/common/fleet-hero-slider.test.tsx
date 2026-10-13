@@ -32,7 +32,7 @@ const SLIDES: FleetHeroSlide[] = [
     body: "Barge copy.",
     primary: { href: "/rentals/barges", label: "View barges" },
     secondary: { href: "/rentals/barges#request-availability", label: "Request availability" },
-    image: "/rentals/barges.webp",
+    drawing: { url: "/rentals/barges.webp" },
   },
   {
     id: "pontoons",
@@ -42,7 +42,7 @@ const SLIDES: FleetHeroSlide[] = [
     body: "Pontoon copy.",
     primary: { href: "/rentals/pontoons", label: "View pontoons" },
     secondary: { href: "/rentals/pontoons#request-availability", label: "Request availability" },
-    image: "/rentals/pontoons.webp",
+    drawing: { url: "/rentals/pontoons.webp" },
   },
 ];
 
@@ -56,7 +56,7 @@ describe("FleetHeroSlider", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Charter without limits.");
     expect(screen.getAllByRole("heading", { level: 2, hidden: true })).toHaveLength(2);
     expect(activeSlide()).toHaveAttribute("aria-label", "1 of 3: Rental fleet");
-    // Drawing layers render for image slides only; the first slide uses the inline SVG drawing instead.
+    // Drawing layers render for slides with a `drawing` only; the first slide uses the inline SVG fallback instead.
     expect(document.querySelectorAll("img")).toHaveLength(2);
   });
 
@@ -97,22 +97,5 @@ describe("FleetHeroSlider", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Charter without limits.");
     expect(screen.queryByRole("button", { name: "Next slide" })).not.toBeInTheDocument();
-  });
-});
-
-describe("FleetHeroSlider (editable content)", () => {
-  it("hides an empty badge, paragraph and second button, and applies the slide speed", () => {
-    const { container } = render(
-      <FleetHeroSlider
-        intervalSeconds={3}
-        slides={[{ ...SLIDES[0]!, eyebrow: "", body: "", secondary: { label: "", href: "" } }, SLIDES[1]!]}
-      />,
-    );
-
-    const first = screen.getByRole("group", { name: "1 of 2: Rental fleet" });
-    expect(first.querySelector(".label")).toBeNull();
-    expect(first.querySelector("p")).toBeNull();
-    expect(first.querySelectorAll("a")).toHaveLength(1);
-    expect((container.firstChild as HTMLElement).style.getPropertyValue("--slide-duration")).toBe("3s");
   });
 });

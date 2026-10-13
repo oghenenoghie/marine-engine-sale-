@@ -44,7 +44,7 @@ const config: Config = {
       },
       animation: {
         "infinite-scroll": "infinite-scroll var(--scroll-duration, 36s) var(--scroll-direction, forwards) linear infinite",
-        "slide-progress": "slide-progress var(--slide-duration, 4s) linear forwards",
+        "slide-progress": "slide-progress var(--slide-duration, 7s) linear forwards",
       },
     },
   },

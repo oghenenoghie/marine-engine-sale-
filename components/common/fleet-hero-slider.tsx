@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
+import { useState, type FocusEvent, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
@@ -8,34 +8,43 @@ import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react
 import { FadeIn } from "@/components/motion/fade-in";
 import { VesselReveal } from "@/components/motion/vessel-reveal";
 import { Button } from "@/components/ui/button";
-import { DEFAULT_SLIDE_INTERVAL, type HeroSlide } from "@/lib/data/hero-slides";
 import { cn } from "@/lib/utils";
 
-export type FleetHeroSlide = HeroSlide;
+export interface FleetHeroSlide {
+  id: string;
+  /** Names the slide for the pagination buttons. */
+  label: string;
+  eyebrow: string;
+  headline: string;
+  body: string;
+  primary: { href: string; label: string };
+  secondary: { href: string; label: string };
+  /** Dimmed full-bleed backdrop behind this slide only. Omit for just the tech-grid backdrop. */
+  backgroundImage?: string;
+  /** Technical line drawing on the right, with an optional caption. Omit for the animated <VesselReveal/> placeholder. */
+  drawing?: { url: string; caption?: string };
+}
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const SWIPE_PX = 50;
 
 /**
- * Homepage hero as a carousel: every slide is a copy of the rental hero
- * (eyebrow, headline, copy, CTAs, technical drawing on the right) over one
- * shared hull/tech-grid backdrop. Slides cross-fade in place, stacked in one
- * grid cell so the hero never changes height between them.
+ * Homepage hero as a single carousel: every slide is fully self-contained
+ * (eyebrow, headline, copy, CTAs, its own optional background photo and
+ * technical drawing) over one shared hull/tech-grid backdrop. Slides
+ * cross-fade in place, stacked in one grid cell so the hero never changes
+ * height between them.
  *
- * Slides and speed are admin-editable (lib/data/hero-slides.ts). Autoplay is
- * driven by the active pagination bar's CSS fill animation (animationend →
- * next slide, duration from `intervalSeconds`), so pausing it pauses the timer
- * too. It pauses on hover, keyboard focus and the explicit pause button, and is
- * off entirely under prefers-reduced-motion. `children` renders bottom-left
- * (the stats row).
+ * Autoplay is driven by the active pagination bar's CSS fill animation
+ * (animationend → next slide), so pausing it pauses the timer too. It pauses
+ * on hover, keyboard focus and the explicit pause button, and is off entirely
+ * under prefers-reduced-motion. `children` renders bottom-left (the stats row).
  */
 export function FleetHeroSlider({
   slides,
-  intervalSeconds = DEFAULT_SLIDE_INTERVAL,
   children,
 }: {
   slides: FleetHeroSlide[];
-  intervalSeconds?: number;
   children?: ReactNode;
 }) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -89,7 +98,6 @@ export function FleetHeroSlider({
       aria-roledescription="carousel"
       aria-label="Rental fleet"
       className="relative isolate overflow-hidden bg-hull text-paper"
-      style={{ "--slide-duration": `${intervalSeconds}s` } as CSSProperties}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={onFocus}
@@ -97,6 +105,28 @@ export function FleetHeroSlider({
       onTouchStart={multiple ? onTouchStart : undefined}
       onTouchEnd={multiple ? onTouchEnd : undefined}
     >
+      {/* Background photos — one dimmed layer per slide, cross-faded with the active slide */}
+      {slides.some((slide) => slide.backgroundImage) && (
+        <>
+          <div className="absolute inset-0" aria-hidden>
+            {slides.map(
+              (slide, i) =>
+                slide.backgroundImage && (
+                  <motion.div
+                    key={slide.id}
+                    initial={false}
+                    animate={{ opacity: i === index ? 0.5 : 0 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
+                    className="absolute inset-0"
+                  >
+                    <Image src={slide.backgroundImage} alt="" fill unoptimized className="object-cover" />
+                  </motion.div>
+                ),
+            )}
+          </div>
+          <div className="absolute inset-0 bg-hull/60" aria-hidden />
+        </>
+      )}
       <div
         className="tech-grid absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_70%_60%_at_30%_40%,black,transparent)]"
         aria-hidden
@@ -112,12 +142,17 @@ export function FleetHeroSlider({
             key={slide.id}
             initial={false}
             animate={i === index ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
-            transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE }}
+            transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
             className="absolute inset-0 flex items-end justify-end lg:items-center lg:justify-center"
           >
-            {slide.image ? (
+            {slide.drawing ? (
               <div className="relative h-full w-[85%] lg:aspect-[3/2] lg:h-auto lg:w-full lg:opacity-60">
-                <Image src={slide.image} alt="" fill unoptimized className="object-contain object-bottom lg:object-center" />
+                <Image src={slide.drawing.url} alt="" fill unoptimized className="object-contain object-bottom lg:object-center" />
+                {slide.drawing.caption && (
+                  <p className="absolute inset-x-0 bottom-1 text-right font-mono text-[10px] uppercase tracking-wider text-paper/50">
+                    {slide.drawing.caption}
+                  </p>
+                )}
               </div>
             ) : (
               <VesselReveal className="w-[85%] text-paper/25 lg:w-full" />
@@ -146,30 +181,26 @@ export function FleetHeroSlider({
                       ? { opacity: 1, y: 0, visibility: "visible" }
                       : { opacity: 0, y: reduceMotion ? 0 : 8, transitionEnd: { visibility: "hidden" } }
                   }
-                  transition={{ duration: reduceMotion ? 0 : 0.4, ease: EASE, delay: active && !reduceMotion ? 0.1 : 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE, delay: active && !reduceMotion ? 0.15 : 0 }}
                   className="[grid-area:1/1]"
                 >
-                  {slide.eyebrow && (
-                    <span className="label mb-5 inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
-                      <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
-                      {slide.eyebrow}
-                    </span>
-                  )}
-                  <Heading className="text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
+                  <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
+                    <span className="h-1 w-1 shrink-0 rounded-full bg-paper" aria-hidden />
+                    {slide.eyebrow}
+                  </span>
+                  <Heading className="mt-5 text-display-xl font-display font-extrabold uppercase leading-[0.95] tracking-tight">
                     {slide.headline}
                   </Heading>
-                  {slide.body && <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">{slide.body}</p>}
+                  <p className="mt-5 max-w-[50ch] text-[13px] leading-relaxed text-paper/70">{slide.body}</p>
                   <div className="mt-8 flex flex-wrap items-center gap-3">
                     <Button asChild variant="inverse" size="lg">
                       <Link href={slide.primary.href}>
                         {slide.primary.label} <ArrowRight size={16} />
                       </Link>
                     </Button>
-                    {slide.secondary.label && slide.secondary.href && (
-                      <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
-                        <Link href={slide.secondary.href}>{slide.secondary.label}</Link>
-                      </Button>
-                    )}
+                    <Button asChild variant="outline" size="lg" className="border-paper/25 text-paper hover:bg-paper/10">
+                      <Link href={slide.secondary.href}>{slide.secondary.label}</Link>
+                    </Button>
                   </div>
                 </motion.div>
               );
