@@ -80,6 +80,7 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     applications: ["Port development", "Harbor deepening", "Channel maintenance", "Reclamation", "Seabed preparation"],
     drawingNote: "Dredging hull, excavator or boom, grab bucket, lifting cables, deck machinery, and dredging equipment.",
     image: "/rentals/dredgers.webp",
+    tagline: "Deeper channels, clear berths.",
   },
   {
     slug: "workboats",
@@ -109,6 +110,7 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     applications: ["Port operations", "Vessel escort", "Barge transportation", "Offshore towing", "Marine construction support"],
     drawingNote: "Compact heavy-duty hull, raised wheelhouse, towing winch, towing hook, bollards, fenders, and exhaust stacks.",
     image: "/rentals/tugboats.webp",
+    tagline: "Bollard pull on call.",
   },
   {
     slug: "barges",
@@ -156,6 +158,7 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     applications: ["Ship-to-ship bunkering", "Port fuel supply", "Offshore vessel refueling", "Marine fuel logistics"],
     drawingNote: "Tanker hull with aft bridge and accommodation, deck transfer pipework and pressure vessels, lattice tower, two deck cranes, helideck, and a bow hose-handling station with transfer hoses.",
     image: "/rentals/bunkering-tankers.webp",
+    tagline: "Fuel delivered alongside.",
   },
 ];
 
