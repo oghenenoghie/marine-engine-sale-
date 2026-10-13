@@ -3,13 +3,9 @@ import { CategoryCard } from "@/components/common/category-card";
 import { rentalIcon } from "@/components/common/rental-icons";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
-// Curated subset of RENTAL_CATEGORIES for the homepage — the offshore/technical
-// fleet lines. The full set renders on /rentals (see that page).
-const FEATURED_SLUGS = ["well-intervention-vessels", "jack-up-rigs", "dredgers", "pontoons", "workboats", "tugboats", "barges"];
-
-const FEATURED_CATEGORIES = FEATURED_SLUGS.map((slug) => RENTAL_CATEGORIES.find((c) => c.slug === slug)).filter(
-  (c): c is (typeof RENTAL_CATEGORIES)[number] => c !== undefined,
-);
+// Every rental line now has a drawing, so the homepage shows the full set (a 3×3 grid on desktop) —
+// the same cards as /rentals.
+const FEATURED_CATEGORIES = RENTAL_CATEGORIES;
 
 export function FleetCategories() {
   return (
