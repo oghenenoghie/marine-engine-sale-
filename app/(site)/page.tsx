@@ -15,6 +15,8 @@ import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 export const dynamic = "force-dynamic";
 
 const firstSentence = (text: string) => text.match(/^.*?\.(?=\s|$)/)?.[0] ?? text;
+// "FPSO Vessels" → "FPSO vessels": lower-case each capitalised word but leave acronyms alone.
+const lowerWords = (text: string) => text.replace(/\b[A-Z](?=[a-z])/g, (c) => c.toLowerCase());
 
 // Every rental line with a drawing + tagline gets a slide after the admin-editable slides below.
 const RENTAL_SLIDES: FleetHeroSlide[] = RENTAL_CATEGORIES.flatMap((category) =>
@@ -26,7 +28,7 @@ const RENTAL_SLIDES: FleetHeroSlide[] = RENTAL_CATEGORIES.flatMap((category) =>
           eyebrow: `Rental fleet · ${category.label}`,
           headline: category.tagline,
           body: firstSentence(category.description),
-          primary: { href: `/rentals/${category.slug}`, label: `View ${category.label.toLowerCase()}` },
+          primary: { href: `/rentals/${category.slug}`, label: `View ${lowerWords(category.label)}` },
           secondary: { href: `/rentals/${category.slug}#request-availability`, label: "Request availability" },
           drawing: { url: category.image },
         },

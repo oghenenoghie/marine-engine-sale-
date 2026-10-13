@@ -153,11 +153,24 @@ export function BunkeringTankerIcon({ className }: IconProps) {
   );
 }
 
+export function FpsoIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...common} className={className}>
+      <path d="M2 18l2 3h16l2-3-2-1H4l-2 1Z" />
+      <rect x="3.5" y="12" width="3" height="5" />
+      <rect x="8.5" y="13.5" width="6" height="3.5" />
+      <path d="M16.5 17L18 6l1.5 11M17 13h2" />
+      <path d="M18 6c-.9-.9-.5-2 0-3 .5 1 .9 2.1 0 3Z" />
+    </svg>
+  );
+}
+
 // Keyed by lib/data/rentals.ts RENTAL_CATEGORIES slugs — every slug there
 // must have an entry here.
 const RENTAL_ICON_MAP: Record<string, IconComponent> = {
   "well-intervention-vessels": WellInterventionIcon,
   "jack-up-rigs": JackUpRigIcon,
+  "fpso-vessels": FpsoIcon,
   dredgers: DredgerIcon,
   workboats: WorkboatIcon,
   tugboats: TugIcon,
