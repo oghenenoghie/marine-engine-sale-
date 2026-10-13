@@ -165,6 +165,7 @@ const RENTAL_ICON_MAP: Record<string, IconComponent> = {
   pontoons: PontoonIcon,
   "tri-toon-vessels": TriToonIcon,
   "bunkering-tankers": BunkeringTankerIcon,
+  yachts: YachtIcon,
 };
 
 export function rentalIcon(slug: string): IconComponent {

@@ -11,7 +11,7 @@ import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 export const metadata: Metadata = {
   title: "Rental fleet",
   description:
-    "Charter well intervention vessels, jack-up rigs, dredgers, workboats, tugboats, barges, pontoons, tri-toon vessels and bunkering tankers from Shipcove Trading.",
+    "Charter well intervention vessels, jack-up rigs, dredgers, workboats, tugboats, barges, pontoons, tri-toon vessels, bunkering tankers and yachts from Shipcove Trading.",
 };
 
 export default function RentalsPage() {
@@ -69,7 +69,8 @@ export default function RentalsPage() {
       </section>
 
       <div id="fleet" className="mx-auto max-w-7xl px-6 py-10 scroll-mt-20">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* A lone card on the last desktop row is centred rather than left hanging */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:[&>*:last-child:nth-child(3n+1)]:col-start-2">
           {RENTAL_CATEGORIES.map((category, i) => (
             <FadeIn key={category.slug} delay={i * 0.04}>
               <CategoryCard

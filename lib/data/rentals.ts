@@ -160,6 +160,17 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     image: "/rentals/bunkering-tankers.webp",
     tagline: "Fuel delivered alongside.",
   },
+  {
+    slug: "yachts",
+    label: "Yachts",
+    description:
+      "Yachts provide comfortable, crewed platforms for corporate hospitality, client entertainment, and guest transfers along the coast and to marine sites. Depending on size, layout, and certification, units may offer guest cabins, saloons, dining areas, open sun decks, and tender or water-sports equipment. Charters can be arranged around events, project visits, and short-stay accommodation, subject to crew, itinerary, and operating-area requirements.",
+    configurations: [],
+    applications: ["Corporate hospitality", "Client entertainment", "Guest and VIP transfers", "Events and launches", "Short-stay accommodation"],
+    drawingNote: "Multi-deck motor yacht with raked superstructure, enclosed bridge, radar mast with satellite domes, railed sun decks, foredeck lounge, and bow anchor pocket.",
+    image: "/rentals/yachts.webp",
+    tagline: "Hospitality, under way.",
+  },
 ];
 
 export function rentalBySlug(slug: string): RentalCategory | undefined {
