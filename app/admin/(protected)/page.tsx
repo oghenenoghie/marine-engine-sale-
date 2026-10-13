@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { getAllStock } from "@/lib/data/stock";
 import { getAllEnquiries } from "@/lib/data/enquiries";
-import { getHeroSlides, getFaviconUrl } from "@/lib/data/settings";
+import { getHeroSlides, getHeroSlideInterval, getFaviconUrl } from "@/lib/data/settings";
 import { HeroSlidesEditor } from "@/components/admin/hero-slides-editor";
+import { HeroSlideSpeed } from "@/components/admin/hero-slide-speed";
 import { FaviconUploader } from "@/components/admin/favicon-uploader";
 
 export const dynamic = "force-dynamic";
@@ -17,10 +18,11 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminDashboardPage() {
-  const [stock, enquiries, heroSlides, faviconUrl] = await Promise.all([
+  const [stock, enquiries, heroSlides, slideInterval, faviconUrl] = await Promise.all([
     getAllStock(),
     getAllEnquiries(),
     getHeroSlides(),
+    getHeroSlideInterval(),
     getFaviconUrl(),
   ]);
   const stats = {
@@ -52,7 +54,10 @@ export default async function AdminDashboardPage() {
             background photo, and technical drawing. Rental-category slides are appended after these automatically.
           </p>
         </div>
-        <div className="mt-3">
+        <div className="mt-3 border-b border-steel/10 pb-4">
+          <HeroSlideSpeed initialSeconds={slideInterval} />
+        </div>
+        <div className="mt-4">
           <HeroSlidesEditor initial={heroSlides} />
         </div>
       </div>

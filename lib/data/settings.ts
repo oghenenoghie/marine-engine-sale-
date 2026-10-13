@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createPublicClient } from "@/lib/supabase/server";
+import { DEFAULT_SLIDE_INTERVAL, clampSlideInterval } from "@/lib/data/hero-speed";
 
 /**
  * Small admin-editable site content that doesn't warrant its own table —
@@ -107,5 +108,29 @@ export const getFaviconUrl = cache(async (): Promise<string | null> => {
   } catch (err) {
     console.warn("[lib/data/settings] getFaviconUrl falling back to no favicon:", err);
     return null;
+  }
+});
+
+/**
+ * Seconds per homepage hero slide — admin-set via
+ * components/admin/hero-slide-speed.tsx (key: hero_slide_interval). Limits
+ * and the default live in lib/data/hero-speed.ts; unset or unreachable means
+ * the default, like the hero slides themselves.
+ */
+const HERO_SLIDE_INTERVAL_KEY = "hero_slide_interval";
+
+export const getHeroSlideInterval = cache(async (): Promise<number> => {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", HERO_SLIDE_INTERVAL_KEY)
+      .maybeSingle();
+    if (error) throw new Error(`getHeroSlideInterval: ${error.message}`);
+    return data?.value ? clampSlideInterval(data.value) : DEFAULT_SLIDE_INTERVAL;
+  } catch (err) {
+    console.warn("[lib/data/settings] getHeroSlideInterval falling back to the default speed:", err);
+    return DEFAULT_SLIDE_INTERVAL;
   }
 });
