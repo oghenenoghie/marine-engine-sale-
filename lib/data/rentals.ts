@@ -167,7 +167,9 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       "Bunkering tankers support the transfer and delivery of marine fuel to vessels, offshore installations, and designated marine facilities. Depending on tank capacity, pumping systems, cargo compatibility, and certification, these vessels can be chartered for planned fuel deliveries and other approved liquid-bulk transfer operations. Typical equipment may include cargo tanks, transfer pumps, manifolds, pipelines, hose-handling arrangements, and associated safety systems.",
     configurations: [],
     applications: ["Ship-to-ship bunkering", "Port fuel supply", "Offshore vessel refueling", "Marine fuel logistics"],
-    drawingNote: "Tanker hull, cargo manifold, transfer pipelines, tank access hatches, deck valves, pump equipment, hose-handling arrangements, bridge, and crane where appropriate.",
+    drawingNote: "Tanker hull with aft bridge and accommodation, deck transfer pipework and pressure vessels, lattice tower, two deck cranes, helideck, and a bow hose-handling station with transfer hoses.",
+    // Shares the FPSO drawing until a dedicated bunkering tanker drawing is supplied.
+    image: "/rentals/fpso-vessels.webp",
     tagline: "Fuel delivered alongside.",
   },
   {
@@ -187,5 +189,7 @@ export function rentalBySlug(slug: string): RentalCategory | undefined {
   return RENTAL_CATEGORIES.find((r) => r.slug === slug);
 }
 
-/** Every supplied rental drawing, in category order — reused as stand-in artwork on stock cards that have no photo. */
-export const RENTAL_DRAWINGS: string[] = RENTAL_CATEGORIES.flatMap((category) => (category.image ? [category.image] : []));
+/** Every distinct rental drawing, in category order — reused as stand-in artwork on stock cards that have no photo. */
+export const RENTAL_DRAWINGS: string[] = Array.from(
+  new Set(RENTAL_CATEGORIES.flatMap((category) => (category.image ? [category.image] : []))),
+);
