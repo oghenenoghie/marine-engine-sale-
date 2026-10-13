@@ -67,6 +67,17 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     tagline: "Stable above the swell.",
   },
   {
+    slug: "fpso-vessels",
+    label: "FPSO Vessels",
+    description:
+      "FPSO (Floating Production, Storage and Offloading) vessels receive well fluids from subsea wells, process them on board, store the stabilised crude, and offload it to shuttle tankers. Depending on the unit, topsides may include separation and treatment modules, gas compression, water injection, power generation, and flare systems, alongside cargo tanks, offloading equipment, and mooring arrangements. Charter or lease terms are typically matched to field size, water depth, production rates, and the expected duration of the development.",
+    configurations: [],
+    applications: ["Early production systems", "Marginal field development", "Extended well testing", "Deepwater production", "Crude storage and offloading"],
+    drawingNote: "Tanker-hull FPSO with aft bridge and accommodation, topside process modules with pressure vessels and pipe racks, flare tower, two deck cranes, helideck, and a bow offloading station with transfer hoses.",
+    image: "/rentals/fpso-vessels.webp",
+    tagline: "Process, store, offload.",
+  },
+  {
     slug: "dredgers",
     label: "Dredging Equipment",
     description:
@@ -156,9 +167,19 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       "Bunkering tankers support the transfer and delivery of marine fuel to vessels, offshore installations, and designated marine facilities. Depending on tank capacity, pumping systems, cargo compatibility, and certification, these vessels can be chartered for planned fuel deliveries and other approved liquid-bulk transfer operations. Typical equipment may include cargo tanks, transfer pumps, manifolds, pipelines, hose-handling arrangements, and associated safety systems.",
     configurations: [],
     applications: ["Ship-to-ship bunkering", "Port fuel supply", "Offshore vessel refueling", "Marine fuel logistics"],
-    drawingNote: "Tanker hull with aft bridge and accommodation, deck transfer pipework and pressure vessels, lattice tower, two deck cranes, helideck, and a bow hose-handling station with transfer hoses.",
-    image: "/rentals/bunkering-tankers.webp",
+    drawingNote: "Tanker hull, cargo manifold, transfer pipelines, tank access hatches, deck valves, pump equipment, hose-handling arrangements, bridge, and crane where appropriate.",
     tagline: "Fuel delivered alongside.",
+  },
+  {
+    slug: "yachts",
+    label: "Yachts",
+    description:
+      "Yachts provide comfortable, crewed platforms for corporate hospitality, client entertainment, and guest transfers along the coast and to marine sites. Depending on size, layout, and certification, units may offer guest cabins, saloons, dining areas, open sun decks, and tender or water-sports equipment. Charters can be arranged around events, project visits, and short-stay accommodation, subject to crew, itinerary, and operating-area requirements.",
+    configurations: [],
+    applications: ["Corporate hospitality", "Client entertainment", "Guest and VIP transfers", "Events and launches", "Short-stay accommodation"],
+    drawingNote: "Multi-deck motor yacht with raked superstructure, enclosed bridge, radar mast with satellite domes, railed sun decks, foredeck lounge, and bow anchor pocket.",
+    image: "/rentals/yachts.webp",
+    tagline: "Hospitality, under way.",
   },
 ];
 
