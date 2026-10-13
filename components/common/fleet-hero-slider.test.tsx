@@ -99,3 +99,10 @@ describe("FleetHeroSlider", () => {
     expect(screen.queryByRole("button", { name: "Next slide" })).not.toBeInTheDocument();
   });
 });
+
+describe("FleetHeroSlider speed", () => {
+  it("drives the progress bar from intervalSeconds", () => {
+    const { container } = render(<FleetHeroSlider slides={SLIDES} intervalSeconds={3} />);
+    expect((container.firstChild as HTMLElement).style.getPropertyValue("--slide-duration")).toBe("3s");
+  });
+});

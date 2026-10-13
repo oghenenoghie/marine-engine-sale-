@@ -8,7 +8,7 @@ import { StockCard } from "@/components/stock/stock-card";
 import { Button } from "@/components/ui/button";
 import { getFeaturedStock } from "@/lib/data/stock";
 import { getAllBrands } from "@/lib/data/taxonomy";
-import { getHeroSlides } from "@/lib/data/settings";
+import { getHeroSlideInterval, getHeroSlides } from "@/lib/data/settings";
 import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 
 // Stock/drawings are admin-editable — never bake this into a static build.
@@ -35,7 +35,12 @@ const RENTAL_SLIDES: FleetHeroSlide[] = RENTAL_CATEGORIES.flatMap((category) =>
 );
 
 export default async function HomePage() {
-  const [featured, brands, heroSlides] = await Promise.all([getFeaturedStock(8), getAllBrands(), getHeroSlides()]);
+  const [featured, brands, heroSlides, slideInterval] = await Promise.all([
+    getFeaturedStock(8),
+    getAllBrands(),
+    getHeroSlides(),
+    getHeroSlideInterval(),
+  ]);
 
   // Admin-editable (lib/data/settings.ts getHeroSlides() / the /admin dashboard) — the slides every
   // deployment has regardless of rental-category content, so editing them from /admin always has a
@@ -59,7 +64,7 @@ export default async function HomePage() {
     <>
       {/* Hero — the sticky Header sits flush above this and doubles as its navbar. The admin-editable
           slides (/admin dashboard) lead; each rental line with a drawing + tagline gets one after them. */}
-      <FleetHeroSlider slides={allSlides}>
+      <FleetHeroSlider slides={allSlides} intervalSeconds={slideInterval}>
         <FadeIn
           delay={0.15}
           className="grid max-w-xs grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] uppercase tracking-wider text-paper/50"

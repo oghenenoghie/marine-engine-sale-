@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FocusEvent, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
+import { useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
@@ -8,6 +8,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react
 import { FadeIn } from "@/components/motion/fade-in";
 import { VesselReveal } from "@/components/motion/vessel-reveal";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_SLIDE_INTERVAL } from "@/lib/data/hero-speed";
 import { cn } from "@/lib/utils";
 
 export interface FleetHeroSlide {
@@ -36,15 +37,18 @@ const SWIPE_PX = 50;
  * height between them.
  *
  * Autoplay is driven by the active pagination bar's CSS fill animation
- * (animationend → next slide), so pausing it pauses the timer too. It pauses
- * on hover, keyboard focus and the explicit pause button, and is off entirely
+ * (animationend → next slide, lasting `intervalSeconds` — admin-set, see
+ * lib/data/hero-speed.ts), so pausing it pauses the timer too. It pauses on
+ * hover, keyboard focus and the explicit pause button, and is off entirely
  * under prefers-reduced-motion. `children` renders bottom-left (the stats row).
  */
 export function FleetHeroSlider({
   slides,
+  intervalSeconds = DEFAULT_SLIDE_INTERVAL,
   children,
 }: {
   slides: FleetHeroSlide[];
+  intervalSeconds?: number;
   children?: ReactNode;
 }) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -98,6 +102,7 @@ export function FleetHeroSlider({
       aria-roledescription="carousel"
       aria-label="Rental fleet"
       className="relative isolate overflow-hidden bg-hull text-paper"
+      style={{ "--slide-duration": `${intervalSeconds}s` } as CSSProperties}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={onFocus}
@@ -116,7 +121,7 @@ export function FleetHeroSlider({
                     key={slide.id}
                     initial={false}
                     animate={{ opacity: i === index ? 0.5 : 0 }}
-                    transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
+                    transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE }}
                     className="absolute inset-0"
                   >
                     <Image src={slide.backgroundImage} alt="" fill unoptimized className="object-cover" />
@@ -142,7 +147,7 @@ export function FleetHeroSlider({
             key={slide.id}
             initial={false}
             animate={i === index ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduceMotion ? 1 : 0.98 }}
-            transition={{ duration: reduceMotion ? 0 : 0.9, ease: EASE }}
+            transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE }}
             className="absolute inset-0 flex items-end justify-end lg:items-center lg:justify-center"
           >
             {slide.drawing ? (
@@ -181,7 +186,7 @@ export function FleetHeroSlider({
                       ? { opacity: 1, y: 0, visibility: "visible" }
                       : { opacity: 0, y: reduceMotion ? 0 : 8, transitionEnd: { visibility: "hidden" } }
                   }
-                  transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE, delay: active && !reduceMotion ? 0.15 : 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.4, ease: EASE, delay: active && !reduceMotion ? 0.1 : 0 }}
                   className="[grid-area:1/1]"
                 >
                   <span className="label inline-flex items-center gap-2 border border-paper/20 px-4 py-1.5 text-paper/80">
