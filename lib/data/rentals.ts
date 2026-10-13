@@ -173,6 +173,17 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     tagline: "Fuel delivered alongside.",
   },
   {
+    slug: "mobile-power-plants",
+    label: "Mobile Power Plants",
+    description:
+      "Mobile power plants provide temporary, standby, or bridging electrical generation for ports, shipyards, offshore installations, and remote project sites. Depending on the package, units combine diesel, dual-fuel, or gas-fired prime movers with alternators, switchgear, control rooms, cooling, and exhaust systems on skid- or module-mounted frames. Output, fuel type, voltage, and mobilisation can be matched to the project's load profile, site conditions, and duration.",
+    configurations: [],
+    applications: ["Temporary and standby power", "Shipyard and port supply", "Offshore and remote sites", "Grid support and peak shaving", "Construction and commissioning"],
+    drawingNote: "Skid-mounted generating module with engine-alternator set and flywheel housing, raised service decks with railings, control and switchgear house, exhaust stacks, and hydraulic support struts.",
+    image: "/rentals/mobile-power-plants.webp",
+    tagline: "Power on demand.",
+  },
+  {
     slug: "yachts",
     label: "Yachts",
     description:

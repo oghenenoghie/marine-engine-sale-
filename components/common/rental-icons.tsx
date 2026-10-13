@@ -165,6 +165,18 @@ export function FpsoIcon({ className }: IconProps) {
   );
 }
 
+export function PowerPlantIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...common} className={className}>
+      <path d="M2 20h20" />
+      <rect x="3" y="11" width="12" height="7" rx="0.5" />
+      <circle cx="18.5" cy="14.5" r="2.8" />
+      <path d="M6 11V5M10 11V6.5" />
+      <path d="M9.6 12.5L8 15h2.2l-1.6 2" />
+    </svg>
+  );
+}
+
 // Keyed by lib/data/rentals.ts RENTAL_CATEGORIES slugs — every slug there
 // must have an entry here.
 const RENTAL_ICON_MAP: Record<string, IconComponent> = {
@@ -178,6 +190,7 @@ const RENTAL_ICON_MAP: Record<string, IconComponent> = {
   pontoons: PontoonIcon,
   "tri-toon-vessels": TriToonIcon,
   "bunkering-tankers": BunkeringTankerIcon,
+  "mobile-power-plants": PowerPlantIcon,
   yachts: YachtIcon,
 };
 

@@ -11,7 +11,7 @@ import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 export const metadata: Metadata = {
   title: "Rental fleet",
   description:
-    "Charter well intervention vessels, jack-up rigs, FPSO vessels, dredgers, workboats, tugboats, barges, pontoons, tri-toon vessels, bunkering tankers and yachts from Shipcove Trading.",
+    "Charter well intervention vessels, jack-up rigs, FPSO vessels, dredgers, workboats, tugboats, barges, pontoons, tri-toon vessels, bunkering tankers, mobile power plants and yachts from Shipcove Trading.",
 };
 
 export default function RentalsPage() {
