@@ -47,7 +47,7 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       },
     ],
     applications: ["Offshore well servicing", "Subsea maintenance", "Well integrity programs", "Production optimization"],
-    drawingNote: "Barge-hulled intervention unit with accommodation block and bridge, intervention derrick, pipe rack, deck crane, winches, and mooring bollards.",
+    drawingNote: "Ship-shaped intervention vessel with forward accommodation, bridge and helideck, intervention tower, two knuckle-boom cranes, reel drives, pipe rack, and lifeboat.",
     image: "/rentals/well-intervention-vessels.webp",
     tagline: "Well servicing, on station.",
   },
@@ -154,7 +154,8 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
       "Bunkering tankers support the transfer and delivery of marine fuel to vessels, offshore installations, and designated marine facilities. Depending on tank capacity, pumping systems, cargo compatibility, and certification, these vessels can be chartered for planned fuel deliveries and other approved liquid-bulk transfer operations. Typical equipment may include cargo tanks, transfer pumps, manifolds, pipelines, hose-handling arrangements, and associated safety systems.",
     configurations: [],
     applications: ["Ship-to-ship bunkering", "Port fuel supply", "Offshore vessel refueling", "Marine fuel logistics"],
-    drawingNote: "Tanker hull, cargo manifold, transfer pipelines, tank access hatches, deck valves, pump equipment, hose-handling arrangements, bridge, and crane where appropriate.",
+    drawingNote: "Tanker hull with aft bridge and accommodation, deck transfer pipework and pressure vessels, lattice tower, two deck cranes, helideck, and a bow hose-handling station with transfer hoses.",
+    image: "/rentals/bunkering-tankers.webp",
   },
 ];
 
