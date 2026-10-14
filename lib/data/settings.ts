@@ -30,7 +30,11 @@ export type HeroSlide = {
   secondaryLabel: string;
   /** Supabase Storage public URL, or "" for no background photo (just the tech-grid backdrop). */
   backgroundImage: string;
-  /** Supabase Storage public URL, or "" to fall back to the animated <VesselReveal/> placeholder. */
+  /**
+   * A rental category drawing (lib/data/rentals.ts `image`, picked in the admin editor), or "" to
+   * fall back to the animated <VesselReveal/> placeholder. Slides saved before the picker may still
+   * hold an uploaded Supabase Storage URL, which keeps rendering as-is.
+   */
   drawingUrl: string;
   drawingCaption: string;
 };
@@ -46,10 +50,14 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     secondaryHref: "/rentals#fleet",
     secondaryLabel: "Browse rental fleet",
     backgroundImage: "",
-    drawingUrl: "/hero/well-intervention-vessel.png",
-    drawingCaption: "Light well intervention vessel — technical line drawing",
+    drawingUrl: "/rentals/mobile-power-plants.webp",
+    drawingCaption: "",
   },
 ];
+
+// The original hero art (a filled render, not category linework) was retired — slides still
+// pointing at it get the default slide's category drawing instead.
+const RETIRED_DRAWING = "/hero/well-intervention-vessel.png";
 
 const HERO_SLIDES_KEY = "hero_slides";
 
@@ -70,8 +78,9 @@ const asHeroSlide = (v: unknown): HeroSlide | null => {
     secondaryHref: str("secondaryHref"),
     secondaryLabel: str("secondaryLabel"),
     backgroundImage: str("backgroundImage"),
-    drawingUrl: str("drawingUrl"),
-    drawingCaption: str("drawingCaption"),
+    ...(str("drawingUrl") === RETIRED_DRAWING
+      ? { drawingUrl: DEFAULT_HERO_SLIDES[0]!.drawingUrl, drawingCaption: DEFAULT_HERO_SLIDES[0]!.drawingCaption }
+      : { drawingUrl: str("drawingUrl"), drawingCaption: str("drawingCaption") }),
   };
 };
 
