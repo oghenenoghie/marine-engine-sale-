@@ -9,12 +9,25 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
 import { saveHeroSlidesAction } from "@/lib/actions/settings";
+import { RENTAL_CATEGORIES } from "@/lib/data/rentals";
 import type { HeroSlide } from "@/lib/data/settings";
 
 const BUCKET = "site-images";
 const MAX_FILE_SIZE = 10_000_000;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SLIDES = 8;
+
+/**
+ * Slide drawings come from the rental category drawings (lib/data/rentals.ts),
+ * so every hero slide shares the same paper-on-transparent linework. One
+ * option per distinct file — categories that share a drawing share an option.
+ */
+const CATEGORY_DRAWINGS: { url: string; label: string }[] = Object.entries(
+  RENTAL_CATEGORIES.reduce<Record<string, string[]>>((acc, category) => {
+    if (category.image) (acc[category.image] ??= []).push(category.label);
+    return acc;
+  }, {}),
+).map(([url, labels]) => ({ url, label: labels.join(" / ") }));
 
 const blankSlide = (): HeroSlide => ({
   id: crypto.randomUUID(),
@@ -34,7 +47,8 @@ const blankSlide = (): HeroSlide => ({
  * Admin editor for the homepage hero — one ordered list of fully
  * self-contained slides (app/(site)/page.tsx, lib/data/settings.ts
  * getHeroSlides()). Each slide owns its own copy, both CTAs, an optional
- * background photo, and an optional technical drawing + caption — this is
+ * background photo, and an optional technical drawing (picked from the rental
+ * category drawings) + caption — this is
  * the single source of slide content the public <FleetHeroSlider/> renders
  * (rental-category slides are appended after these at render time, derived
  * from lib/data/rentals.ts rather than admin input). Structural edits
@@ -78,7 +92,7 @@ export function HeroSlidesEditor({ initial }: { initial: HeroSlide[] }) {
     mutate(next);
   };
 
-  const uploadImage = async (index: number, field: "backgroundImage" | "drawingUrl", file: File) => {
+  const uploadBackground = async (index: number, file: File) => {
     if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_FILE_SIZE) {
       setError("Images must be JPG, PNG or WEBP and under 10MB.");
       return;
@@ -90,7 +104,7 @@ export function HeroSlidesEditor({ initial }: { initial: HeroSlide[] }) {
       const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file);
       if (uploadError) throw uploadError;
       const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-      update(index, { [field]: data.publicUrl } as Partial<HeroSlide>);
+      update(index, { backgroundImage: data.publicUrl });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed — please try again.");
       console.error("[HeroSlidesEditor] upload error", err);
@@ -119,7 +133,7 @@ export function HeroSlidesEditor({ initial }: { initial: HeroSlide[] }) {
           index={i}
           count={slides.length}
           onChange={(patch) => update(i, patch)}
-          onUpload={(field, file) => uploadImage(i, field, file)}
+          onUpload={(file) => uploadBackground(i, file)}
           onMove={(dir) => move(i, dir)}
           onRemove={() => removeSlide(i)}
         />
@@ -163,25 +177,19 @@ function SlideCard({
   index: number;
   count: number;
   onChange: (patch: Partial<HeroSlide>) => void;
-  onUpload: (field: "backgroundImage" | "drawingUrl", file: File) => Promise<void>;
+  onUpload: (file: File) => Promise<void>;
   onMove: (direction: -1 | 1) => void;
   onRemove: () => void;
 }) {
   const bgInputRef = useRef<HTMLInputElement>(null);
-  const drawingInputRef = useRef<HTMLInputElement>(null);
   const [uploadingBg, setUploadingBg] = useState(false);
-  const [uploadingDrawing, setUploadingDrawing] = useState(false);
 
-  const handleFile = async (
-    field: "backgroundImage" | "drawingUrl",
-    files: FileList | null,
-    setUploading: (v: boolean) => void,
-  ) => {
+  const handleFile = async (files: FileList | null) => {
     const file = files?.[0];
     if (!file) return;
-    setUploading(true);
-    await onUpload(field, file);
-    setUploading(false);
+    setUploadingBg(true);
+    await onUpload(file);
+    setUploadingBg(false);
   };
 
   return (
@@ -320,19 +328,15 @@ function SlideCard({
           uploading={uploadingBg}
           inputRef={bgInputRef}
           onPick={() => bgInputRef.current?.click()}
-          onFiles={(files) => handleFile("backgroundImage", files, setUploadingBg)}
+          onFiles={handleFile}
           onRemove={() => onChange({ backgroundImage: "" })}
         />
         <div>
-          <ImageField
-            label="Technical drawing"
-            hint="Optional — falls back to the animated placeholder."
+          <DrawingField
+            id={`drawing-${slide.id}`}
             url={slide.drawingUrl}
-            uploading={uploadingDrawing}
-            inputRef={drawingInputRef}
-            onPick={() => drawingInputRef.current?.click()}
-            onFiles={(files) => handleFile("drawingUrl", files, setUploadingDrawing)}
-            onRemove={() => onChange({ drawingUrl: "", drawingCaption: "" })}
+            // A caption described the previous drawing, so start the new one without.
+            onChange={(url) => onChange({ drawingUrl: url, drawingCaption: "" })}
           />
           {slide.drawingUrl && (
             <div className="mt-2">
@@ -348,6 +352,39 @@ function SlideCard({
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function DrawingField({ id, url, onChange }: { id: string; url: string; onChange: (url: string) => void }) {
+  const isCategoryDrawing = CATEGORY_DRAWINGS.some((d) => d.url === url);
+  return (
+    <div>
+      <Label htmlFor={id} className="text-paper/60">
+        Technical drawing
+      </Label>
+      <p className="text-[11px] text-paper/40">From the rental categories — or none for the animated placeholder.</p>
+      <div className="mt-1 flex items-center gap-2">
+        {url && (
+          <div className="tech-grid relative h-12 w-20 shrink-0 overflow-hidden rounded-sm border border-paper/20 bg-hull">
+            <Image src={url} alt="" fill unoptimized className="object-contain p-1" />
+          </div>
+        )}
+        <select
+          id={id}
+          value={url}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 min-w-0 flex-1 rounded-sm border border-paper/20 bg-hull px-2 text-[12px] text-paper outline-none focus:border-paper/50"
+        >
+          <option value="">None — animated placeholder</option>
+          {CATEGORY_DRAWINGS.map((d) => (
+            <option key={d.url} value={d.url}>
+              {d.label}
+            </option>
+          ))}
+          {url && !isCategoryDrawing && <option value={url}>Custom image (uploaded earlier)</option>}
+        </select>
       </div>
     </div>
   );

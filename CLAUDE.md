@@ -151,7 +151,9 @@ referencing an optional `StockItem`.
     white keyed out to alpha), so they only read on a hull backdrop. Any
     category with both `image` and `tagline` automatically gets a slide in the
     homepage hero carousel (`components/common/fleet-hero-slider.tsx`), after
-    the admin-edited slides (`site_settings` key `hero_slides`). Seconds per
+    the admin-edited slides (`site_settings` key `hero_slides`), which pick their
+    drawing from the same category drawings (dropdown in
+    `components/admin/hero-slides-editor.tsx`), not an upload. Seconds per
     slide is admin-set too (key `hero_slide_interval`, limits/default in
     `lib/data/hero-speed.ts`, control in `components/admin/hero-slide-speed.tsx`).
 - **Admin writes go through server actions** (`lib/actions/stock.ts`,
