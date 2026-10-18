@@ -141,7 +141,7 @@ export function TriToonIcon({ className }: IconProps) {
   );
 }
 
-export function BunkeringTankerIcon({ className }: IconProps) {
+export function TankerIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...common} className={className}>
       <path d="M2 18l2 3h16l2-3-2-1H4l-2 1Z" />
@@ -189,7 +189,7 @@ const RENTAL_ICON_MAP: Record<string, IconComponent> = {
   barges: BargeIcon,
   pontoons: PontoonIcon,
   "tri-toon-vessels": TriToonIcon,
-  "bunkering-tankers": BunkeringTankerIcon,
+  "tanker-vessels": TankerIcon,
   "mobile-power-plants": PowerPlantIcon,
   yachts: YachtIcon,
 };

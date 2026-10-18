@@ -42,7 +42,7 @@ describe("HeroSlidesEditor drawing picker", () => {
     const options = Array.from(select.querySelectorAll("option")).map((o) => o.textContent);
     expect(options[0]).toBe("None — animated placeholder");
     expect(options).toContain("Yachts");
-    expect(options).toContain("FPSO Vessels / Bunkering Tankers");
+    expect(options).toContain("FPSO Vessels / Tanker Vessels");
   });
 
   it("uses the picked category drawing, clears the old caption, then saves it", async () => {
