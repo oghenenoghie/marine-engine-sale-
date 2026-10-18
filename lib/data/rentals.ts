@@ -161,16 +161,21 @@ export const RENTAL_CATEGORIES: RentalCategory[] = [
     image: "/rentals/tri-toon-vessels.webp",
   },
   {
-    slug: "bunkering-tankers",
-    label: "Bunkering Tankers",
+    slug: "tanker-vessels",
+    label: "Tanker Vessels",
     description:
-      "Bunkering tankers support the transfer and delivery of marine fuel to vessels, offshore installations, and designated marine facilities. Depending on tank capacity, pumping systems, cargo compatibility, and certification, these vessels can be chartered for planned fuel deliveries and other approved liquid-bulk transfer operations. Typical equipment may include cargo tanks, transfer pumps, manifolds, pipelines, hose-handling arrangements, and associated safety systems.",
-    configurations: [],
-    applications: ["Ship-to-ship bunkering", "Port fuel supply", "Offshore vessel refueling", "Marine fuel logistics"],
+      "Tanker vessels carry and deliver liquid and liquefied bulk cargoes, from marine fuel supplied alongside other vessels to refined products, chemicals, crude oil, and liquefied gas moved between terminals, fields, and refineries. Depending on tank capacity, cargo containment, pumping systems, cargo compatibility, and certification, these vessels can be chartered for planned deliveries, voyage or time charters, and other approved liquid-bulk transfer operations. Typical equipment may include cargo tanks, transfer pumps, manifolds, pipelines, hose-handling arrangements, and associated safety systems.",
+    configurations: [
+      { name: "Bunkering Tankers", description: "Delivery of marine fuel to vessels, offshore installations, and designated marine facilities." },
+      { name: "Oil & Chemical Tanker Vessels", description: "Transport of refined petroleum products and chemical cargoes, subject to tank coating, cargo compatibility, and certification." },
+      { name: "Crude Oil Tanker Vessels", description: "Bulk transport of crude oil between production sites, terminals, and refineries." },
+      { name: "LPG/LNG Vessels", description: "Transport of liquefied petroleum gas or liquefied natural gas in pressurised or refrigerated cargo containment." },
+    ],
+    applications: ["Ship-to-ship bunkering", "Port and offshore fuel supply", "Refined product and chemical transport", "Crude oil transport", "Liquefied gas transport"],
     drawingNote: "Tanker hull with aft bridge and accommodation, deck transfer pipework and pressure vessels, lattice tower, two deck cranes, helideck, and a bow hose-handling station with transfer hoses.",
-    // Shares the FPSO drawing until a dedicated bunkering tanker drawing is supplied.
+    // Shares the FPSO drawing until a dedicated tanker drawing is supplied.
     image: "/rentals/fpso-vessels.webp",
-    tagline: "Fuel delivered alongside.",
+    tagline: "Liquid bulk, delivered.",
   },
   {
     slug: "mobile-power-plants",
